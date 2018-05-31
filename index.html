@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Without user type in SQL query</title>
+  <style type="text/css">
+    body {
+      text-align: center;
+    }
+
+    .bodyDiv {
+      margin: auto;
+      padding: 5px;
+    }
+
+    input[type="button"],
+    button,
+    .div1,
+    .controlDraw {
+      margin: 2px;
+      background-color: white;
+      border: none;
+      color: #008CBA;
+      text-align: left;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 12px;
+      border-radius: 5px;
+    }
+
+    input[type="text"] {
+      margin: 2px;
+      background-color: #EEEEEE;
+      border: none;
+      color: #008CBA;
+      padding: 3px 5px;
+      text-align: left;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 12px;
+      border-radius: 5px;
+    }
+
+    input[type="button"]:hover,
+    button:hover {
+      background: #008CBA;
+      color: white;
+    }
+
+    input[type="text"]:hover {
+      background: white;
+      color: black;
+    }
+
+    .queriesButton {
+      width: 100 px;
+      float: left;
+      text-align: left;
+    }
+
+    .div1 {
+      color: black;
+      background-color: #DDDDDD;
+      margin-top: 10px;
+      float: left;
+      width: 180px
+    }
+
+    .div2 {
+      color: black;
+      background-color: #DDDDDD;
+      margin-top: 10px;
+      margin-right: 10px;
+      float: left;
+    }
+
+    .div3 {
+      background-color: #EEEEEE;
+      margin-left: 20px;
+    }
+
+    .canvasDiv {
+      width: auto;
+      float: left;
+      text-align: left;
+    }
+
+    .controlDraw {
+      padding: 5px;
+      color: black;
+      background-color: #DDDDDD;
+      ;
+      margin-top: 10px;
+      text-align: left;
+      width: 90%
+    }
+    a, button {
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bodyDiv">
+    <table width="1080">
+      <tr>
+        <td>
+          <div class="queriesButton">
+            <div class="div1">
+
+              <form class="" action="" method="post">
+                SQL querie's Process: <br>
+                <p id="queryTip"></p>
+                <input type="text" id="selectionQuery" value=""> <br>
+                <input type="button" name="" value="Submit" onclick="draw.sqlProcess()">
+              </form> <br>
+              <p id="queryBtnTip" style="background-color:#EEEEEE"></p>
+              <button type="button" id="wholeProcess" name="drawProcess">whole process of SQL Query</button> <br>
+              <button type="button" id="select" name="drawProcess">select</button> <br>
+              <button type="button" id="from" name="drawProcess">from</button> <br>
+              <button type="button" id="where" name="drawProcess">where</button> <br>
+              <a id = "a_subWhere" onclick="showSub('a_subWhere','subWhere')"> show sub-steps of where</a>
+              <div class="div3" id="subWhere" style="display:none">
+                |-1-<button type="button" id="compare" name="drawProcess">compare</button> <br> |-2-
+                <button type="button" id="crossJoin" name="drawProcess">crossJoin</button> <br> |-3-
+                <button type="button" id="intersection_union" name="drawProcess">intersection and union</button> <br>
+              </div>
+              <button type="button" id="grouping" name="drawProcess">group by</button> <br>
+              <button type="button" id="ordering" name="drawProcess">order by</button> <br>
+            </div>
+            <div class="div1">
+              <form class="" action="" method="post">
+                Single Algebra's Process: <br>
+                <br>
+                <input type="button" name="" value="Initialize Data" onclick="draw.algebra.single_algebra()"> <br>
+              </form>
+              <div class="div2">
+                Joins: <br>
+                <button type="button" name="algebra" id="leftJoin">leftJoin</button> <br>
+                <button type="button" name="algebra" id="rightJoin">rightJoin</button> <br>
+                <button type="button" name="algebra" id="outerJoin">outerJoin</button> <br>
+                <button type="button" name="algebra" id="innerJoin">innerJoin</button> <br>
+                <button type="button" name="algebra" id="crossJoin">crossJoin</button> <br>
+              </div>
+              <div class="div2">
+                Algebra: <br>
+                <button type="button" name="algebra" id="union">union</button> <br>
+                <button type="button" name="algebra" id="unionAll">union all</button> <br>
+                <button type="button" name="algebra" id="intersection">intersection</button> <br>
+                <button type="button" name="algebra" id="without">without</button> <br>
+
+              </div>
+              <div class="div2">
+                <form class="" action="" method="post">
+                  Hybrid-Algebra's Process: <br>
+                  <br>
+                  <input type="button" id="algebra_multi" value="Initialize Data and Begin" onclick="draw.algebra.multi_algebra()">
+                </form>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <!--draw canvas-->
+          <div class="canvasDiv" id="showProg">
+            <canvas id="canvas" width="1080px" height="900px"></canvas>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        </td>
+        <td>
+          <div class="controlDraw" style="height:20px">
+            <div style="float:left;width:150px">
+              Control Panel:
+            </div>
+            <div style="float:left">
+              <form class="" action="" method="post" style="width:550px">
+                Speed(FPS)(optional):
+                <input type="text" id="speed" value="" style="margin-top:0px"> Range from 0 to 1000
+                <input type="button" name="" value="Submit" onclick="draw.setSpeed()">
+              </form>
+            </div>
+            <div style="float:left">
+              <button type="button" name="controlDraw" id="pause">Pause</button>
+              <button type="button" name="controlDraw" id="continue">Continue</button>
+              <button type="button" name="controlDraw" id="laststep">Last Step</button>
+              <button type="button" name="controlDraw" id="terminate">Terminate</button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>
+<script type="text/javascript">
+  var showSub = function(hid_id,show_id){
+    let hid_elem = document.getElementById(hid_id);
+    let show_elem = document.getElementById(show_id);
+    hid_elem.style.display = "none";
+    show_elem.style.display = "block";
+  }
+</script>
+<script src="data.json"></script>
+<script src="queries.json"></script>
+
+<script src="algebraUtil.js"></script>
+<script src="algebra.js"></script>
+<script src="clauses.js"></script>
+<script src="drawUtil.js"></script>
+<script src="drawInfo.js"></script>
+
+<script src="drawWholeProcess.js"></script>
+<script src="drawAlgebra.js"></script>
+<script src="algebra_main.js"></script>
+<script src="draw.js"></script>

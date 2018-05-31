@@ -1,0 +1,137 @@
+data = {
+  "comment": "'name' is the tablesname, columns is the name of columns, use the '$' symbol to mark the end of a record",
+  "tables": [{
+      "name": "A",
+      "columns": ["name", "age", "nation"],
+      "value": [
+        {"tupleValue":["Andrew", 29, "USA"]},
+        {"tupleValue":["Wang", 25, "CHINA"]},
+        {"tupleValue":["Edmund", 30, "GERMANY"]},
+        {"tupleValue":["Zhang", 27, "CHINA"]},
+        {"tupleValue":["Jack", 19, "USA"]},
+        {"tupleValue":["Yang", 24, "CHINA"]},
+        {"tupleValue":["Lili", 25, "UK"]},
+        {"tupleValue":["Mike", 30, "USA"]},
+        {"tupleValue":["Angel", 35, "USA"]},
+        {"tupleValue":["Ji", 50, "CHINA"]},
+        {"tupleValue":["Jeffry", 32, "GERMANY"]},
+        {"tupleValue":["Chang", 29, "CHINA"]},
+        {"tupleValue":["Emma", 18, "USA"]},
+        {"tupleValue":["Huang", 25, "CHINA"]},
+        {"tupleValue":["Lucy", 55, "UK"]},
+        {"tupleValue":["Michael", 36, "USA"]},
+        {"tupleValue":["Andrew", 29, "USA"]}
+      ]
+
+    },
+    {
+      "name": "B",
+      "columns": ["name", "age", "nation", "salary"],
+      "value": [
+        {"tupleValue":["Lily", 25, "UK", 3000]},
+        {"tupleValue":["Andraw", 29, "USA", 4000]},
+        {"tupleValue":["Liu", 25, "CHINA", 2500]},
+        {"tupleValue":["Andreas", 22, "GERMANY", 3566]},
+        {"tupleValue":["Jack", 19, "USA", 2000]},
+        {"tupleValue":["Jeff", 32, "GERMANY", 4812]},
+        {"tupleValue":["Zhang", 28, "CHINA", 13774]},
+        {"tupleValue":["York", 18, "USA",6132]},
+        {"tupleValue":["York", 18, "USA",6132]},
+        {"tupleValue":["Huang", 21, "CHINA",14456]},
+        {"tupleValue":["Lucy", 52, "UK",14632]},
+        {"tupleValue":["Michael", 37, "USA",14456]}
+      ]
+    },
+    {
+      "name": "C",
+      "columns": ["name", "age", "nation", "salary"],
+      "value": [
+        {"tupleValue":["Lili", 25, "UK", 3000]},
+        {"tupleValue":["Max", 24, "GERMANY", 3507]},
+        {"tupleValue":["Qian", 21, "CHINA", 2990]},
+        {"tupleValue":["Andreas", 22, "GERMANY", 3566]},
+        {"tupleValue":["Zhang", 28, "CHINA", 13774]},
+        {"tupleValue":["Jack", 19, "USA", 2000]},
+        {"tupleValue":["Chang", 24, "CHINA", 13774]},
+        {"tupleValue":["Yang", 24, "CHINA", 3050]},
+        {"tupleValue":["Edmund", 32, "GERMANY", 6098]},
+        {"tupleValue":["Jordan", 30, "USA", 5013]},
+        {"tupleValue":["Mike", 30, "USA", 2120]},
+        {"tupleValue":["Angel", 35, "USA", 6554]},
+        {"tupleValue":["Jiang", 50, "CHINA", 4845]},
+        {"tupleValue":["Jeff", 32, "GERMANY", 4812]}
+      ]
+    },
+    {
+      "name": "D",
+      "columns": ["name", "age", "nation", "height", "weight"],
+      "value": [
+        {"tupleValue":["Chili", 25, "AUSTRALIA", 178, 80]},
+        {"tupleValue":["Max", 24, "GERMANY", 156, 50]},
+        {"tupleValue":["Qian", 21, "CHINA", 177, 60]},
+        {"tupleValue":["Andreas", 22, "GERMANY", 192, 100]},
+        {"tupleValue":["Zhang", 28, "CHINA", 167, 120]},
+        {"tupleValue":["Yang", 24, "CHINA", 183, 80]},
+        {"tupleValue":["Edmund", 32, "GERMANY", 183, 75]},
+        {"tupleValue":["Jordan", 30, "USA", 179, 68]},
+        {"tupleValue":["Mike", 30, "USA", 169, 70]},
+        {"tupleValue":["Angel", 35, "USA", 212, 130]},
+        {"tupleValue":["Jiang", 50, "CHINA", 236, 150]},
+        {"tupleValue":["Jeffry", 32, "GERMANY", 207, 115]}
+      ]
+    },
+    {
+      "name": "E",
+      "columns": ["name", "age", "nation", "eyesColor", "height"],
+      "value": [
+        {"tupleValue":["Lili", 25, "UK", "black", 165]},
+        {"tupleValue":["Andrew", 29, "USA", "yellow", 165]},
+        {"tupleValue":["Liu", 25, "CHINA", "blue", 176]},
+        {"tupleValue":["Andreas", 22, "GERMANY", "gray", 188]},
+        {"tupleValue":["Jack", 19, "USA", "braun", 198]},
+        {"tupleValue":["Zhang", 30, "CHINA", "black", 183]},
+        {"tupleValue":["Yang", 24, "CHINA", "green", 189]},
+        {"tupleValue":["Jordan", 30, "USA", "braun", 194]},
+        {"tupleValue":["Mike", 30, "USA", "yellow", 178]},
+        {"tupleValue":["Angel", 35, "USA", "red", 186]},
+        {"tupleValue":["Jiang", 50, "CHINA", "green", 167]},
+        {"tupleValue":["Jeffry", 32, "GERMANY", "blue", 165]}
+
+      ]
+    },
+    {
+        "name": "sA",
+        "columns": ["name", "age", "nation"],
+        "value": [
+          {"tupleValue":["Andrew", 23, "USA"]},
+          {"tupleValue":["Wang", 25, "CHINA"]},
+          {"tupleValue":["Qian", 21, "CHINA"]},
+          {"tupleValue":["Edmund", 30, "GERMANY"]}
+        ]
+
+    },
+    {
+      "name": "sB",
+      "columns": ["name", "age", "nation", "eyesColor", "height", "weight"],
+      "value": [
+        {"tupleValue":["Chili", 25, "AUSTRALIA", "blond", 176, 80]},
+        {"tupleValue":["Max", 24, "GERMANY", "grey", 166, 50]},
+        {"tupleValue":["Qian", 21, "CHINA", "brown", 177, 75]},
+        {"tupleValue":["Andrew", 23, "USA", "green", 188, 80]},
+        {"tupleValue":["Wang", 25, "CHINA", "black", 167, 65]},
+        {"tupleValue":["Edmund", 30, "GERMANY", "blue", 190, 90]}
+      ]
+    },
+    {
+      "name": "sC",
+      "columns": ["name", "age", "nation", "eyesColor", "height", "weight"],
+      "value": [
+        {"tupleValue":["Lili", 25, "UK", "black", 176, 100]},
+        {"tupleValue":["Andrew", 29, "USA", "yellow", 165, 80]},
+        {"tupleValue":["Wang", 25, "CHINA", "black", 167, 60]},
+        {"tupleValue":["Qian", 21, "CHINA", "brown", 177, 75]},
+        {"tupleValue":["Liu", 22, "CHINA", "blue", 171, 65]},
+      ]
+    },
+  ]
+}
