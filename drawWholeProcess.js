@@ -21,7 +21,8 @@ function DrawProcess(res_SQL) {
   // the axis x of table.
   this.tabX = drawUtil.animField.x;
   // the axis y of table.
-  this.tabY = drawUtil.animField.y + (drawUtil.info_lines - 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin);
+  this.tabY = drawUtil.animField.y + (drawUtil.info_lines - 1) *
+    (drawUtil.tupleHeight + drawUtil.tupleMargin);
   let _this = this;
   // Draw animation about algebra.
   _this.drawAlgebra = new DrawAlgebra();
@@ -38,36 +39,40 @@ function DrawProcess(res_SQL) {
      * After animation, set _this.done.from = true.
      */
     if (_this.res.from.length > 0 && (!_this.done.from)) {
-      drawUtil.ctx.fillText(text = "Now is doing 'from' clause: from " + _this.res.query.from.toString(), 100, 450);
+      drawUtil.ctx.fillText(text = "Now is doing 'from' clause: from " +
+        _this.res.query.from.toString(), 100, 450);
       _this.from(_this.res.from);
     }
     /**
      * Below is animation of "where".
-     * If (result of where is not null, where has not been drawn, from has been done).
+     * If (result of where is not null, where has not been drawn,
+     * from has been done).
      * After animation, set _this.done.where = true.
      */
     if (_this.res.where && (!_this.done.where) && (_this.done.from)) {
       if (_this.res.query.where.length === 0) {
-        drawUtil.table(_this.res.where.result, drawUtil.result.x, drawUtil.result.y, drawUtil.getWidth(_this.res.where.result), drawUtil.colorSet[0], "black");
+        drawUtil.table(_this.res.where.result, drawUtil.result.x,
+          drawUtil.result.y, drawUtil.getWidth(_this.res.where.result),
+          drawUtil.colorSet[0], "black");
         _this.done.where = true;
       } else {
         _this.where(_this.res.query, _this.res.where, "whole");
       }
     }
-    // if (res.grouping && (!_this.done.grouping) && (_this.done.where)) {
-    //   _this.grouping();
-    // };
-    // if (res.ordering && (!_this.done.ordering) && (_this.done.grouping)) {
-    //   _this.ordering();
-    // };
+    if (_this.res.grouping && (!_this.done.grouping) && (_this.done.where)) {
+      _this.grouping(_this.res.query, _this.res.grouping);
+    };
     /**
      * Below is animation of "select".
      * If (result of select is not null, select has not been drawn, where has been done).
      * After animation, set _this.done.select = true.
      */
-    if (_this.res.select && (!_this.done.select) && (_this.done.where)) {
+    if (_this.res.select && (!_this.done.select) && (_this.done.grouping)) {
       _this.selection(_this.res.select);
     }
+    // if (res.ordering && (!_this.done.ordering) && (_this.done.select)) {
+    //   _this.ordering();
+    // };
   };
   /***************************************************************
    **************** sub steps functions of where *****************
@@ -88,7 +93,8 @@ function DrawProcess(res_SQL) {
    * Does the "and"(intersection) or "or"(union) step in "where".
    */
   _this.where.intersection_union = function() {
-    _this.where(_this.res.query, _this.res.where, "intersection_union", _this.selection);
+    _this.where(_this.res.query, _this.res.where, "intersection_union",
+      _this.selection);
   };
 }
 DrawProcess.prototype = {
@@ -134,8 +140,11 @@ DrawProcess.prototype = {
  * @param res_select result of select in SQL query.
  */
 DrawProcess.prototype.selection = function(res_select) {
+  window.setBtnStyle(document.getElementById("select"));
   let _this = this;
-  drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
+  drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
+    drawUtil.fullWidth, drawUtil.fullHeight);
+  _this.drawInfo.clearLeftInfo();
   let tupleset = _this.res.where.result;
   let resSelect = res_select;
   let querySelect = _this.res.query.select;
@@ -154,7 +163,8 @@ DrawProcess.prototype.selection = function(res_select) {
   let relNames = tupleset.name.slice();
   let relNamesPos = {
     x: drawUtil.animField.x,
-    y: drawUtil.animField.y + (drawUtil.info_lines - 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin) - 15
+    y: drawUtil.animField.y + (drawUtil.info_lines - 1) *
+      (drawUtil.tupleHeight + drawUtil.tupleMargin) - 15
   };
   // seprate tupleset to columns
   tupleset = drawUtil.sep_ts_col(tupleset);
@@ -164,8 +174,10 @@ DrawProcess.prototype.selection = function(res_select) {
   let colorNum = 0;
   let color = drawUtil.colorSet[0];
   for (let i = 0; i < tupleset.length; i++) {
-    let x = drawUtil.animField.x + i * (drawUtil.columnWidth + drawUtil.tupleMargin);
-    let y = drawUtil.animField.y + (drawUtil.info_lines - 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin);
+    let x = drawUtil.animField.x +
+      i * (drawUtil.columnWidth + drawUtil.tupleMargin);
+    let y = drawUtil.animField.y + (drawUtil.info_lines - 1) *
+      (drawUtil.tupleHeight + drawUtil.tupleMargin);
     if (tupleset[i].name[0] != tabName) {
       colorNum++;
       tabName = tupleset[i].name[0];
@@ -173,7 +185,8 @@ DrawProcess.prototype.selection = function(res_select) {
       drawUtil.write_text("Relation " + relNames[colorNum], x, y - 15);
     }
     tupleset[i].color = color;
-    drawUtil.table(tupleset[i], x, y, drawUtil.columnWidth, color, "black", true, false);
+    drawUtil.table(tupleset[i], x, y, drawUtil.columnWidth, color, "black",
+      true, false);
   }
   //move selected columns to result area.
   resSelect = drawUtil.sep_ts_col(resSelect);
@@ -184,7 +197,8 @@ DrawProcess.prototype.selection = function(res_select) {
     resNum++;
     if (column) {
       for (let i in tupleset) {
-        if (column.name[0] == tupleset[i].name[0] && column.columns[0].columns[0] == tupleset[i].columns[0].columns[0]) {
+        if (column.name[0] == tupleset[i].name[0] &&
+          column.columns[0].columns[0] == tupleset[i].columns[0].columns[0]) {
           column = tupleset[i];
         };
       };
@@ -193,7 +207,8 @@ DrawProcess.prototype.selection = function(res_select) {
         y: column.value[0].position.y,
         tupleWidth: drawUtil.columnWidth
       }, {
-        x: drawUtil.result.x + resNum * (drawUtil.columnWidth + drawUtil.tupleMargin),
+        x: drawUtil.result.x + resNum * (drawUtil.columnWidth +
+          drawUtil.tupleMargin),
         y: drawUtil.result.y
       }, loop, false, true, false);
     } else {
@@ -211,22 +226,27 @@ DrawProcess.prototype.selection = function(res_select) {
  * @param tables result of from in SQL query.
  */
 DrawProcess.prototype.from = function(tables) {
+  window.setBtnStyle(document.getElementById("from"));
   let _this = this;
   let des = [];
   let src = [];
   let width = [];
   let height = [];
   console.log("here is from!");
-  drawUtil.ctx.clearRect(100, 0, drawUtil.fullWidth, drawUtil.fullHeight);
+  drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
+    drawUtil.fullWidth, drawUtil.fullHeight);
+  _this.drawInfo.clearLeftInfo();
   let queryFrom = _this.res.query.from;
   let queryText = "from " + queryFrom.toString();
   _this.drawInfo.write(queryText);
   // Draw Database symbol.
   drawUtil.drawDB(DBx = 540, DBy = 800, DBwidth = 80, DBheight = 80);
-  _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
+  _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.fullWidth,
+    drawUtil.fullHeight);
   /**
    * Save image of initionlization and Database symbol.
-   *Then set the source position, destination position, widths and heights of tables.
+   *Then set the source position, destination position,
+   * widths and heights of tables.
    */
   let vorwidth = 0;
   for (let i in tables) {
@@ -240,9 +260,12 @@ DrawProcess.prototype.from = function(tables) {
     });
     width.push(drawUtil.getWidth(tables[i]));
     if (tables[i].value.length > drawUtil.maxTableLength) {
-      height.push((drawUtil.maxTableLength + 2) * (drawUtil.tupleHeight + drawUtil.tupleMargin) + drawUtil.info_lines * (drawUtil.tupleHeight + drawUtil.tupleMargin));
+      height.push((drawUtil.maxTableLength + 2) * (drawUtil.tupleHeight +
+        drawUtil.tupleMargin) + drawUtil.info_lines * (drawUtil.tupleHeight +
+        drawUtil.tupleMargin));
     } else {
-      height.push(tables[i].value.length * (drawUtil.tupleHeight + drawUtil.tupleMargin));
+      height.push(tables[i].value.length * (drawUtil.tupleHeight +
+        drawUtil.tupleMargin));
     }
     vorwidth += width[i];
   }
@@ -253,7 +276,9 @@ DrawProcess.prototype.from = function(tables) {
 
   function loop() {
     if (i < tables.length) {
-      _this.drawAlgebra.moveTable(tables[i], drawUtil.colorSet[i % drawUtil.colorSet.length], src[i], des[i], loop, true, true);
+      _this.drawAlgebra.moveTable(tables[i],
+        drawUtil.colorSet[i % drawUtil.colorSet.length],
+        src[i], des[i], loop, true, true);
       i++;
     } else {
       _this.done.from = true;
@@ -270,12 +295,16 @@ DrawProcess.prototype.from = function(tables) {
  * Does the animation of where.
  * @param {query} query the SQL query.
  * @param {output_of_where} res_where result of where in SQL query.
- * @param {String} step Show the whole sub-steps of where, or exactly one sub-step in where.
+ * @param {String} step Show the whole sub-steps of where,
+ * or exactly one sub-step in where.
  */
 DrawProcess.prototype.where = function(query, res_where, step = "whole") {
+  window.setBtnStyle(document.getElementById("where"));
   let _this = this;
   let compareSets = res_where.compareSets;
-  drawUtil.ctx.clearRect(100, 0, drawUtil.fullWidth, drawUtil.fullHeight);
+  drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
+    drawUtil.fullWidth, drawUtil.fullHeight);
+  _this.drawInfo.clearLeftInfo();
   let querySelect = _this.res.query.select;
   _this.i = 0;
   _this.j = 0;
@@ -308,14 +337,14 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       _this.i = 0;
       _this.j = 0;
       initTable();
-      _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.animField.width, drawUtil.animField.height);
+      _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.animField.width,
+        drawUtil.animField.height);
       callAnimCompare();
       return;
     },
     compare: function() {
       _this.i = 0;
       _this.j = 0;
-
       callAnimCompare();
       return;
     },
@@ -335,6 +364,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   steps[step]();
 
   function callAnimCompare() {
+    window.setBtnStyle(document.getElementById("compare"));
     if (_this.i >= res_where.compareSets.length) {
       if (step == "whole") {
         _this.i = 0;
@@ -342,18 +372,23 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         callAnimCrossJoin();
         return true;
       } else {
-        drawUtil.write_text("Compared.", drawUtil.animField.fullWidth / 2 - 100, drawUtil.animField.fullHeight / 2, "black", 20);
+        drawUtil.write_text("Compared.", drawUtil.animField.fullWidth / 2 - 100,
+          drawUtil.animField.fullHeight / 2, "black", 20);
         return true;
       }
     }
     initTable();
-    _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.animField.width, drawUtil.animField.height);
-    drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y, drawUtil.animField.width, drawUtil.animField.height)
-    _this.drawAlgebra.animInnerJoin(res_where.compareSets[_this.i], table1, table2, () => {
-      _this.i++;
-      callAnimCompare();
-      return true;
-    }, 0, 0, color1, color2, chosenColor1, chosenColor2, drawUtil.maxDraw, condition.attr1, condition.attr2, condition.op);
+    _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.animField.width,
+      drawUtil.animField.height);
+    drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
+      drawUtil.animField.width, drawUtil.animField.height)
+    _this.drawAlgebra.animInnerJoin(res_where.compareSets[_this.i],
+      table1, table2, () => {
+        _this.i++;
+        callAnimCompare();
+        return true;
+      }, 0, 0, color1, color2, chosenColor1, chosenColor2, drawUtil.maxDraw,
+      condition.attr1, condition.attr2, condition.op);
     return true;
   };
 
@@ -395,6 +430,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   };
   //cross join with other relations' tuples. just show the join result in where.core.
   function callAnimCrossJoin() {
+    window.setBtnStyle(document.getElementById("crossJoin"));
     if (_this.i >= res_where.compareSets.length) {
       if (step == "whole") {
         _this.i = 0;
@@ -402,16 +438,20 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         anim_intersection_union();
         return true;
       } else {
-        drawUtil.write_text("It doesn't need cross join any more.", drawUtil.animField.fullWidth / 2 - 100, drawUtil.animField.fullHeight / 2, "black", 20);
+        drawUtil.write_text("It doesn't need cross join any more.",
+          drawUtil.animField.fullWidth / 2 - 100,
+          drawUtil.animField.fullHeight / 2, "black", 20);
         return true;
       }
     }
-    if (res_where.core[_this.i].name.length == res_where.compareSets[_this.i].name.length) {
+    if (res_where.core[_this.i].name.length ==
+      res_where.compareSets[_this.i].name.length) {
       _this.i++;
       callAnimCrossJoin();
       return true;
     }
-    drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
+    drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
+      drawUtil.fullWidth, drawUtil.fullHeight);
     _this.drawInfo.write("cross join");
     let compareSets = res_where.compareSets;
     let leftTable = compareSets[_this.i];
@@ -422,9 +462,10 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         for (let k = 0; k < _this.j; k++)
           leftTable = join.crossJoin(leftTable, rightTables[k]);
       };
-      _this.drawAlgebra.animCrossJoin(res_where.core[_this.i], leftTable, rightTable, () => {
-        callback(_this);
-      });
+      _this.drawAlgebra.animCrossJoin(res_where.core[_this.i], leftTable,
+        rightTable, () => {
+          callback(_this);
+        });
     }
 
     function callback(_this) {
@@ -445,13 +486,16 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   };
 
   function anim_intersection_union() {
-    drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
+    window.setBtnStyle(document.getElementById("intersection_union"));
+    drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
+      drawUtil.fullWidth, drawUtil.fullHeight);
     loop();
 
     function loop() {
       _this.i++;
-      if (res_where.intermediateResult.length < 2 || _this.i >= res_where.intermediateResult.length) {
-        _this.drawInfo.writeLeft("");
+      if (res_where.intermediateResult.length < 2 ||
+        _this.i >= res_where.intermediateResult.length) {
+        _this.drawInfo.clearLeftInfo();
         _this.done.where = true;
         _this.begin();
         return true;
@@ -461,17 +505,20 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       let oldSet = res_where.intermediateResult[_this.i - 1];
       let newSet = res_where.core[_this.i];
       if (_this.i > 1) {
-        drawUtil.ctx.clearRect(drawUtil.result.x, drawUtil.result.y, drawUtil.result.width, drawUtil.result.height);
+        drawUtil.ctx.clearRect(drawUtil.result.x, drawUtil.result.y,
+          drawUtil.result.width, drawUtil.result.height);
         let srcRes = {
           x: drawUtil.result.x,
           y: drawUtil.result.y
         };
         let desRes = {
           x: drawUtil.animField.x,
-          y: drawUtil.animField.y + (drawUtil.info_lines - 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin)
+          y: drawUtil.animField.y + (drawUtil.info_lines - 1) *
+            (drawUtil.tupleHeight + drawUtil.tupleMargin)
         };
         if (compareSets[_this.i - 1].step.condition.union == "and") {
-          _this.drawAlgebra.moveTable(oldSet, drawUtil.colorSet[0], srcRes, desRes, drawAnim, true, true);
+          _this.drawAlgebra.moveTable(oldSet, drawUtil.colorSet[0],
+            srcRes, desRes, drawAnim, true, true);
         } else {
           drawAnim();
         }
@@ -483,23 +530,99 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         if (condition.union == "and") {
           console.log("this is and");
           _this.drawInfo.writeLeft("intersection");
-          _this.drawAlgebra.animIntersection(res_where.intermediateResult[_this.i], oldSet, newSet, loop);
+          _this.drawAlgebra.animIntersection(
+            res_where.intermediateResult[_this.i], oldSet, newSet, loop);
         }
         if (condition.union == "or") {
           console.log("this is or");
           _this.drawInfo.writeLeft("union");
-          _this.drawAlgebra.animUnion(res_where.intermediateResult[_this.i], oldSet, newSet, loop);
+          _this.drawAlgebra.animUnion(res_where.intermediateResult[_this.i],
+            oldSet, newSet, loop);
         }
       };
     };
   };
 };
+
+
+/***************************************************************
+ ********************** grouping begin *************************
+ ***************************************************************/
 /**
-* @typedef {object} attr_pos
-* @property {Number} width
-* @property {Number} x
-* @property {Number} y
-*/
+ * Does the animation of grouping.
+ * @param {query} query the SQL query.
+ * @param {output_of_grouping} res_grouping result of where in SQL query.
+ */
+DrawProcess.prototype.grouping = function(query, res_grouping) {
+  window.setBtnStyle(document.getElementById("grouping"));
+  let allTuples = JSON.parse(JSON.stringify(res_grouping.allTuples));
+  let resGrouping = JSON.parse(JSON.stringify(res_grouping.result));
+  let table = {};
+  table.x = drawUtil.animField.x;
+  table.y = drawUtil.animField.y +
+    (drawUtil.info_lines - 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin);
+  table.width = drawUtil.getWidth(resGrouping);
+  table.color = drawUtil.colorSet[0];
+  table.chosenColor = drawUtil.isChosenColorSet[0];
+  drawUtil.table(allTuples, table.x, table.y, table.width, table.color, "black");
+  let groupKey = {};
+  groupKey.value = [];
+  groupKey.width = drawUtil.columnWidth * resGrouping.value[0].group.length;
+  groupKey.x = drawUtil.animField.width - groupKey.width;
+  groupKey.y = drawUtil.animField.y + (drawUtil.tupleHeight + drawUtil.tupleMargin);
+  groupKey.color = drawUtil.colorSet[3];
+  groupKey.chosenColor = drawUtil.isChosenColorSet[3];
+  drawUtil.write_text("Group Keys", groupKey.x, groupKey.y);
+  let nth_tuple = 0;
+  while (allTuples.value.length > 0) {
+    drawUtil.table(allTuples, table.x, table.y,
+      drawUtil.getWidth(resGrouping), drawUtil.colorSet[0], "black");
+    for (let i = 0; i < groupKey.value.length; i++) {
+      drawUtil.tuple(groupKey.x, groupKey.y + (i + 1) * (drawUtil.tupleMargin +
+          drawUtil.tupleHeight), groupKey.width, groupKey.color,
+        "black", groupKey.value[i]);
+    }
+    let tuple = allTuples.value.pop();
+    nth_tuple++;
+    let text = [];
+    for (let i = 0; i < tuple.tupleValue.length; i++) {
+      text = text.concat(tuple.tupleValue[i]);
+    }
+    drawUtil.tuple(tuple.position.x, tuple.position.y, table.width,
+      table.chosenColor, "white", text);
+    let counter = 0;
+    for (let i = 0; i < groupKey.value.length; i++) {
+      counter++;
+      if (i > 0) {
+        drawUtil.tuple(groupKey.x, groupKey.y +
+          i * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+          groupKey.width, groupKey.color, "black", groupKey.value[i - 1]);
+      }
+      drawUtil.tuple(groupKey.x, groupKey.y +
+        (i + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+        groupKey.width, groupKey.chosenColor, "white", groupKey.value[i]);
+      if (groupKey.value[i].toString() === tuple.group.toString()) {
+        this.move_to_box();
+        break;
+      }
+    }
+    if (counter === groupKey.value.length) {
+      groupKey.value.push(tuple.group);
+    }
+  }
+  this.done.grouping = true;
+  return true;
+};
+DrawProcess.prototype.move_to_box = function() {
+
+};
+
+/**
+ * @typedef {object} attr_pos
+ * @property {Number} width
+ * @property {Number} x
+ * @property {Number} y
+ */
 /**
  * Get the position of attribute in column.
  * @param {columns} columns
@@ -514,7 +637,7 @@ get_Attr_Pos_in_column = function(columns, x, y, attr, width) {
   let counter = 0;
   let find = false;
   let tmpcolumns = [];
-  for(let i in columns){
+  for (let i in columns) {
     tmpcolumns = tmpcolumns.concat(columns[i].columns);
   }
   for (let i in tmpcolumns) {

@@ -59,12 +59,13 @@ DrawUtil.prototype = {
 };
 /**
  * Draw tuple.
- * @param {Number} x
- * @param {Number} y
- * @param {Number} width
- * @param {String} color
- * @param {String} colorText
- * @param {String} text
+ * @param {Number} x Position x.
+ * @param {Number} y Position y.
+ * @param {Number} width The width of row.
+ * @param {String} color The background color of row.
+ * @param {String} colorText The color of text.
+ * @param {array} text Text that will be written in row. Text could be
+ * column name, value.
  */
 DrawUtil.prototype.tuple = function(x, y, width, color, colorText, text) {
   let _this = this;
@@ -124,7 +125,8 @@ DrawUtil.prototype.table = function(table, x, y, width, color, colorText,
   ctx.fillStyle = "black";
   //Draw infos of relation.
   if (contain_name_info) {
-    ctx.clearRect(x, y - _this.tupleHeight, width, _this.tupleHeight);
+    ctx.clearRect(x, y - (_this.info_lines - 1) * _this.tupleHeight, width,
+      (_this.info_lines - 1) * _this.tupleHeight);
     let relsName = [];
     //Get name of relation.
     for (let i = 0; i < table.name.length; i++) {
@@ -448,8 +450,8 @@ DrawUtil.prototype.filterSymbol = function(x, y, width, height) {
   return true;
 };
 /**
-* The symbol of operations.
-*/
+ * The symbol of operations.
+ */
 DrawUtil.prototype._opImg = {
   "equal": "=",
   "less": "<",
@@ -458,22 +460,22 @@ DrawUtil.prototype._opImg = {
   "greaterEqual": ">="
 };
 /**
-* @typedef {object} size
-* @property {Number} tupleWidth The width of tuple.
-* @property {Number} tupleHeight The height of tuple.
-*/
+ * @typedef {object} size
+ * @property {Number} tupleWidth The width of tuple.
+ * @property {Number} tupleHeight The height of tuple.
+ */
 /**
-* @typedef {object} coordinate
-* @property {Number} x
-* @property {Number} y
-*/
+ * @typedef {object} coordinate
+ * @property {Number} x
+ * @property {Number} y
+ */
 /**
-* @typedef {object} nextPosition
-* @property {Number} x
-* @property {Number} y
-* @property {Number} tupleWidth
-* @property {Number} tupleHeight
-*/
+ * @typedef {object} nextPosition
+ * @property {Number} x
+ * @property {Number} y
+ * @property {Number} tupleWidth
+ * @property {Number} tupleHeight
+ */
 /**
  * Get the next position of a tuple or table.
  * @param {tuple_basic|tupleset_basic} input The tuple or tupleset that need to move.
@@ -601,6 +603,21 @@ DrawUtil.prototype.sep_ts_col = function(tupleset) {
  * @param {Number} font_size The size of the text.
  */
 DrawUtil.prototype.write_text = function(text, x, y, color = "black", font_size = 15) {
+  this.ctx.save();
+  this.ctx.fillStyle = "black";
+  this.ctx.font = font_size + "px Arial";
+  this.ctx.fillText(text, x, y);
+  this.ctx.restore();
+};
+/**
+ * Draw zoom.
+ * @param {String} text The text that need to be written.
+ * @param {Number} x The axis x where the text will be written.
+ * @param {Number} y The axis y where the text will be written.
+ * @param {String} color The color of the text.
+ * @param {Number} font_size The size of the text.
+ */
+DrawUtil.prototype.zoom = function(text, x, y, color = "black", font_size = 15) {
   this.ctx.save();
   this.ctx.fillStyle = "black";
   this.ctx.font = font_size + "px Arial";

@@ -6,6 +6,13 @@
  ******************************************************************************/
 /** Initialize drawUtil, set it be a global variable.*/
 window.drawUtil = new DrawUtil();
+/** Set a set to save current button */
+window.curBtn = {};
+window.setBtnStyle = function(btn){
+  window.curBtn.style = "";
+  window.curBtn = btn;
+  window.curBtn.style = "background: #008CBA;color: white;";
+}
 /** Draw the color bars.*/
 drawUtil.colors();
 /** Initialize the control flags and informations.*/
@@ -73,10 +80,9 @@ draw.setSpeed = function() {
 /** Draw the animation of SQL query.*/
 draw.sqlProcess = function() {
   let _this = this;
-  let dBtn = document.getElementsByName('drawProcess');
   let queryBtn = document.getElementById('selectionQuery');
   let sqlQuery = queryBtn.value;
-  sqlQuery = sqlQuery.replace(/\s+/g,"");
+  sqlQuery = sqlQuery.replace(/\s+/g, "");
   let queryLen = queries.SQL_query.length;
   if ((sqlQuery - 0) < 0 || (sqlQuery - 0) > (queryLen - 1) || sqlQuery.length === 0) {
     _this.drawInfo().write("Please type a Number in Range [0," +
@@ -95,7 +101,6 @@ draw.sqlProcess = function() {
     let bgcolor_factor = 0;
     let bgcolorID = setInterval(() => {
       if (bgcolor_counter === 0) {
-        console.log(bgcolor);
         tipBox.style.backgroundColor = bgcolor;
         clearInterval(bgcolorID);
         return true;
@@ -118,9 +123,15 @@ draw.sqlProcess = function() {
     res_SQL.resFrom[i].chosencolor = drawUtil.isChosenColorSet[i % drawUtil.isChosenColorSet.length];
   }
   console.log(res_SQL);
+  draw.sqlProcess.bindBtn(_this, res_SQL);
+};
+/** Bind functions to buttons of sql query. */
+draw.sqlProcess.bindBtn = function(_this, res_SQL) {
   let dp = new DrawProcess(res_SQL);
+  let dBtn = document.getElementsByName('drawProcess');
   for (let i = 0; i < dBtn.length; i++) {
     dBtn[i].onclick = function() {
+      window.setBtnStyle(this);
       drawUtil.ctx.clearRect(100, 0, _this.canvasWidth, _this.canvasHeight);
       if (this.getAttribute('id') == "wholeProcess") {
         //If the button means all steps, set all steps be false.
@@ -161,8 +172,6 @@ draw.sqlProcess = function() {
       }
     };
   }
-
-
 };
 /** Draw animation of algebra.*/
 draw.algebra = function(query_algebra) {
@@ -318,6 +327,7 @@ draw.algebra.bindBtn = function(ts1, ts2, color1, color2, chosenColor1, chosenCo
   let aBtn = document.getElementsByName('algebra');
   for (let i = 0; i < aBtn.length; i++) {
     aBtn[i].onclick = function() {
+      window.setBtnStyle(this);
       let da = new DrawAlgebra();
       drawUtil.ctx.clearRect(100, 0, draw.canvasWidth, draw.canvasHeight);
       resetCtb();

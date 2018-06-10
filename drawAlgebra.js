@@ -102,7 +102,7 @@ DrawAlgebra.prototype.animCrossJoin = function(res, input1, input2,
     _this.counter = _this.waitTime;
     if (_this.draw_choose_tuple(_this, color1, color2,
         chosenColor1, chosenColor2, false, false)) {
-      if (_this.compare_tuples(_this, color1, color2, chosenColor1, chosenColor2)) {
+      if (_this.compare_tuples(_this)) {
         let tuple1 = JSON.parse(JSON.stringify(_this.tuplesInput1.value[_this.nth_tuple1]));
         let tuple2 = JSON.parse(JSON.stringify(_this.tuplesInput2.value[_this.nth_tuple2]));
         if (_this.isContains(_this.res.value, tuple1, tuple2) == -1) {
@@ -280,7 +280,7 @@ DrawAlgebra.prototype.animInnerJoin = function(res, input1, input2,
           x: _this.des1.x + drawUtil.getWidth(tuple1),
           y: _this.des1.y
         };
-        if (_this.compare_tuples(_this, color1, color2, chosenColor1, chosenColor2)) {
+        if (_this.compare_tuples(_this)) {
           if (_this.isContains(_this.res.value, tuple1, tuple2) == -1) {
             nextAnimation();
             return true;
@@ -388,14 +388,9 @@ DrawAlgebra.prototype.draw_choose_tuple = function(_this, color1, color2, chosen
  * Compare tuples between two relations.
  * If join of tuples is included in result of Algebra, return true. Else, return false.
  * @param {object} _this The object that call this function.
- * @param {String} color1 Color of table1.
- * @param {String} color2 Color of table2.
- * @param {String} chosenColor1 Color of chosen tuples in table1.
- * @param {String} chosenColor2 Color of chosen tuples in table2.
  * @returns {Boolean}
  */
-DrawAlgebra.prototype.compare_tuples = function(_this, color1, color2,
-  chosenColor1, chosenColor2) {
+DrawAlgebra.prototype.compare_tuples = function(_this) {
   let tuple1 = _this.tuplesInput1.value[_this.nth_tuple1];
   let tuple2 = _this.tuplesInput2.value[_this.nth_tuple2];
   let i = _this.isContains(_this.res.value, tuple1, tuple2);
@@ -453,8 +448,8 @@ DrawAlgebra.prototype.draw_choose_rect = function(tuple, tuplex, tupley, attr,
  * If they are in res_value, return the number of joined tuple in res_value.
  * Else, return -1.
  * @param {value_basic} res_value The value of the two relations after join.
- * @param {tuple_basic} tuple1_value the tupleValue of relation1.
- * @param {tuple_basic} tuple1_value the tupleValue of relation2.
+ * @param {tuple_basic} tuple1_value a tupleValue of relation1.
+ * @param {tuple_basic} tuple1_value a tupleValue of relation2.
  * @return {Number}
  */
 DrawAlgebra.prototype.isContains = function(res_value, tuple1_value, tuple2_value) {
@@ -485,12 +480,14 @@ DrawAlgebra.prototype.columns_ordering = function(res_value, tuple1_value, tuple
       if (tuple1_value.source.rels[j] == res_value.source.rels[i]) {
         output.strID.push(tuple1_value.source.ids[j]);
         output.strRel.push(tuple1_value.source.rels[j]);
+        break;
       }
     }
     for (let j in tuple2_value.source.rels) {
       if (tuple2_value.source.rels[j] == res_value.source.rels[i]) {
         output.strID.push(tuple2_value.source.ids[j]);
         output.strRel.push(tuple2_value.source.rels[j]);
+        break;
       }
     }
   }

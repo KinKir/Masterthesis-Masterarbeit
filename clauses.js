@@ -335,17 +335,17 @@ grouping = function(tuplesInput, groupby) {
     attrPos.push(position.columnPos);
   }
 
-  var hasTuple = function(tuplesOutput, tuple, relPos, attrPos) {
-    var len = tuplesOutput.result.value.length;
+  var hasTuple = function(tuples, tuple, relPos, attrPos) {
+    var len = tuples.value.length;
     var counter = 0;
     while (len > 0) {
       for (var i = 0; i < relPos.length; i++) {
-        if (tuplesOutput.result.value[len - 1].group[i] == tuple.tupleValue[relPos[i]][attrPos[i]]) {
+        if (tuples.value[len - 1].group[i] == tuple.tupleValue[relPos[i]][attrPos[i]]) {
           counter++;
         }
       }
       if (counter == relPos.length) {
-        return true;
+        return tuples.value[len - 1].group;
       }
       counter = 0;
       len--;
@@ -356,7 +356,9 @@ grouping = function(tuplesInput, groupby) {
   var groupKey = [];
   while (i > 0) {
     var tuple = tuplesInputs.value.pop();
-    if (!hasTuple(tuplesOutput, tuple, relPos, attrPos)) {
+    let groupKey = hasTuple(tuplesOutput.result, tuple, relPos, attrPos);
+    if (!groupKey) {
+      groupKey = [];
       for (var j = 0; j < relPos.length; j++) {
         groupKey = groupKey.concat(tuple.tupleValue[relPos[j]][attrPos[j]]);
       }

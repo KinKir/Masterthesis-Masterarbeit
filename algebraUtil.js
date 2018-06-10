@@ -81,6 +81,32 @@ algebraUtil.initRelation = function() {
   return tuplesOutput;
 };
 /**
+ * Generate a new relation with empty value.
+ * @constructor Table
+ * @returns {tupleset_basic}
+ **/
+Table = function() {
+  var tuplesOutput = {};
+  tuplesOutput.name = [];
+  tuplesOutput.columns = [];
+  tuplesOutput.value = [];
+
+  return tuplesOutput;
+};
+/**
+ * Generate a new tuple with empty value.
+ * @constructor Value
+ * @returns {tuple_basic}
+ **/
+algebraUtil.TupleValue = function() {
+  var value = {};
+  value.tupleValue = [];
+  value.source = {};
+  value.source.rels = [];
+  value.source.ids = [];
+  return value;
+};
+/**
  * Generate a new tuple with empty value.
  * @returns {value_basic}
  **/
