@@ -684,8 +684,7 @@ anim = function(animation, nextAnimation = () => {}, reset = () => {
   drawUtil.colors();
   return true;
 }) {
-  let out = false;
-
+  resetIntervalIDs();
   function loop() {
     if (animation()) {
       out = true;
@@ -701,7 +700,6 @@ anim = function(animation, nextAnimation = () => {}, reset = () => {
     }
     if (window.control.finish) {
       clearInterval(window.control.intervalIDs.pop());
-      out = true;
       reset();
       return true;
     }
@@ -709,18 +707,14 @@ anim = function(animation, nextAnimation = () => {}, reset = () => {
     function wait() {
       if (!window.control.pause) {
         clearInterval(window.control.intervalIDs.pop());
-        out = true;
         anim(animation, nextAnimation);
       }
       if (window.control.finish) {
         clearInterval(window.control.intervalIDs.pop());
-        out = true;
         reset();
         return true;
       }
     };
   };
-  if (!out) {
-    window.control.intervalIDs.push(setInterval(loop, 1000 / window.control.speed));
-  }
+  window.control.intervalIDs.push(setInterval(loop, 1000 / window.control.speed));
 };
