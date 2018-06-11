@@ -201,7 +201,8 @@ SQL_process = function(sqlQuery) {
   res_SQL.resFrom = SQL_process_fun.resFrom(sqlReader.from);
   res_SQL.resWhere = SQL_process_fun.resWhere(res_SQL.resFrom, sqlReader.where);
   res_SQL.resGrouping = SQL_process_fun.resGrouping(res_SQL.resWhere.result, sqlReader.grouping);
-  res_SQL.resOrdering = SQL_process_fun.resOrdering(res_SQL.resGrouping.result, sqlReader.ordering);
-  res_SQL.resSelection = SQL_process_fun.resSelection(res_SQL.resOrdering, sqlReader.select);
+  res_SQL.resSelection = SQL_process_fun.resSelection(res_SQL.resGrouping.result, sqlReader.select);
+  res_SQL.resOrdering = SQL_process_fun.resOrdering(res_SQL.resSelection, sqlReader.ordering);
+
   return res_SQL;
 };

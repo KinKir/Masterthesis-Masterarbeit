@@ -685,30 +685,43 @@ anim = function(animation, nextAnimation = () => {}, reset = () => {
   return true;
 }) {
   resetIntervalIDs();
+  //Loop of animation.
   function loop() {
+    //Running animation, until animation is done,
+    //and return a Boolean value true.
     if (animation()) {
-      out = true;
+      //Clear this animation interval,
+      //Executes next animation or next function.
       clearInterval(window.control.intervalIDs.pop());
       setTimeout(() => {
         return nextAnimation()
       }, 200);
       return true;
     }
+    //If pause button is clicked,
+    //clear this interval, wait for next statement.
     if (window.control.pause) {
       clearInterval(window.control.intervalIDs.pop());
-      window.control.intervalIDs.push(setInterval(wait, 1000 / window.control.speed));
+      window.control.intervalIDs.push(
+        setInterval(wait, 1000 / window.control.speed));
     }
+    //If terminate button is clicked,
+    //clear interval, return true.
     if (window.control.finish) {
       clearInterval(window.control.intervalIDs.pop());
       reset();
       return true;
     }
-
+    //Function of waiting.
     function wait() {
+      //While waiting, if continue button is clicked,
+      //calling anim again to continue this animation.
       if (!window.control.pause) {
         clearInterval(window.control.intervalIDs.pop());
         anim(animation, nextAnimation);
       }
+      //While waiting, if terminate button is clicked,
+      //clear intervals, return true.
       if (window.control.finish) {
         clearInterval(window.control.intervalIDs.pop());
         reset();
@@ -716,5 +729,7 @@ anim = function(animation, nextAnimation = () => {}, reset = () => {
       }
     };
   };
-  window.control.intervalIDs.push(setInterval(loop, 1000 / window.control.speed));
+  //Generates a animation loop.
+  window.control.intervalIDs.push(
+    setInterval(loop, 1000 / window.control.speed));
 };
