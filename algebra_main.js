@@ -198,11 +198,29 @@ SQL_process = function(sqlQuery) {
   let res_SQL = {};
   let sqlReader = SQL_process_fun.sqlReader(sqlQuery);
   res_SQL.query = sqlReader;
-  res_SQL.resFrom = SQL_process_fun.resFrom(sqlReader.from);
-  res_SQL.resWhere = SQL_process_fun.resWhere(res_SQL.resFrom, sqlReader.where);
-  res_SQL.resGrouping = SQL_process_fun.resGrouping(res_SQL.resWhere.result, sqlReader.grouping);
-  res_SQL.resSelection = SQL_process_fun.resSelection(res_SQL.resGrouping.result, sqlReader.select);
-  res_SQL.resOrdering = SQL_process_fun.resOrdering(res_SQL.resSelection, sqlReader.ordering);
+  let intermediateResult = null;
+  if(sqlReader.from){
+      res_SQL.resFrom = SQL_process_fun.resFrom(sqlReader.from);
+      intermediateResult = res_SQL.resFrom;
+  }else{
+    return "Not recognized Query.";
+  }
+  if(sqlReader.where){
+      res_SQL.resWhere = SQL_process_fun.resWhere(intermediateResult, sqlReader.where);
+      intermediateResult = res_SQL.resWhere.result;
+  }
+  if(sqlReader.grouping){
+      res_SQL.resGrouping = SQL_process_fun.resGrouping(intermediateResult, sqlReader.grouping);
+      intermediateResult = res_SQL.resGrouping.result;
+  }
+  if(sqlReader.select){
+      res_SQL.resSelect = SQL_process_fun.resSelection(intermediateResult, sqlReader.select);
+      intermediateResult = res_SQL.resSelect;
+  }
+  if(sqlReader.ordering){
+      res_SQL.resOrdering = SQL_process_fun.resOrdering(intermediateResult, sqlReader.ordering);
+      intermediateResult = res_SQL.resOrdering;
+  }
 
   return res_SQL;
 };

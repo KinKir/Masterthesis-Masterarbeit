@@ -79,8 +79,9 @@ draw.setSpeed = function() {
 };
 /** Draw the animation of SQL query.*/
 draw.sqlProcess = function() {
+  resetIntervalIDs();
   let _this = this;
-  let queryBtn = document.getElementById('selectionQuery');
+  let queryBtn = document.getElementById('sqlQuery');
   let sqlQuery = queryBtn.value;
   sqlQuery = sqlQuery.replace(/\s+/g, "");
   let queryLen = queries.SQL_query.length;
@@ -89,7 +90,34 @@ draw.sqlProcess = function() {
       (queryLen - 1) + "]!  ^_^");
     return false;
   }
+  let clauses = ["select","from","where","grouping","ordering"];
+  for(let i = 0;i<clauses.length;i++){
+    let cap_clause = clauses[i].charAt(0).toUpperCase() + clauses[i].substring(1);
+      document.getElementById(clauses[i]).style.display = "none";
+  }
+  document.getElementById("a_subWhere").style.display = "none";
+  let where_sub = ["compareSets","core","intermediateResult"];
+  for(let i = 0;i<where_sub.length;i++){
+      document.getElementById("div" + where_sub[i]).style.display = "none";
+  }
   let res_SQL = SQL_process(sqlQuery);
+
+  document.getElementById("wholeProcess").style.display = "";
+  for(let i = 0;i<clauses.length;i++){
+    let cap_clause = clauses[i].charAt(0).toUpperCase() + clauses[i].substring(1);
+    if(res_SQL["res" + cap_clause]){
+      document.getElementById(clauses[i]).style.display = "";
+    }
+  }
+  if(res_SQL.resWhere.compareSets.length > 0){
+    document.getElementById("a_subWhere").style.display = "";
+  }
+  for(let i = 0;i<where_sub.length;i++){
+    if(res_SQL.resWhere[where_sub[i]].length > 0){
+      document.getElementById("div" + where_sub[i]).style.display = "";
+    }
+  }
+
   if (sqlQuery != "") {
     _this.drawInfo().write("Get the query!");
     let tipBox = document.getElementById("queryBtnTip");
@@ -149,7 +177,7 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
           dp.done.setStatus("where", false);
           dp.where.compare();
         }
-        if (this.getAttribute('id') == "crossJoin") {
+        if (this.getAttribute('id') == "core") {
           resetCtb();
           dp.done.setFinish();
           dp.done.setStatus("where", false);
@@ -175,6 +203,7 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
 };
 /** Draw animation of algebra.*/
 draw.algebra = function(query_algebra) {
+  resetIntervalIDs();
   if (query_algebra != "") {
     this.drawInfo().write("Initialization Data succeed!");
   } else {

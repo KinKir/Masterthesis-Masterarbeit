@@ -3,7 +3,8 @@
  *
  */
 /**
- * The value of table. In selection and ordering and grouping, it has more attribute named "group".
+ * The value of table. In selection and ordering and grouping,
+ * it has more attribute named "group".
  * @typedef {array} value_with_group
  * @property {object} source
  * @property {array} tupleValue
@@ -61,7 +62,8 @@ selection = function(tuplesInput, select) {
             tuplesOutput.value[k].tupleValue[tvLen] = [];
           }
         }
-        tuplesOutput.value[k].tupleValue[position.relPos].push(tuplesInput.value[k].tupleValue[position.relPos][position.columnPos]);
+        tuplesOutput.value[k].tupleValue[position.relPos].push(
+          tuplesInput.value[k].tupleValue[position.relPos][position.columnPos]);
         k++;
       }
       j++;
@@ -140,7 +142,8 @@ where = function(tuplesInput, conditions) {
      * @param tuplesOutput.intermediateResult intermediateResult.
      * @param tuplesOutput.result final result.
      * @param tuplesOutput.core result of every step after cross join with other relations.
-     * @param tuplesOutput.compareSets result of every step, just the result of both sides' relation or attribute.
+     * @param tuplesOutput.compareSets result of every step,
+     * just the result of both sides' relation or attribute.
      */
     tuplesOutput.intermediateResult = [];
     tuplesOutput.result = null;
@@ -162,9 +165,9 @@ where = function(tuplesInput, conditions) {
           if (where.ops[conditions[i].op](conditions[i].attr1, conditions[i].attr2)) {
             /** if the condition is true, do nothing. */
           } else {
-            /** if the condition is false, return a blank tupleset which has only the name of columns and relations. */
+            /** if the condition is false, return a blank tupleset
+            which has only the name of columns and relations. */
             tuplesOutput.result.value = algebraUtil.initValue();
-            tuplesOutput.core.push(tuplesOutput.result);
             return tuplesOutput;
           }
         }
@@ -190,20 +193,37 @@ where = function(tuplesInput, conditions) {
          * where.get_unusedInputs_crossJoin() crossJoin the result with the other relations,
          * where.ordering() orders the relations in the given ordering.
          */
-        tuplesOutput.compareSets.push(algebraUtil.unitCompare(tuplesInput, conditions[i], i + 1));
-        tuplesOutput.core.push(
-          where.ordering(
-            where.get_unusedInputs_crossJoin(
-              tuplesInput, tuplesOutput.compareSets[tuplesOutput.compareSets.length - 1]),
+        tuplesOutput.compareSets.push(
+          algebraUtil.unitCompare(tuplesInput, conditions[i], i + 1));
+        let unusedInputs = algebraUtil.get_unusedInputs(tuplesInput,
+          tuplesOutput.compareSets[tuplesOutput.compareSets.length - 1]);
+        let tmpCore = {};
+        if (!unusedInputs) {
+          tmpCore = where.ordering(
+            JSON.parse(JSON.stringify(
+              tuplesOutput.compareSets[tuplesOutput.compareSets.length - 1])),
+            tuplesOrdering);
+        } else {
+          tuplesOutput.core.push(where.ordering(
+            where.get_unusedInputs_crossJoin(tuplesInput,
+              JSON.parse(JSON.stringify(
+                tuplesOutput.compareSets[tuplesOutput.compareSets.length - 1]))),
             tuplesOrdering));
+            tmpCore = tuplesOutput.core[tuplesOutput.core.length - 1];
+        }
         /** merge the result of this condition with the before result. */
-        tuplesOutput.result = andOr[conditions[i].union](tuplesOutput.result, tuplesOutput.core[tuplesOutput.core.length - 1]);
+        tuplesOutput.result = andOr[conditions[i].union](tuplesOutput.result,
+          tmpCore);
         /** push now result into tuplesOutput.intermediateResult. */
-        tuplesOutput.intermediateResult.push(JSON.parse(JSON.stringify(tuplesOutput.result)));
+        tuplesOutput.intermediateResult.push(
+          JSON.parse(JSON.stringify(tuplesOutput.result)));
       }
       i++;
     }
     /** end of execute of the conditions. */
+  }
+  if(tuplesOutput.intermediateResult.length < 2){
+    tuplesOutput.intermediateResult = [];
   }
   return tuplesOutput;
 };
@@ -431,14 +451,16 @@ ordering.sorting = function(tuplesInput, order) {
   var columnPos = positions.columnPos;
   var output = {};
   output.compare = [];
-  /** If the length of order command is more than 0, call this. It will order from last clause to first clause. */
+  /** If the length of order command is more than 0, call this.
+  It will order from last clause to first clause. */
   if (order.length > 0) {
     var tmpResult = ordering.sorting(tuplesInput, order);
     tuplesInput.value = tmpResult.value;
     output.compare = tmpResult.compare;
   }
   /**
-   * When the length of order command is zero, this is the last one command, begin to call the quicksort.
+   * When the length of order command is zero, this is the last one command,
+   * begin to call the quicksort.
    * And return the quicksort result. Then the last last one call the quicksort.
    * Until the order command is the first command.
    */
@@ -461,7 +483,9 @@ ordering.quicksort = function(values, relPos, columnPos, order) {
   var left = [];
   var right = [];
   var mid = [values[0]];
-  output.compare = []; /** @param output.compare is used to record the intermediateResult in every compare happens. */
+  output.compare = [];
+  /** @param output.compare is used to record the intermediateResult in every
+  compare happens. */
   /** compare is used to identify the command is ASC or DESC. */
   var compare = {
     "ASC": function(val1, val2) {
@@ -471,7 +495,8 @@ ordering.quicksort = function(values, relPos, columnPos, order) {
       return val1 > val2;
     }
   }
-  /** If it contains only one or zero value in values. Just return it. No more compare. */
+  /** If it contains only one or zero value in values. Just return it. No more
+  compare. */
   if (values.length <= 1) {
     if (values.length == 0) {
       output.value = [];
@@ -482,7 +507,8 @@ ordering.quicksort = function(values, relPos, columnPos, order) {
   }
   /** The smaller put in left, bigger put in right. The equal, put in right. */
   for (var i = 1; i < values.length; i++) {
-    if (compare[order.UpDown](values[i].tupleValue[relPos][columnPos], mid[0].tupleValue[relPos][columnPos])) {
+    if (compare[order.UpDown](values[i].tupleValue[relPos][columnPos],
+        mid[0].tupleValue[relPos][columnPos])) {
       left.push(values[i]);
       output.compare.push({
         "smaller": values[i],
@@ -498,7 +524,8 @@ ordering.quicksort = function(values, relPos, columnPos, order) {
       });
     }
   }
-  /** left and right, doing the quicksort recursive. Get the result of quicksort of left and right. */
+  /** left and right, doing the quicksort recursive.
+  Get the result of quicksort of left and right. */
   var leftSort = ordering.quicksort(left, relPos, columnPos, order);
   var rightSort = ordering.quicksort(right, relPos, columnPos, order);
   /** Concatenate the result of left, mid and right. */

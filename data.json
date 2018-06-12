@@ -10,17 +10,6 @@ data = {
         {"tupleValue":["Zhang", 27, "CHINA"]},
         {"tupleValue":["Jack", 19, "USA"]},
         {"tupleValue":["Yang", 24, "CHINA"]},
-        {"tupleValue":["Lili", 25, "UK"]},
-        {"tupleValue":["Mike", 30, "USA"]},
-        {"tupleValue":["Angel", 35, "USA"]},
-        {"tupleValue":["Ji", 50, "CHINA"]},
-        {"tupleValue":["Jeffry", 32, "GERMANY"]},
-        {"tupleValue":["Chang", 29, "CHINA"]},
-        {"tupleValue":["Emma", 18, "USA"]},
-        {"tupleValue":["Huang", 25, "CHINA"]},
-        {"tupleValue":["Lucy", 55, "UK"]},
-        {"tupleValue":["Michael", 36, "USA"]},
-        {"tupleValue":["Andrew", 29, "USA"]}
       ]
 
     },
@@ -29,17 +18,10 @@ data = {
       "columns": ["name", "age", "nation", "salary"],
       "value": [
         {"tupleValue":["Lily", 25, "UK", 3000]},
-        {"tupleValue":["Andraw", 29, "USA", 4000]},
+        {"tupleValue":["Andrew", 29, "USA", 4000]},
         {"tupleValue":["Liu", 25, "CHINA", 2500]},
         {"tupleValue":["Andreas", 22, "GERMANY", 3566]},
         {"tupleValue":["Jack", 19, "USA", 2000]},
-        {"tupleValue":["Jeff", 32, "GERMANY", 4812]},
-        {"tupleValue":["Zhang", 28, "CHINA", 13774]},
-        {"tupleValue":["York", 18, "USA",6132]},
-        {"tupleValue":["York", 18, "USA",6132]},
-        {"tupleValue":["Huang", 21, "CHINA",14456]},
-        {"tupleValue":["Lucy", 52, "UK",14632]},
-        {"tupleValue":["Michael", 37, "USA",14456]}
       ]
     },
     {
@@ -52,14 +34,6 @@ data = {
         {"tupleValue":["Andreas", 22, "GERMANY", 3566]},
         {"tupleValue":["Zhang", 28, "CHINA", 13774]},
         {"tupleValue":["Jack", 19, "USA", 2000]},
-        {"tupleValue":["Chang", 24, "CHINA", 13774]},
-        {"tupleValue":["Yang", 24, "CHINA", 3050]},
-        {"tupleValue":["Edmund", 32, "GERMANY", 6098]},
-        {"tupleValue":["Jordan", 30, "USA", 5013]},
-        {"tupleValue":["Mike", 30, "USA", 2120]},
-        {"tupleValue":["Angel", 35, "USA", 6554]},
-        {"tupleValue":["Jiang", 50, "CHINA", 4845]},
-        {"tupleValue":["Jeff", 32, "GERMANY", 4812]}
       ]
     },
     {

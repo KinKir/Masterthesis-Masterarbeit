@@ -5,48 +5,99 @@ queries = {
       "select": [
           {"rel":"sA","attr":["name","age"]},
           {"rel":"sB","attr":["height"]},
-          {"rel":"sC","attr":["nation"]}
-        ],
+          {"rel":"sC","attr":["nation"]},
+      ],
       "from": ["sA","sB","sC"],
       "where": [
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
-        {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"}
-        ],
+        {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
+      ],
       "grouping": [
         {"rel":"sA","attr":"name"},
         {"rel":"sB","attr":"salary"},
-        {"rel":"sC","attr":"nation"}
+        {"rel":"sC","attr":"nation"},
       ],
       "ordering": [
         {"rel":"sA","attr":"name", "UpDown":"DESC"},
         {"rel":"sB","attr":"salary", "UpDown":"ASC"},
-        {"rel":"sC","attr":"nation", "UpDown":"ASC"}
-        ]
+        {"rel":"sC","attr":"nation", "UpDown":"ASC"},
+      ],
     },{
       "select": [
           {"rel":"sA","attr":["name"]},
           {"rel":"sB","attr":["weight"]},
-          {"rel":"sC","attr":["age","height","eyesColor"]}
-        ],
+          {"rel":"sC","attr":["age","height","eyesColor"]},
+      ],
       "from": ["sA","sB","sC"],
       "where": [
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
         {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"name","attr2":"name"},
         {"union":"or", "op":"less","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
-        {"union":"or", "op":"less","rel1":"sB","rel2":"sC","attr1":"age","attr2":"age"}
-        ],
+        {"union":"or", "op":"less","rel1":"sB","rel2":"sC","attr1":"age","attr2":"age"},
+      ],
       "grouping": [
         {"rel":"sB","attr":"name"},
         {"rel":"sB","attr":"weight"},
-        {"rel":"sC","attr":"height"}
+        {"rel":"sC","attr":"height"},
       ],
       "ordering": [
         {"rel":"sB","attr":"name", "UpDown":"DESC"},
         {"rel":"sB","attr":"weight", "UpDown":"ASC"},
-        {"rel":"sC","attr":"height", "UpDown":"ASC"}
-      ]
-    }
+        {"rel":"sC","attr":"height", "UpDown":"ASC"},
+      ],
+    },
+    {
+      "select": [
+          {"rel":"sA","attr":["name","age"]},
+          {"rel":"sB","attr":["height"]},
+          {"rel":"sC","attr":["nation"]},
+        ],
+      "from": ["sA","sB","sC"],
+      "where": [
+        {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
+      ],
+      "grouping": [
+        {"rel":"sA","attr":"name"},
+        {"rel":"sA","attr":"age"},
+        {"rel":"sB","attr":"salary"},
+        {"rel":"sC","attr":"nation"},
+      ],
+      "ordering": [
+        {"rel":"sA","attr":"name", "UpDown":"DESC"},
+        {"rel":"sB","attr":"salary", "UpDown":"ASC"},
+        {"rel":"sC","attr":"nation", "UpDown":"ASC"},
+      ],
+    },
+    {
+      "select": [
+          {"rel":"sA","attr":["name","age"]},
+          {"rel":"sB","attr":["height"]},
+        ],
+      "from": ["sA","sB"],
+      "where": [
+        {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
+        ],
+      "grouping": [
+        {"rel":"sA","attr":"name"},
+        {"rel":"sA","attr":"age"},
+        {"rel":"sB","attr":"salary"},
+      ],
+      "ordering": [
+        {"rel":"sA","attr":"name", "UpDown":"DESC"},
+        {"rel":"sB","attr":"salary", "UpDown":"ASC"},
+      ],
+    },
+    {
+      "select": [
+          {"rel":"sA","attr":["name","age"]},
+          {"rel":"sB","attr":["height"]},
+        ],
+      "from": ["sA","sB"],
+      "where": [
+        {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
+        ],
+    },
   ],
   "algebra":{
     "single":{

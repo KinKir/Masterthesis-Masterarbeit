@@ -279,5 +279,8 @@ algebraUtil.get_unusedInputs = function(tuplesInput, usedTuples) {
     }
     account = 0;
   }
+  if(notUsedInputs.length < 1){
+    return false;
+  }
   return notUsedInputs;
 };

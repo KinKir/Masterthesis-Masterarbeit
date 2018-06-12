@@ -116,22 +116,22 @@
               <form class="" action="" method="post">
                 SQL querie's Process: <br>
                 <p id="queryTip"></p>
-                <input type="text" id="selectionQuery" value=""> <br>
+                <input type="text" id="sqlQuery" value=""> <br>
                 <input type="button" name="" value="Submit" onclick="draw.sqlProcess()">
               </form> <br>
               <p id="queryBtnTip" style="background-color:#EEEEEE"></p>
-              <button type="button" id="wholeProcess" name="drawProcess">whole process of SQL Query</button> <br>
-              <button type="button" id="select" name="drawProcess">select</button> <br>
-              <button type="button" id="from" name="drawProcess">from</button> <br>
-              <button type="button" id="where" name="drawProcess">where</button> <br>
-              <a id = "a_subWhere" onclick="showSub('a_subWhere','subWhere')"> show sub-steps of where</a>
+              <button type="button" id="wholeProcess" name="drawProcess" style="display:none">whole process of SQL Query</button> <br>
+              <button type="button" id="select" name="drawProcess" style="display:none">select</button> <br>
+              <button type="button" id="from" name="drawProcess" style="display:none">from</button> <br>
+              <button type="button" id="where" name="drawProcess" style="display:none">where</button> <br>
+              <a id = "a_subWhere" onclick="showSub('a_subWhere','subWhere')" style="display:none"> show sub-steps of where</a>
               <div class="div3" id="subWhere" style="display:none">
-                |-1-<button type="button" id="compare" name="drawProcess">compare</button> <br> |-2-
-                <button type="button" id="crossJoin" name="drawProcess">crossJoin</button> <br> |-3-
-                <button type="button" id="intersection_union" name="drawProcess">intersection and union</button> <br>
+                <div id="divcompareSets" style="display:none"> |-<button type="button" id="compare" name="drawProcess">compare</button> <br> </div>
+                <div id="divcore" style="display:none"> |-<button type="button" id="core" name="drawProcess">crossJoin</button> <br> </div>
+                <div id="divintermediateResult" style="display:none"> |-<button type="button" id="intersection_union" name="drawProcess">intersection and union</button> <br> </div>
               </div>
-              <button type="button" id="grouping" name="drawProcess">group by</button> <br>
-              <button type="button" id="ordering" name="drawProcess">order by</button> <br>
+              <button type="button" id="grouping" name="drawProcess" style="display:none">group by</button> <br>
+              <button type="button" id="ordering" name="drawProcess" style="display:none">order by</button> <br>
             </div>
             <div class="div1">
               <form class="" action="" method="post">
@@ -190,7 +190,6 @@
             <div style="float:left">
               <button type="button" name="controlDraw" id="pause">Pause</button>
               <button type="button" name="controlDraw" id="continue">Continue</button>
-              <button type="button" name="controlDraw" id="laststep">Last Step</button>
               <button type="button" name="controlDraw" id="terminate">Terminate</button>
             </div>
           </div>

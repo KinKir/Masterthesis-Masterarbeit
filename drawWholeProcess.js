@@ -11,7 +11,7 @@
 function DrawProcess(res_SQL) {
   // result of SQL query.
   this.res = {
-    select: res_SQL.resSelection,
+    select: res_SQL.resSelect,
     from: res_SQL.resFrom,
     where: res_SQL.resWhere,
     grouping: res_SQL.resGrouping,
@@ -38,7 +38,7 @@ function DrawProcess(res_SQL) {
      * If (from.length is not 0, from has not been drawn).
      * After animation, set _this.done.from = true.
      */
-    if (_this.res.from.length > 0 && (!_this.done.from)) {
+    if (!_this.done.from) {
       drawUtil.ctx.fillText(text = "Now is doing 'from' clause: from " +
         _this.res.query.from.toString(), 100, 450);
       _this.from(_this.res.from);
@@ -49,7 +49,7 @@ function DrawProcess(res_SQL) {
      * from has been done).
      * After animation, set _this.done.where = true.
      */
-    if (_this.res.where && (!_this.done.where) && (_this.done.from)) {
+    if ((!_this.done.where) && (_this.done.from)) {
       if (_this.res.query.where.length === 0) {
         drawUtil.table(_this.res.where.result, drawUtil.result.x,
           drawUtil.result.y, drawUtil.getWidth(_this.res.where.result),
@@ -59,7 +59,7 @@ function DrawProcess(res_SQL) {
         _this.where(_this.res.query, _this.res.where, "whole");
       }
     }
-    if (_this.res.grouping && (!_this.done.grouping) && (_this.done.where)) {
+    if ((!_this.done.grouping) && (_this.done.where)) {
       _this.grouping(_this.res.query, _this.res.grouping);
     };
     /**
@@ -67,7 +67,7 @@ function DrawProcess(res_SQL) {
      * If (result of select is not null, select has not been drawn, where has been done).
      * After animation, set _this.done.select = true.
      */
-    if (_this.res.select && (!_this.done.select) && (_this.done.grouping)) {
+    if ((!_this.done.select) && (_this.done.grouping)) {
       _this.selection(_this.res.select);
     }
     // if (res.ordering && (!_this.done.ordering) && (_this.done.select)) {
@@ -81,20 +81,20 @@ function DrawProcess(res_SQL) {
    * Does the compare step in "where".
    */
   _this.where.compare = function() {
-    _this.where(_this.res.query, _this.res.where, "compare", _this.selection);
+    _this.where(_this.res.query, _this.res.where, "compare", _this.begin);
   };
   /**
    * Does the crossJoin step in "where".
    */
   _this.where.crossJoin = function() {
-    _this.where(_this.res.query, _this.res.where, "crossJoin", _this.selection);
+    _this.where(_this.res.query, _this.res.where, "crossJoin", _this.begin);
   };
   /**
    * Does the "and"(intersection) or "or"(union) step in "where".
    */
   _this.where.intersection_union = function() {
     _this.where(_this.res.query, _this.res.where, "intersection_union",
-      _this.selection);
+      _this.begin);
   };
 }
 DrawProcess.prototype = {
@@ -430,8 +430,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   };
   //cross join with other relations' tuples. just show the join result in where.core.
   function callAnimCrossJoin() {
-    window.setBtnStyle(document.getElementById("crossJoin"));
-    if (_this.i >= res_where.compareSets.length) {
+    if(res_where.core.length < 1 || _this.i >= res_where.compareSets.length){
       if (step == "whole") {
         _this.i = 0;
         _this.j = 0;
@@ -444,6 +443,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         return true;
       }
     }
+    window.setBtnStyle(document.getElementById("crossJoin"));
     if (res_where.core[_this.i].name.length ==
       res_where.compareSets[_this.i].name.length) {
       _this.i++;
@@ -486,6 +486,12 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   };
 
   function anim_intersection_union() {
+    if(res_where.intermediateResult.length < 1){
+      _this.drawInfo.clearLeftInfo();
+      _this.done.where = true;
+      _this.begin();
+      return true;
+    }
     window.setBtnStyle(document.getElementById("intersection_union"));
     drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
       drawUtil.fullWidth, drawUtil.fullHeight);
@@ -528,13 +534,11 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
 
       function drawAnim() {
         if (condition.union == "and") {
-          console.log("this is and");
           _this.drawInfo.writeLeft("intersection");
           _this.drawAlgebra.animIntersection(
             res_where.intermediateResult[_this.i], oldSet, newSet, loop);
         }
         if (condition.union == "or") {
-          console.log("this is or");
           _this.drawInfo.writeLeft("union");
           _this.drawAlgebra.animUnion(res_where.intermediateResult[_this.i],
             oldSet, newSet, loop);
@@ -553,7 +557,11 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
  * @param {query} query the SQL query.
  * @param {output_of_grouping} res_grouping result of where in SQL query.
  */
-DrawProcess.prototype.grouping = function(query, res_grouping) {
+DrawProcess.prototype.grouping = function(query, res_grouping) {console.log("grouping");
+  if(!query){console.log("grouping not exists");
+    this.done.grouping = true;
+    return true;
+  }
   window.setBtnStyle(document.getElementById("grouping"));
   let allTuples = JSON.parse(JSON.stringify(res_grouping.allTuples));
   let resGrouping = JSON.parse(JSON.stringify(res_grouping.result));
