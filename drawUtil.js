@@ -9,53 +9,48 @@
  */
 function DrawUtil() {};
 DrawUtil.prototype = {
-  canvas: document.getElementById("canvas"),
-  ctx: canvas.getContext("2d"),
+  ctx: Canvas.ctx,
   maxTableLength: 12,
   tupleHeight: 20,
   tupleMargin: 2,
-  colorSet: ["#FF8888", "#FDFF88", "#88FF88", "#88C1FF", "#A388FF", "#FB88FF"],
-  isChosenColorSet: ["#38A08C", "#9538A0", "#3856A0", "#A04E38", "#A03838"],
-  fullWidth: parseInt(this.canvas.getAttribute("width")),
-  fullHeight: parseInt(this.canvas.getAttribute("height")),
+  colorSet: colorSet,
+  isChosenColorSet: chosenColorSet,
+  fullWidth: canvasInfo.fullWidth,
+  fullHeight: canvasInfo.fullHeight,
   tableMargin: 20,
   result: {
     x: 100,
-    y: parseInt(this.canvas.getAttribute("height")) / 2 + 10,
-    width: parseInt(this.canvas.getAttribute("width")) - 100,
-    height: parseInt(this.canvas.getAttribute("height")) -
-      parseInt(this.canvas.getAttribute("height")) / 2 - 10
+    y: canvasInfo.fullHeight / 2 + 10,
+    width: canvasInfo.fullWidth - 100,
+    height: canvasInfo.fullHeight - canvasInfo.fullHeight / 2 - 10,
   },
   compare: {
     x: 100,
-    y: 200
+    y: 200,
   },
   infoField: {
     x: 100,
-    y: parseInt(this.canvas.getAttribute("height")) / 2 - 50,
-    width: parseInt(this.canvas.getAttribute("width")),
-    height: 50
+    y: canvasInfo.fullHeight / 2 - 50,
+    width: canvasInfo.fullWidth,
+    height: 50,
   },
   leftInfoField: {
     x: 0,
-    y: parseInt(this.canvas.getAttribute("height")) / 2 - 50,
+    y: canvasInfo.fullHeight / 2 - 50,
     width: 100,
-    height: 50
+    height: 50,
   },
   animField: {
     x: 100,
     y: 0,
-    width: parseInt(this.canvas.getAttribute("width")),
-    height: parseInt(this.canvas.getAttribute("height"))
+    width: canvasInfo.fullWidth,
+    height: canvasInfo.fullHeight,
   },
   maxDraw: 20,
-  info_lines: 3,
-  maxTableWidth: parseInt(this.canvas.getAttribute("width")) / 2 - 100,
-  columnWidth: 60,
-  filter_Symbol_pos: {
-    height: 150,
-    width: 150
-  }
+  info_lines: 2,
+  maxTableWidth: anim_size.maxTableWidth,
+  columnWidth: anim_size.columnWidth,
+  filter_Symbol_pos: anim_position.filter_Symbol,
 };
 /**
  * Draw tuple.
@@ -125,8 +120,8 @@ DrawUtil.prototype.table = function(table, x, y, width, color, colorText,
   ctx.fillStyle = "black";
   //Draw infos of relation.
   if (contain_name_info) {
-    ctx.clearRect(x, y - (_this.info_lines - 1) * _this.tupleHeight, width,
-      (_this.info_lines - 1) * _this.tupleHeight);
+    ctx.clearRect(x, y - _this.info_lines * _this.tupleHeight, width,
+      _this.info_lines * _this.tupleHeight);
     let relsName = [];
     //Get name of relation.
     for (let i = 0; i < table.name.length; i++) {
@@ -147,7 +142,7 @@ DrawUtil.prototype.table = function(table, x, y, width, color, colorText,
   } else {
     y = y - _this.tupleHeight - _this.tupleMargin;
   }
-  ctx.clearRect(x, y + _this.info_lines * (_this.tupleHeight + _this.tupleMargin),
+  ctx.clearRect(x, y + (_this.info_lines + 1) * (_this.tupleHeight + _this.tupleMargin),
     width, _this.tupleHeight);
   //Draw tuples values.
   let imgPos = 0;

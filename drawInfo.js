@@ -7,8 +7,7 @@
 */
 function DrawInfo() {};
 DrawInfo.prototype = {
-  canvas: document.getElementById("canvas"),
-  ctx: canvas.getContext("2d"),
+  ctx: canvasInfo.ctx,
   /**
   * Write the text in infoField.
   * @param {String} text The text that should be write.

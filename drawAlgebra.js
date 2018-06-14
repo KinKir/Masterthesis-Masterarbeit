@@ -1,7 +1,7 @@
-/*******************************************************************************
- ********* This file contains all functions of algebra animation.      *********
- ********* All the functions are included in one Object DrawAlgebra(). *********
- ******************************************************************************/
+/******************************************************************************
+ ********* This file contains all functions of algebra animation.      ********
+ ********* All the functions are included in one Object DrawAlgebra(). ********
+ *****************************************************************************/
 /**
  * Draw animations of algebra.
  * @constructor DrawAlgebra
@@ -10,21 +10,24 @@ function DrawAlgebra() {
   this.waitTime = 1000 / window.control.speed;
   this.counter = this.waitTime;
   this.nth_result = 0;
-  this.imgDataResult = drawUtil.ctx.getImageData(drawUtil.result.x, drawUtil.result.y,
-    drawUtil.fullWidth - drawUtil.result.x, drawUtil.fullHeight - drawUtil.result.y);
+  this.imgDataResult = drawUtil.ctx.getImageData(
+    drawUtil.result.x, drawUtil.result.y,
+    drawUtil.fullWidth - drawUtil.result.x,
+    drawUtil.fullHeight - drawUtil.result.y);
 
   this.x1 = drawUtil.animField.x;
   this.y1 = drawUtil.animField.y;
   this.y2 = drawUtil.animField.y;
   this.nth_tuple1 = 0;
   this.nth_tuple2 = 0;
-  this.table_info_height = (drawUtil.info_lines - 1) * (drawUtil.tupleHeight +
-    drawUtil.tupleMargin);
+  this.table_info_height =
+    drawUtil.info_lines * (drawUtil.tupleHeight + drawUtil.tupleMargin);
   this.column_height = drawUtil.tupleHeight + drawUtil.tupleMargin;
   this.tabY = drawUtil.animField.y + this.table_info_height;
   let _this = this;
   // Initialize the attributes of input tuplesets.
-  this.init = function(res, input1, input2, nth_tuple1, nth_tuple2, attr1, attr2, op) {
+  this.init = function(res, input1, input2, nth_tuple1, nth_tuple2,
+    attr1, attr2, op) {
     _this.res = JSON.parse(JSON.stringify(res));
     _this.tuplesInput1 = JSON.parse(JSON.stringify(input1));
     _this.tuplesInput2 = JSON.parse(JSON.stringify(input2));
@@ -57,17 +60,20 @@ function DrawAlgebra() {
     return imgDataBlank;
   };
 };
-/*******************************************************************************
- **************************** animation of crossJoin ***************************
- ******************************************************************************/
+/*****************************************************************************
+ **************************** animation of crossJoin *************************
+ ****************************************************************************/
 /**
  * Draws the animation of crossJoin.
  * @param {tupleset_basic} res result of crossJoin.
  * @param {tupleset_basic} input1 left table.
  * @param {tupleset_basic} input2 right table.
- * @param {function} nextAnimation What should do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to crossJoin.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to crossJoin.
+ * @param {function} nextAnimation What should do, after this animation has
+ * been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to
+ * crossJoin.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to
+ * crossJoin.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -88,13 +94,16 @@ DrawAlgebra.prototype.animCrossJoin = function(res, input1, input2,
 
   function loop() {
     //If this process finished.
-    if (_this.nth_tuple1 >= input1.value.length || _this.result_num >= maxDraw) {
+    if (_this.nth_tuple1 >= input1.value.length ||
+      _this.result_num >= maxDraw) {
       _this.draw_tables(_this, color1, color2);
       nextAnimation();
       return true;
     }
-    _this.imgDataResult = drawUtil.ctx.getImageData(drawUtil.result.x, drawUtil.result.y,
-      drawUtil.fullWidth - drawUtil.result.x, drawUtil.fullHeight - drawUtil.result.y);
+    _this.imgDataResult = drawUtil.ctx.getImageData(
+      drawUtil.result.x, drawUtil.result.y,
+      drawUtil.fullWidth - drawUtil.result.x,
+      drawUtil.fullHeight - drawUtil.result.y);
     if (_this.res.value.length <= 0 || _this.result_num >= maxDraw) {
       _this.draw_tables(_this, color1, color2);
       return true;
@@ -103,13 +112,16 @@ DrawAlgebra.prototype.animCrossJoin = function(res, input1, input2,
     if (_this.draw_choose_tuple(_this, color1, color2,
         chosenColor1, chosenColor2, false, false)) {
       if (_this.compare_tuples(_this)) {
-        let tuple1 = JSON.parse(JSON.stringify(_this.tuplesInput1.value[_this.nth_tuple1]));
-        let tuple2 = JSON.parse(JSON.stringify(_this.tuplesInput2.value[_this.nth_tuple2]));
+        let tuple1 = JSON.parse(JSON.stringify(
+          _this.tuplesInput1.value[_this.nth_tuple1]));
+        let tuple2 = JSON.parse(JSON.stringify(
+          _this.tuplesInput2.value[_this.nth_tuple2]));
         if (_this.isContains(_this.res.value, tuple1, tuple2) == -1) {
           nextAnimation();
           return true;
         }
-        let imgDataChosen = drawUtil.ctx.getImageData(drawUtil.animField.x, drawUtil.animField.y,
+        let imgDataChosen = drawUtil.ctx.getImageData(
+          drawUtil.animField.x, drawUtil.animField.y,
           drawUtil.fullWidth, drawUtil.fullHeight);
         _this.move_to_result(_this, imgDataChosen, color1, color2, loop,
           tuple1.position, tuple2.position);
@@ -119,17 +131,20 @@ DrawAlgebra.prototype.animCrossJoin = function(res, input1, input2,
     }
   };
 };
-/*******************************************************************************
- ************************* animation of left join ******************************
- ******************************************************************************/
+/*****************************************************************************
+ ************************* animation of left join ****************************
+ ****************************************************************************/
 /**
  * Draws the animation of leftJoin.
  * @param {tupleset_basic} res result of leftJoin.
  * @param {tupleset_basic} input1 left table.
  * @param {tupleset_basic} input2 right table.
- * @param {function} nextAnimation What should do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin leftJoin.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin leftJoin.
+ * @param {function} nextAnimation What should do, after this animation has
+ * been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin
+ * leftJoin.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin
+ * leftJoin.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -143,7 +158,8 @@ DrawAlgebra.prototype.animLeftJoin = function(res, input1, input2,
   nextAnimation = () => {}, nth_tuple1 = 0, nth_tuple2 = 0,
   color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1],
   chosenColor1 = drawUtil.isChosenColorSet[0],
-  chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20, attr1, attr2, op) {
+  chosenColor2 = drawUtil.isChosenColorSet[1],
+  maxDraw = 20, attr1, attr2, op) {
   let _this = this;
   _this.result_num = 0;
   _this.add_null_value(input2);
@@ -151,17 +167,20 @@ DrawAlgebra.prototype.animLeftJoin = function(res, input1, input2,
     color1, color2, chosenColor1,
     chosenColor2, maxDraw, attr1, attr2, op);
 };
-/*******************************************************************************
- ************************ animation of right join ******************************
- ******************************************************************************/
+/*****************************************************************************
+ ************************ animation of right join ****************************
+ ****************************************************************************/
 /**
  * Draws the animation of rightJoin.
  * @param {tupleset_basic} res result of rightJoin.
  * @param {tupleset_basic} input1 left table.
  * @param {tupleset_basic} input2 right table.
- * @param {function} nextAnimation What should do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin rightJoin.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin rightJoin.
+ * @param {function} nextAnimation What should do, after this animation has
+ * been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin
+ * rightJoin.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin
+ * rightJoin.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -175,7 +194,8 @@ DrawAlgebra.prototype.animRightJoin = function(res, input1, input2,
   nextAnimation = () => {}, nth_tuple1 = 0, nth_tuple2 = 0,
   color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1],
   chosenColor1 = drawUtil.isChosenColorSet[0],
-  chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20, attr1, attr2, op) {
+  chosenColor2 = drawUtil.isChosenColorSet[1],
+  maxDraw = 20, attr1, attr2, op) {
   let _this = this;
   _this.result_num = 0;
   _this.add_null_value(input1);
@@ -184,17 +204,20 @@ DrawAlgebra.prototype.animRightJoin = function(res, input1, input2,
     chosenColor2, maxDraw, attr1, attr2, op, "left");
 };
 
-/*******************************************************************************
- ************************ animation of outer join ******************************
- ******************************************************************************/
+/*****************************************************************************
+ ************************ animation of outer join ****************************
+ ****************************************************************************/
 /**
  * Draws the animation of outerJoin.
  * @param {tupleset_basic} res result of outerJoin.
  * @param {tupleset_basic} input1 left table.
  * @param {tupleset_basic} input2 right table.
- * @param {function} nextAnimation What should do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin outerJoin.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin outerJoin.
+ * @param {function} nextAnimation What should do, after this animation has
+ * been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin
+ * outerJoin.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin
+ * outerJoin.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -208,7 +231,8 @@ DrawAlgebra.prototype.animOuterJoin = function(res, input1, input2,
   nextAnimation = () => {}, nth_tuple1 = 0, nth_tuple2 = 0,
   color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1],
   chosenColor1 = drawUtil.isChosenColorSet[0],
-  chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20, attr1, attr2, op) {
+  chosenColor2 = drawUtil.isChosenColorSet[1],
+  maxDraw = 20, attr1, attr2, op) {
   let _this = this;
   _this.result_num = 0;
   _this.add_null_value(input1);
@@ -218,17 +242,20 @@ DrawAlgebra.prototype.animOuterJoin = function(res, input1, input2,
     chosenColor2, maxDraw, attr1, attr2, op);
 };
 
-/*******************************************************************************
- **************************** animation of inner join **************************
- ******************************************************************************/
+/******************************************************************************
+ **************************** animation of inner join *************************
+ *****************************************************************************/
 /**
  * Draws the animation of innerJoin.
  * @param {tupleset_basic} res result of innerJoin.
  * @param {tupleset_basic} input1 left table.
  * @param {tupleset_basic} input2 right table.
- * @param {function} nextAnimation What should do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin innerJoin.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin innerJoin.
+ * @param {function} nextAnimation What should do, after this animation has
+ * been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin
+ * innerJoin.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin
+ * innerJoin.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -243,8 +270,8 @@ DrawAlgebra.prototype.animInnerJoin = function(res, input1, input2,
   nextAnimation = () => {}, nth_tuple1 = 0, nth_tuple2 = 0,
   color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1],
   chosenColor1 = drawUtil.isChosenColorSet[0],
-  chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20, attr1, attr2, op,
-  which_side_first = "right") {
+  chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20, attr1, attr2,
+  op, which_side_first = "right") {
   let _this = this;
   _this.which_side_first = which_side_first;
   _this.result_num = 0;
@@ -257,10 +284,14 @@ DrawAlgebra.prototype.animInnerJoin = function(res, input1, input2,
 
   function loop() {
     //If this process finished.
-    _this.imgDataResult = drawUtil.ctx.getImageData(drawUtil.result.x, drawUtil.result.y,
-      drawUtil.fullWidth - drawUtil.result.x, drawUtil.fullHeight - drawUtil.result.y);
-    if ((_this.nth_tuple1 >= input1.value.length && which_side_first == "right") ||
-      (_this.nth_tuple2 >= input2.value.length && which_side_first == "left") ||
+    _this.imgDataResult = drawUtil.ctx.getImageData(
+      drawUtil.result.x, drawUtil.result.y,
+      drawUtil.fullWidth - drawUtil.result.x,
+      drawUtil.fullHeight - drawUtil.result.y);
+    if ((_this.nth_tuple1 >= input1.value.length &&
+        which_side_first == "right") ||
+      (_this.nth_tuple2 >= input2.value.length &&
+        which_side_first == "left") ||
       _this.result_num >= maxDraw) {
       _this.draw_tables(_this, color1, color2);
       nextAnimation();
@@ -269,42 +300,48 @@ DrawAlgebra.prototype.animInnerJoin = function(res, input1, input2,
     _this.counter = _this.waitTime;
     if (_this.draw_choose_tuple(_this, color1, color2,
         chosenColor1, chosenColor2, true, true)) {
-      _this.move_to_compare(_this, color1, color2, chosenColor1, chosenColor2, () => {
-        let tuple1 = JSON.parse(JSON.stringify(_this.tuplesInput1.value[_this.nth_tuple1]));
-        let tuple2 = JSON.parse(JSON.stringify(_this.tuplesInput2.value[_this.nth_tuple2]));
-        let src1 = {
-          x: _this.des1.x,
-          y: _this.des1.y
-        };
-        let src2 = {
-          x: _this.des1.x + drawUtil.getWidth(tuple1),
-          y: _this.des1.y
-        };
-        if (_this.compare_tuples(_this)) {
-          if (_this.isContains(_this.res.value, tuple1, tuple2) == -1) {
-            nextAnimation();
-            return true;
-          }
-          _this.animJoinTuple(_this.imgDataChosen, tuple1, tuple2, true, true, src1, src2, {
+      _this.move_to_compare(_this, color1, color2,
+        chosenColor1, chosenColor2, () => {
+          let tuple1 = JSON.parse(JSON.stringify(
+            _this.tuplesInput1.value[_this.nth_tuple1]));
+          let tuple2 = JSON.parse(JSON.stringify(
+            _this.tuplesInput2.value[_this.nth_tuple2]));
+          let src1 = {
             x: _this.des1.x,
-            y: _this.des1.y + drawUtil.filter_Symbol_pos.height
-          }, color1, color2, () => {
-            _this.move_to_result(_this, _this.imgDataChosen, color1, color2, loop, src1, src2);
-            return true;
-          });
+            y: _this.des1.y
+          };
+          let src2 = {
+            x: _this.des1.x + drawUtil.getWidth(tuple1),
+            y: _this.des1.y
+          };
+          if (_this.compare_tuples(_this)) {
+            if (_this.isContains(_this.res.value, tuple1, tuple2) == -1) {
+              nextAnimation();
+              return true;
+            }
+            _this.animJoinTuple(_this.imgDataChosen, tuple1, tuple2,
+              true, true, src1, src2, {
+                x: _this.des1.x,
+                y: _this.des1.y + drawUtil.filter_Symbol_pos.height
+              }, color1, color2, () => {
+                _this.move_to_result(_this, _this.imgDataChosen,
+                  color1, color2, loop, src1, src2);
+                return true;
+              });
 
-        } else {
-          drawUtil.disappear(_this.des1.x, _this.des1.y - drawUtil.tupleMargin,
-            _this.width1 + _this.width2, drawUtil.tupleHeight + drawUtil.tupleMargin,
-            loop, _this.imgDisappear);
-        }
-      });
+          } else {
+            drawUtil.disappear(
+              _this.des1.x, _this.des1.y - drawUtil.tupleMargin,
+              _this.width1 + _this.width2, drawUtil.tupleHeight +
+              drawUtil.tupleMargin, loop, _this.imgDisappear);
+          }
+        });
     }
   };
 };
-/*******************************************************************************
- **************************Tools for animation of joins**************************
- *******************************************************************************/
+/******************************************************************************
+ **************************Tools for animation of joins************************
+ *****************************************************************************/
 /**
  * Draws tables. If tables have been drawn, returns true.
  * @param {object} _this The object that call this function.
@@ -320,10 +357,11 @@ DrawAlgebra.prototype.draw_tables = function(_this, color1, color2) {
   drawUtil.table(_this.tuplesInput2, _this.x2, _this.tabY,
     drawUtil.getWidth(_this.tuplesInput2), color2, "black");
   if (_this.imgDataResult) {
-    drawUtil.ctx.putImageData(_this.imgDataResult, drawUtil.result.x, drawUtil.result.y);
+    drawUtil.ctx.putImageData(_this.imgDataResult, drawUtil.result.x,
+      drawUtil.result.y);
   }
-  _this.imgData = drawUtil.ctx.getImageData(drawUtil.animField.x, drawUtil.animField.y,
-    drawUtil.fullWidth, drawUtil.fullHeight);
+  _this.imgData = drawUtil.ctx.getImageData(drawUtil.animField.x,
+    drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
   return true;
 };
 /**
@@ -331,19 +369,24 @@ DrawAlgebra.prototype.draw_tables = function(_this, color1, color2) {
  * @param {object} _this The object that call this function.
  */
 DrawAlgebra.prototype.draw_filter_text = function(_this) {
-  let tuple1 = JSON.parse(JSON.stringify(_this.tuplesInput1.value[_this.nth_tuple1]));
-  let tuple2 = JSON.parse(JSON.stringify(_this.tuplesInput2.value[_this.nth_tuple2]));
+  let tuple1 = JSON.parse(JSON.stringify(
+    _this.tuplesInput1.value[_this.nth_tuple1]));
+  let tuple2 = JSON.parse(JSON.stringify(
+    _this.tuplesInput2.value[_this.nth_tuple2]));
   _this.des1 = {
     x: (tuple1.position.x + tuple2.position.x) / 3,
     y: drawUtil.compare.y
   };
   let filterSymbolX = _this.des1.x + drawUtil.getWidth(tuple1);
-  let filterSymbolY = _this.des1.y + 4 * (drawUtil.tupleHeight + drawUtil.tupleMargin);
+  let filterSymbolY = _this.des1.y + 4 * (drawUtil.tupleHeight +
+    drawUtil.tupleMargin);
   drawUtil.filterSymbol(filterSymbolX, filterSymbolY,
     drawUtil.filter_Symbol_pos.width, drawUtil.filter_Symbol_pos.height);
   let conditionText = _this.rel1.toString() + "." + _this.attr1 + " " +
-    drawUtil._opImg[_this.op] + " " + _this.rel2.toString() + "." + _this.attr2;
-  drawUtil.write_text(conditionText, filterSymbolX - drawUtil.filter_Symbol_pos.width / 2,
+    drawUtil._opImg[_this.op] + " " + _this.rel2.toString() + "." +
+    _this.attr2;
+  drawUtil.write_text(conditionText, filterSymbolX -
+    drawUtil.filter_Symbol_pos.width / 2,
     filterSymbolY - drawUtil.filter_Symbol_pos.height / 2 + 20, "black", 15);
   drawUtil.write_text("?", filterSymbolX,
     filterSymbolY - drawUtil.filter_Symbol_pos.height / 2 + 50, "black", 20);
@@ -360,8 +403,8 @@ DrawAlgebra.prototype.draw_filter_text = function(_this) {
  * @param {Boolean} draw_filter Draw filter.
  * @returns {Boolean}
  */
-DrawAlgebra.prototype.draw_choose_tuple = function(_this, color1, color2, chosenColor1,
-  chosenColor2, draw_rect, draw_filter) {
+DrawAlgebra.prototype.draw_choose_tuple = function(_this, color1, color2,
+  chosenColor1, chosenColor2, draw_rect, draw_filter) {
   let tuple1 = _this.tuplesInput1.value[_this.nth_tuple1];
   let tuple2 = _this.tuplesInput2.value[_this.nth_tuple2];
   let tuple1x = tuple1.position.x;
@@ -374,19 +417,22 @@ DrawAlgebra.prototype.draw_choose_tuple = function(_this, color1, color2, chosen
     _this.draw_filter_text(_this);
   }
   if (this.text) {
-    drawUtil.write_text(_this.text, drawUtil.infoField.x, drawUtil.infoField.y + 20, "black", 20);
+    drawUtil.write_text(_this.text, drawUtil.infoField.x,
+      drawUtil.infoField.y + 20, "black", 20);
   }
   _this.draw_choose_rect(tuple1, tuple1x, tuple1y, _this.attr1,
     _this.tuplesInput1.columns, chosenColor1, draw_rect);
   _this.draw_choose_rect(tuple2, tuple2x, tuple2y, _this.attr2,
     _this.tuplesInput2.columns, chosenColor2, draw_rect);
-  _this.imgDataChosen = drawUtil.ctx.getImageData(drawUtil.animField.x, drawUtil.animField.y,
+  _this.imgDataChosen = drawUtil.ctx.getImageData(
+    drawUtil.animField.x, drawUtil.animField.y,
     drawUtil.animField.width, drawUtil.animField.height);
   return true;
 };
 /**
  * Compare tuples between two relations.
- * If join of tuples is included in result of Algebra, return true. Else, return false.
+ * If join of tuples is included in result of Algebra, return true.
+ * Else, return false.
  * @param {object} _this The object that call this function.
  * @returns {Boolean}
  */
@@ -430,21 +476,25 @@ DrawAlgebra.prototype.compare_tuples = function(_this) {
 DrawAlgebra.prototype.draw_choose_rect = function(tuple, tuplex, tupley, attr,
   columns, color, draw_rect) {
   let tupleWidth = drawUtil.getWidth(tuple);
-  drawUtil.tuple(tuplex, tupley, tupleWidth, color, "white", drawUtil.getText(tuple));
+  drawUtil.tuple(tuplex, tupley, tupleWidth, color, "white",
+    drawUtil.getText(tuple));
   if (!draw_rect) {
     return true;
   }
   drawUtil.ctx.save();
   drawUtil.ctx.beginPath();
   drawUtil.ctx.strokeStyle = "#FF0000";
-  let attrPos = get_Attr_Pos_in_column(columns, tuplex, tupley, attr, tupleWidth);
-  drawUtil.ctx.rect(attrPos.x + 1, attrPos.y - 2, attrPos.width, drawUtil.tupleHeight + 4);
+  let attrPos = get_Attr_Pos_in_column(columns, tuplex, tupley,
+    attr, tupleWidth);
+  drawUtil.ctx.rect(attrPos.x + 1, attrPos.y - 2,
+    attrPos.width, drawUtil.tupleHeight + 4);
   drawUtil.ctx.stroke();
   drawUtil.ctx.closePath();
   drawUtil.ctx.restore();
 };
 /**
- * Judges if the join of tuple1_value and tuple2_value is included in res_value.
+ * Judges if the join of tuple1_value and tuple2_value is included in
+ * res_value.
  * If they are in res_value, return the number of joined tuple in res_value.
  * Else, return -1.
  * @param {value_basic} res_value The value of the two relations after join.
@@ -452,7 +502,8 @@ DrawAlgebra.prototype.draw_choose_rect = function(tuple, tuplex, tupley, attr,
  * @param {tuple_basic} tuple1_value a tupleValue of relation2.
  * @return {Number}
  */
-DrawAlgebra.prototype.isContains = function(res_value, tuple1_value, tuple2_value) {
+DrawAlgebra.prototype.isContains = function(res_value,
+  tuple1_value, tuple2_value) {
   for (let i = 0; i < res_value.length; i++) {
     let tmp = this.columns_ordering(res_value[i], tuple1_value, tuple2_value);
     let strID = tmp.strID;
@@ -465,13 +516,15 @@ DrawAlgebra.prototype.isContains = function(res_value, tuple1_value, tuple2_valu
   return -1;
 };
 /**
- * Sort the order of tuple1_value and tuple2_value, return the sorted joined tuple.
+ * Sort the order of tuple1_value and tuple2_value,
+ * return the sorted joined tuple.
  * @param {value_basic} res_value The value of the two relations after join.
  * @param {tuple_basic} tuple1_value the tupleValue of relation1.
  * @param {tuple_basic} tuple1_value the tupleValue of relation2.
  * @return {tuple_basic}
  */
-DrawAlgebra.prototype.columns_ordering = function(res_value, tuple1_value, tuple2_value) {
+DrawAlgebra.prototype.columns_ordering = function(res_value,
+  tuple1_value, tuple2_value) {
   let output = {};
   output.strID = [];
   output.strRel = [];
@@ -500,18 +553,22 @@ DrawAlgebra.prototype.columns_ordering = function(res_value, tuple1_value, tuple
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuples in table1.
  * @param {String} chosenColor2 Color of chosen tuples in table2.
- * @param {function} nextAnimation What will do, after this animation has been done.
+ * @param {function} nextAnimation What will do,
+ * after this animation has been done.
  */
 DrawAlgebra.prototype.move_to_compare = function(_this, color1, color2,
   chosenColor1, chosenColor2, nextAnimation = () => {}) {
-  let tuple1 = JSON.parse(JSON.stringify(_this.tuplesInput1.value[_this.nth_tuple1]));
-  let tuple2 = JSON.parse(JSON.stringify(_this.tuplesInput2.value[_this.nth_tuple2]));
+  let tuple1 = JSON.parse(JSON.stringify(
+    _this.tuplesInput1.value[_this.nth_tuple1]));
+  let tuple2 = JSON.parse(JSON.stringify(
+    _this.tuplesInput2.value[_this.nth_tuple2]));
 
   _this.imgDisappear = drawUtil.ctx.getImageData(_this.des1.x,
-    _this.des1.y - drawUtil.tupleMargin, drawUtil.getWidth(tuple1) + drawUtil.getWidth(tuple2),
+    _this.des1.y - drawUtil.tupleMargin, drawUtil.getWidth(tuple1) +
+    drawUtil.getWidth(tuple2),
     drawUtil.tupleHeight + drawUtil.tupleMargin);
-  let imgData = drawUtil.ctx.getImageData(drawUtil.animField.x, drawUtil.animField.y,
-    drawUtil.fullWidth, drawUtil.fullHeight);
+  let imgData = drawUtil.ctx.getImageData(drawUtil.animField.x,
+    drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
   _this.animJoinTuple(imgData, tuple1, tuple2, true, true, tuple1.position,
     tuple2.position, _this.des1, color1, color2, () => {
       nextAnimation();
@@ -524,20 +581,24 @@ DrawAlgebra.prototype.move_to_compare = function(_this, color1, color2,
  * @param {array} imgData The image before moved.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
- * @param {function} nextAnimation What will do, after this animation has been done.
+ * @param {function} nextAnimation What will do,
+ * after this animation has been done.
  * @param {coordinate} src1 Source coordinate of relation1.
  * @param {coordinate} src2 Source coordinate of relation2.
  */
 DrawAlgebra.prototype.move_to_result = function(_this, imgData, color1, color2,
   nextAnimation, src1, src2) {
-  let tuple1 = JSON.parse(JSON.stringify(_this.tuplesInput1.value[_this.nth_tuple1]));
-  let tuple2 = JSON.parse(JSON.stringify(_this.tuplesInput2.value[_this.nth_tuple2]));
+  let tuple1 = JSON.parse(JSON.stringify(
+    _this.tuplesInput1.value[_this.nth_tuple1]));
+  let tuple2 = JSON.parse(JSON.stringify(
+    _this.tuplesInput2.value[_this.nth_tuple2]));
   let i = _this.isContains(_this.res.value, tuple1, tuple2);
   if (i != -1) {
     _this.res.value.splice(i, 1);
     let des2 = {
       x: drawUtil.result.x,
-      y: drawUtil.result.y + _this.result_num * (drawUtil.tupleMargin + drawUtil.tupleHeight)
+      y: drawUtil.result.y + _this.result_num * (drawUtil.tupleMargin +
+        drawUtil.tupleHeight)
     };
     _this.result_num++;
 
@@ -588,15 +649,18 @@ DrawAlgebra.prototype.add_null_value = function(input) {
  * @param {tupleset_basic} res The result of union-all.
  * @param {tupleset_basic} input1 The left tupleset.
  * @param {tupleset_basic} input2 The right tupleset.
- * @param {function} nextAnimation What will do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin union-all.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin union-all.
+ * @param {function} nextAnimation What will do,
+ * after this animation has been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1,
+ * from this tuple to begin union-all.
+ * @param {Number} nth_tuple2 N-th tuple in input2,
+ * from this tuple to begin union-all.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  */
-DrawAlgebra.prototype.animUnionAll = function(res, input1, input2, nextAnimation,
-  nth_tuple1 = 0, nth_tuple2 = 0, color1 = drawUtil.colorSet[0],
-  color2 = drawUtil.colorSet[1]) {
+DrawAlgebra.prototype.animUnionAll = function(res, input1, input2,
+  nextAnimation, nth_tuple1 = 0, nth_tuple2 = 0,
+  color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1]) {
   let _this = this;
   DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
@@ -608,10 +672,10 @@ DrawAlgebra.prototype.animUnionAll = function(res, input1, input2, nextAnimation
   let desY = 0;
 
   if (_this.tuplesInput1.value.length < drawUtil.maxTableLength) {
-    _this.tableHeight1 = (input1.value.length + drawUtil.info_lines) *
+    _this.tableHeight1 = (input1.value.length + drawUtil.info_lines + 1) *
       (drawUtil.tupleHeight + drawUtil.tupleMargin);
   } else {
-    this.tableHeight1 = (drawUtil.maxTableLength + drawUtil.info_lines) *
+    this.tableHeight1 = (drawUtil.maxTableLength + drawUtil.info_lines + 1) *
       (drawUtil.tupleHeight + drawUtil.tupleMargin);
   }
   desY = _this.y1 + _this.tableHeight1;
@@ -633,9 +697,12 @@ DrawAlgebra.prototype.animUnionAll = function(res, input1, input2, nextAnimation
  * @param {tupleset_basic} res The result of union.
  * @param {tupleset_basic} input1 The left tupleset.
  * @param {tupleset_basic} input2 The right tupleset.
- * @param {function} nextAnimation What will do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin union.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin union.
+ * @param {function} nextAnimation What will do, after this animation has been
+ * done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin
+ * union.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin
+ * union.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -652,16 +719,20 @@ DrawAlgebra.prototype.animUnion = function(res, input1, input2,
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
 
   if (_this.nth_tuple1 <= _this.tuplesInput1.value.length - 1) {
-    _this.draw_compare_table(_this, delete_from_ts2, color1, color2, chosenColor1, chosenColor2);
+    _this.draw_compare_table(_this, delete_from_ts2, color1, color2,
+      chosenColor1, chosenColor2);
   } else {
     nextAnimation();
   }
 
   function delete_from_ts2() {
-    if (_this.is_Same(_this.src_or_val, _this.tuplesInput1.value[_this.nth_tuple1],
+    if (_this.is_Same(_this.src_or_val,
+        _this.tuplesInput1.value[_this.nth_tuple1],
         _this.tuplesInput2.value[_this.nth_tuple2])) {
-      drawUtil.disappear(_this.x2, _this.tuplesInput2.value[_this.nth_tuple2].position.y,
-        _this.width1, drawUtil.tupleHeight + drawUtil.tupleMargin, nextTuple, _this.imgDataBlank2);
+      drawUtil.disappear(_this.x2,
+        _this.tuplesInput2.value[_this.nth_tuple2].position.y,
+        _this.width1, drawUtil.tupleHeight + drawUtil.tupleMargin,
+        nextTuple, _this.imgDataBlank2);
 
       function nextTuple() {
         _this.tuplesInput2.value.splice(_this.nth_tuple2, 1);
@@ -673,8 +744,8 @@ DrawAlgebra.prototype.animUnion = function(res, input1, input2,
         return false;
       };
     } else {
-      _this.animUnionAll(res, _this.tuplesInput1, _this.tuplesInput2, nextAnimation,
-        nth_tuple1, nth_tuple2, color1, color2);
+      _this.animUnionAll(res, _this.tuplesInput1, _this.tuplesInput2,
+        nextAnimation, nth_tuple1, nth_tuple2, color1, color2);
     }
   };
 };
@@ -686,9 +757,12 @@ DrawAlgebra.prototype.animUnion = function(res, input1, input2,
  * @param {tupleset_basic} res The result of intersection.
  * @param {tupleset_basic} input1 The left tupleset.
  * @param {tupleset_basic} input2 The right tupleset.
- * @param {function} nextAnimation What will do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin intersection.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin intersection.
+ * @param {function} nextAnimation What will do, after this animation has
+ * been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin
+ * intersection.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin
+ * intersection.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -713,36 +787,43 @@ DrawAlgebra.prototype.animIntersection = function(res, input1, input2,
   }
 
   function move_and_delete() {
-    if (_this.is_Same(_this.src_or_val, _this.tuplesInput1.value[_this.nth_tuple1],
+    if (_this.is_Same(_this.src_or_val,
+        _this.tuplesInput1.value[_this.nth_tuple1],
         _this.tuplesInput2.value[_this.nth_tuple2])) {
       let srcTuple = {
         x: _this.tuplesInput1.value[_this.nth_tuple1].position.x,
-        y: _this.tuplesInput1.value[_this.nth_tuple1].position.y
+        y: _this.tuplesInput1.value[_this.nth_tuple1].position.y,
       };
       let desTuple = {
         x: drawUtil.result.x,
-        y: drawUtil.result.y + _this.nth_result * (drawUtil.tupleHeight + drawUtil.tupleMargin)
+        y: drawUtil.result.y +
+          _this.nth_result * (drawUtil.tupleHeight + drawUtil.tupleMargin),
       };
-      let imgData = drawUtil.ctx.getImageData(drawUtil.animField.x, drawUtil.animField.y,
-        drawUtil.fullWidth, drawUtil.fullHeight);
+      let imgData = drawUtil.ctx.getImageData(drawUtil.animField.x,
+        drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
       anim(() => {
-        return _this.tupleMoving(imgData, _this.tuplesInput1.value[_this.nth_tuple1],
+        return _this.tupleMoving(imgData,
+          _this.tuplesInput1.value[_this.nth_tuple1],
           srcTuple, desTuple, color1);
       }, deleteTuple);
 
       function deleteTuple() {
-        drawUtil.disappear(_this.x2, _this.tuplesInput2.value[_this.nth_tuple2].position.y,
+        drawUtil.disappear(_this.x2,
+          _this.tuplesInput2.value[_this.nth_tuple2].position.y,
           _this.width1, drawUtil.tupleHeight + drawUtil.tupleMargin,
           () => {
-            drawUtil.disappear(_this.x1, _this.tuplesInput1.value[_this.nth_tuple1].position.y,
-              _this.width1, drawUtil.tupleHeight + drawUtil.tupleMargin, nextTuple,
-              _this.imgDataBlank1);
+            drawUtil.disappear(_this.x1,
+              _this.tuplesInput1.value[_this.nth_tuple1].position.y,
+              _this.width1, drawUtil.tupleHeight + drawUtil.tupleMargin,
+              nextTuple, _this.imgDataBlank1);
           }, _this.imgDataBlank2);
       };
 
       function nextTuple() {
-        _this.imgDataResult = drawUtil.ctx.getImageData(drawUtil.result.x, drawUtil.result.y,
-          drawUtil.fullWidth - drawUtil.result.x, drawUtil.fullHeight - drawUtil.result.y);
+        _this.imgDataResult = drawUtil.ctx.getImageData(
+          drawUtil.result.x, drawUtil.result.y,
+          drawUtil.fullWidth - drawUtil.result.x,
+          drawUtil.fullHeight - drawUtil.result.y);
         _this.nth_result++;
         _this.tuplesInput1.value.splice(_this.nth_tuple1, 1);
         _this.tuplesInput2.value.splice(_this.nth_tuple2, 1);
@@ -773,9 +854,12 @@ DrawAlgebra.prototype.animIntersection = function(res, input1, input2,
  * @param {tupleset_basic} res The result of without.
  * @param {tupleset_basic} input1 The left tupleset.
  * @param {tupleset_basic} input2 The right tupleset.
- * @param {function} nextAnimation What will do, after this animation has been done.
- * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin without.
- * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin without.
+ * @param {function} nextAnimation What will do, after this animation has
+ * been done.
+ * @param {Number} nth_tuple1 N-th tuple in input1, from this tuple to begin
+ * without.
+ * @param {Number} nth_tuple2 N-th tuple in input2, from this tuple to begin
+ * without.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
@@ -787,7 +871,6 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
   color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1],
   chosenColor1 = drawUtil.isChosenColorSet[0],
   chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20) {
-  console.log(input1, input2);
   let _this = this;
   DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
@@ -800,17 +883,21 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
   }
 
   function delete_from_ts1() {
-    if (_this.is_Same(_this.src_or_val, _this.tuplesInput1.value[_this.nth_tuple1],
+    if (_this.is_Same(_this.src_or_val,
+        _this.tuplesInput1.value[_this.nth_tuple1],
         _this.tuplesInput2.value[_this.nth_tuple2])) {
-      drawUtil.disappear(_this.x1, _this.tuplesInput1.value[_this.nth_tuple1].position.y,
+      drawUtil.disappear(_this.x1,
+        _this.tuplesInput1.value[_this.nth_tuple1].position.y,
         _this.width1, drawUtil.tupleHeight + drawUtil.tupleMargin,
         () => {
           nextTuple();
         }, _this.imgDataBlank1);
 
       function nextTuple() {
-        _this.imgDataResult = drawUtil.ctx.getImageData(drawUtil.result.x, drawUtil.result.y,
-          drawUtil.fullWidth - drawUtil.result.x, drawUtil.fullHeight - drawUtil.result.y);
+        _this.imgDataResult = drawUtil.ctx.getImageData(
+          drawUtil.result.x, drawUtil.result.y,
+          drawUtil.fullWidth - drawUtil.result.x,
+          drawUtil.fullHeight - drawUtil.result.y);
         _this.nth_result++;
         _this.tuplesInput1.value.splice(_this.nth_tuple1, 1);
         _this.nth_tuple2 = 0;
@@ -818,8 +905,10 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
           _this.draw_compare_table(_this, delete_from_ts1, color1, color2,
             chosenColor1, chosenColor2);
         } else {
-          drawUtil.ctx.clearRect(drawUtil.animField.x + drawUtil.fullWidth / 2,
-            drawUtil.animField.y, drawUtil.fullWidth / 2, drawUtil.fullHeight - drawUtil.result.y);
+          drawUtil.ctx.clearRect(
+            drawUtil.animField.x + drawUtil.fullWidth / 2,
+            drawUtil.animField.y, drawUtil.fullWidth / 2,
+            drawUtil.fullHeight - drawUtil.result.y);
           drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.infoField.y,
             drawUtil.fullWidth, drawUtil.fullHeight);
           drawUtil.table(_this.tuplesInput1, _this.x1, _this.tabY,
@@ -828,7 +917,9 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
         }
       };
     } else {
-      drawUtil.ctx.clearRect(drawUtil.animField.x + drawUtil.fullWidth / 2, drawUtil.animField.y,
+      drawUtil.ctx.clearRect(
+        drawUtil.animField.x + drawUtil.fullWidth / 2,
+        drawUtil.animField.y,
         drawUtil.fullWidth / 2, drawUtil.fullHeight - drawUtil.result.y);
       drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.infoField.y,
         drawUtil.fullWidth, drawUtil.fullHeight);
@@ -845,14 +936,15 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
  * Draw tables and compare the tuples between two tables.
  * If they satisfy the condition, do nextAnimation.
  * @param {object} _this The object that calls this function.
- * @param {function} nextAnimation What will do, after this animation has been done.
+ * @param {function} nextAnimation What will do, after this animation has
+ * been done.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
  * @param {String} chosenColor1 Color of chosen tuple in table1.
  * @param {String} chosenColor2 Color of chosen tuple in table2.
  */
-DrawAlgebra.prototype.draw_compare_table = function(_this, nextAnimation, color1, color2,
-  chosenColor1, chosenColor2) {
+DrawAlgebra.prototype.draw_compare_table = function(_this, nextAnimation,
+  color1, color2, chosenColor1, chosenColor2) {
   _this.counter = _this.waitTime;
   drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
     drawUtil.fullWidth, drawUtil.fullHeight);
@@ -860,10 +952,12 @@ DrawAlgebra.prototype.draw_compare_table = function(_this, nextAnimation, color1
     drawUtil.getWidth(_this.tuplesInput1), color1, "black");
   drawUtil.table(_this.tuplesInput2, _this.x2, _this.tabY,
     drawUtil.getWidth(_this.tuplesInput2), color2, "black");
-  drawUtil.ctx.putImageData(_this.imgDataResult, drawUtil.result.x, drawUtil.result.y);
+  drawUtil.ctx.putImageData(_this.imgDataResult,
+    drawUtil.result.x, drawUtil.result.y);
   anim(() => {
     return _this.get_Same_Tuples(_this.src_or_val, _this, _this.waitTime,
-      _this.tuplesInput1, _this.tuplesInput2, color1, color2, chosenColor1, chosenColor2);
+      _this.tuplesInput1, _this.tuplesInput2, color1, color2,
+      chosenColor1, chosenColor2);
   }, nextAnimation);
 };
 /**
@@ -871,17 +965,21 @@ DrawAlgebra.prototype.draw_compare_table = function(_this, nextAnimation, color1
  * @param {array} imgData The image that before animation.
  * @param {tuple_basic} tuple1 Tuple of left relation.
  * @param {tuple_basic} tuple2 Tuple of right relation.
- * @param {Boolean} draw1 if it is true, show this tuple. If not, doesn't show it.
- * @param {Boolean} draw2 if it is true, show this tuple. If not, doesn't show it.
+ * @param {Boolean} draw1 if it is true, show this tuple. If not, doesn't
+ * show it.
+ * @param {Boolean} draw2 if it is true, show this tuple. If not, doesn't
+ * show it.
  * @param {coordinate} src1 The source position of tuple1.
  * @param {coordinate} src2 The source position of tuple2.
  * @param {coordinate} des The destination position of tuples.
  * @param {String} color1 Color of table1.
  * @param {String} color2 Color of table2.
- * @param {function} nextAnimation What will do, after this animation has been done.
+ * @param {function} nextAnimation What will do, after this animation has
+ * been done.
  */
-DrawAlgebra.prototype.animJoinTuple = function(imgData, tuple1, tuple2, draw1, draw2,
-  src1, src2, des, color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1],
+DrawAlgebra.prototype.animJoinTuple = function(imgData, tuple1, tuple2,
+  draw1, draw2, src1, src2, des,
+  color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1],
   nextAnimation = () => {}) {
   let _this = this;
 
@@ -897,7 +995,8 @@ DrawAlgebra.prototype.animJoinTuple = function(imgData, tuple1, tuple2, draw1, d
     if (draw1 && draw2) {
       if (src1.x != des.x || src1.y != des.y ||
         src2.x != (des.x + drawUtil.getWidth(tuple1)) || src2.y != des.y) {
-        drawUtil.ctx.putImageData(imgData, drawUtil.animField.x, drawUtil.animField.y);
+        drawUtil.ctx.putImageData(imgData,
+          drawUtil.animField.x, drawUtil.animField.y);
         _this.tupleMoving(imgData, tuple1, src1, des, color1, "black", false);
         _this.tupleMoving(imgData, tuple2, src2, {
           x: des.x + size1,
@@ -908,7 +1007,8 @@ DrawAlgebra.prototype.animJoinTuple = function(imgData, tuple1, tuple2, draw1, d
       }
     } else if (!draw2) {
       if (src1.x != des.x || src1.y != des.y) {
-        drawUtil.ctx.putImageData(imgData, drawUtil.animField.x, drawUtil.animField.y);
+        drawUtil.ctx.putImageData(imgData,
+          drawUtil.animField.x, drawUtil.animField.y);
         _this.tupleMoving(imgData, tuple1, src1, des, color1, "black", false);
       } else {
         return true;
@@ -933,11 +1033,13 @@ DrawAlgebra.prototype.tupleMoving = function(imgData, tuple, src, des,
   let size = {};
   size.tupleWidth = drawUtil.getWidth(tuple);
   size.tupleHeight = drawUtil.tupleHeight;
-  if (drawImg) drawUtil.ctx.putImageData(imgData, drawUtil.animField.x, drawUtil.animField.y);
+  if (drawImg) drawUtil.ctx.putImageData(imgData,
+    drawUtil.animField.x, drawUtil.animField.y);
   drawUtil.ctx.clearRect(src.x, src.y - drawUtil.tupleMargin / 2,
     size.tupleWidth, size.tupleHeight + drawUtil.tupleMargin);
   src = drawUtil.nextPosition(tuple, size, src, des, false);
-  drawUtil.tuple(src.x, src.y, size.tupleWidth, tupleColor, textcolor, drawUtil.getText(tuple));
+  drawUtil.tuple(src.x, src.y, size.tupleWidth, tupleColor, textcolor,
+    drawUtil.getText(tuple));
   if (src.x === des.x && src.y === des.y) {
     return true;
   }
@@ -949,13 +1051,16 @@ DrawAlgebra.prototype.tupleMoving = function(imgData, tuple, src, des,
  * @param {String} color The color of this table.
  * @param {coordinate} src The source position of table.
  * @param {coordinate} des The destination position of table.
- * @param {function} nextAnimation What will do, after this animation has been done.
+ * @param {function} nextAnimation What will do, after this animation has
+ * been done.
  * @param {Boolean} transform Transform the shape of table or not.
  * @param {Boolean} contain_columns_name Draw the columns or not.
- * @param {Boolean} contain_name_info Draw the name and information of table or not.
+ * @param {Boolean} contain_name_info Draw the name and information of table
+ * or not.
  */
-DrawAlgebra.prototype.moveTable = function(table, color, src, des, nextAnimation,
-  transform = false, contain_columns_name = true, contain_name_info = true) {
+DrawAlgebra.prototype.moveTable = function(table, color, src, des,
+  nextAnimation, transform = false, contain_columns_name = true,
+  contain_name_info = true) {
   let _this = this;
   let tabColor = color;
   let size = {};
@@ -968,13 +1073,14 @@ DrawAlgebra.prototype.moveTable = function(table, color, src, des, nextAnimation
   }
   let height = 0;
   if (table.value.length > drawUtil.maxTableLength) {
-    height = (drawUtil.maxTableLength + drawUtil.info_lines) *
+    height = (drawUtil.maxTableLength + drawUtil.info_lines+1) *
       (drawUtil.tupleHeight + drawUtil.tupleMargin);
   } else {
-    height = (table.value.length + drawUtil.info_lines) *
+    height = (table.value.length + drawUtil.info_lines+1) *
       (drawUtil.tupleHeight + drawUtil.tupleMargin);
   }
-  _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
+  _this.imgData = drawUtil.ctx.getImageData(0, 0,
+    drawUtil.fullWidth, drawUtil.fullHeight);
 
   if (table.color) {
     tabColor = table.color
@@ -988,11 +1094,12 @@ DrawAlgebra.prototype.moveTable = function(table, color, src, des, nextAnimation
       drawUtil.ctx.putImageData(_this.imgData, 0, 0);
     }
     if (contain_name_info) {
-      drawUtil.ctx.clearRect(src.x - 1, src.y - (drawUtil.info_lines - 1) *
+      drawUtil.ctx.clearRect(src.x - 1, src.y - drawUtil.info_lines *
         (drawUtil.tupleHeight + drawUtil.tupleMargin),
         drawUtil.getWidth(table) + 1, height);
     }
-    drawUtil.ctx.clearRect(src.x - 1, src.y, drawUtil.getWidth(table) + 1, height);
+    drawUtil.ctx.clearRect(src.x - 1, src.y,
+      drawUtil.getWidth(table) + 1, height);
     src = drawUtil.nextPosition(table, size, src, des, transform);
     drawUtil.table(table, src.x, src.y, src.tupleWidth, tabColor, "black",
       contain_columns_name, contain_name_info);
@@ -1004,13 +1111,16 @@ DrawAlgebra.prototype.moveTable = function(table, color, src, des, nextAnimation
 };
 /**
  * If the sources or values of tuples are same, return true.
- * @param {String} src_or_val Compare the source of tuples or the value of tuples.
+ * @param {String} src_or_val Compare the source of tuples or the value of
+ * tuples.
  * @param {tuple_basic} tuple1 Tuple of a relation.
  * @param {tuple_basic} tuple2 Tuple of the other relation.
- * @param {function} nextAnimation What will do, after this animation has been done.
+ * @param {function} nextAnimation What will do, after this animation has
+ * been done.
  * @returns {Boolean}
  */
-DrawAlgebra.prototype.is_Same = function(src_or_val = "src", tuple1, tuple2, nextAnimation) {
+DrawAlgebra.prototype.is_Same = function(src_or_val = "src", tuple1, tuple2,
+  nextAnimation) {
   let _this = this;
   let judge = {
     src: () => {
@@ -1031,7 +1141,8 @@ DrawAlgebra.prototype.is_Same = function(src_or_val = "src", tuple1, tuple2, nex
 };
 /**
  * Find the tuples between two relations that have same source or value.
- * @param {String} src_or_val Compare the source of tuples or the value of tuples.
+ * @param {String} src_or_val Compare the source of tuples or the value of
+ * tuples.
  * @param {object} _this The object that calls this function.
  * @param {Number} waitTime How long will the animation stop.
  * @param {tupleset_basic} tuplesInput1 One relation.
@@ -1057,10 +1168,12 @@ DrawAlgebra.prototype.get_Same_Tuples = function(src_or_val = "src", _this,
     drawUtil.fullWidth, drawUtil.fullHeight - drawUtil.result.y);
   drawUtil.table(tuplesInput1, drawUtil.animField.x, _this.tabY,
     drawUtil.getWidth(tuplesInput1), color1, "black");
-  drawUtil.table(tuplesInput2, drawUtil.fullWidth - drawUtil.getWidth(tuplesInput2), _this.tabY,
+  drawUtil.table(tuplesInput2,
+    drawUtil.fullWidth - drawUtil.getWidth(tuplesInput2), _this.tabY,
     drawUtil.getWidth(tuplesInput2), color2, "black");
   let text = "Find the same tuples between two relations.";
-  drawUtil.write_text(text, drawUtil.infoField.x, drawUtil.infoField.y + 20, "black", 20);
+  drawUtil.write_text(text, drawUtil.infoField.x, drawUtil.infoField.y + 20,
+    "black", 20);
   drawUtil.tuple(tuple1x, tuple1y, drawUtil.getWidth(tuple1), chosenColor1,
     "white", drawUtil.getText(tuple1));
   drawUtil.tuple(tuple2x, tuple2y, drawUtil.getWidth(tuple2), chosenColor2,

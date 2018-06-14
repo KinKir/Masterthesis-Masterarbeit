@@ -21,7 +21,7 @@ function DrawProcess(res_SQL) {
   // the axis x of table.
   this.tabX = drawUtil.animField.x;
   // the axis y of table.
-  this.tabY = drawUtil.animField.y + (drawUtil.info_lines - 1) *
+  this.tabY = drawUtil.animField.y + drawUtil.info_lines *
     (drawUtil.tupleHeight + drawUtil.tupleMargin);
   let _this = this;
   // Draw animation about algebra.
@@ -39,9 +39,13 @@ function DrawProcess(res_SQL) {
      * After animation, set _this.done.from = true.
      */
     if (!_this.done.from) {
-      drawUtil.ctx.fillText(text = "Now is doing 'from' clause: from " +
-        _this.res.query.from.toString(), 100, 450);
-      _this.from(_this.res.from);
+      if (_this.done.from === null) {
+        _this.done.from = true;
+      } else {
+        drawUtil.ctx.fillText(text = "Now is doing 'from' clause: from " +
+          _this.res.query.from.toString(), 100, 450);
+        _this.from(_this.res.from);
+      }
     }
     /**
      * Below is animation of "where".
@@ -50,17 +54,26 @@ function DrawProcess(res_SQL) {
      * After animation, set _this.done.where = true.
      */
     if ((!_this.done.where) && (_this.done.from)) {
-      if (_this.res.query.where.length === 0) {
-        drawUtil.table(_this.res.where.result, drawUtil.result.x,
-          drawUtil.result.y, drawUtil.getWidth(_this.res.where.result),
-          drawUtil.colorSet[0], "black");
+      if (_this.done.where === null) {
         _this.done.where = true;
       } else {
-        _this.where(_this.res.query, _this.res.where, "whole");
+        if (_this.res.query.where.length === 0) {
+          drawUtil.table(_this.res.where.result, drawUtil.result.x,
+            drawUtil.result.y, drawUtil.getWidth(_this.res.where.result),
+            drawUtil.colorSet[0], "black");
+          _this.done.where = true;
+        } else {
+          _this.where(_this.res.query, _this.res.where, "whole");
+        }
       }
     }
+
     if ((!_this.done.grouping) && (_this.done.where)) {
-      _this.grouping(_this.res.query, _this.res.grouping);
+      if (_this.done.grouping === null) {
+        _this.done.grouping = true;
+      } else {
+        _this.grouping(_this.res.query, _this.res.grouping);
+      }
     };
     /**
      * Below is animation of "select".
@@ -163,7 +176,7 @@ DrawProcess.prototype.selection = function(res_select) {
   let relNames = tupleset.name.slice();
   let relNamesPos = {
     x: drawUtil.animField.x,
-    y: drawUtil.animField.y + (drawUtil.info_lines - 1) *
+    y: drawUtil.animField.y + drawUtil.info_lines *
       (drawUtil.tupleHeight + drawUtil.tupleMargin) - 15
   };
   // seprate tupleset to columns
@@ -176,7 +189,7 @@ DrawProcess.prototype.selection = function(res_select) {
   for (let i = 0; i < tupleset.length; i++) {
     let x = drawUtil.animField.x +
       i * (drawUtil.columnWidth + drawUtil.tupleMargin);
-    let y = drawUtil.animField.y + (drawUtil.info_lines - 1) *
+    let y = drawUtil.animField.y + drawUtil.info_lines *
       (drawUtil.tupleHeight + drawUtil.tupleMargin);
     if (tupleset[i].name[0] != tabName) {
       colorNum++;
@@ -232,7 +245,6 @@ DrawProcess.prototype.from = function(tables) {
   let src = [];
   let width = [];
   let height = [];
-  console.log("here is from!");
   drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
     drawUtil.fullWidth, drawUtil.fullHeight);
   _this.drawInfo.clearLeftInfo();
@@ -261,7 +273,7 @@ DrawProcess.prototype.from = function(tables) {
     width.push(drawUtil.getWidth(tables[i]));
     if (tables[i].value.length > drawUtil.maxTableLength) {
       height.push((drawUtil.maxTableLength + 2) * (drawUtil.tupleHeight +
-        drawUtil.tupleMargin) + drawUtil.info_lines * (drawUtil.tupleHeight +
+        drawUtil.tupleMargin) + (drawUtil.info_lines + 1) * (drawUtil.tupleHeight +
         drawUtil.tupleMargin));
     } else {
       height.push(tables[i].value.length * (drawUtil.tupleHeight +
@@ -430,7 +442,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   };
   //cross join with other relations' tuples. just show the join result in where.core.
   function callAnimCrossJoin() {
-    if(res_where.core.length < 1 || _this.i >= res_where.compareSets.length){
+    if (res_where.core.length < 1 || _this.i >= res_where.compareSets.length) {
       if (step == "whole") {
         _this.i = 0;
         _this.j = 0;
@@ -486,7 +498,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   };
 
   function anim_intersection_union() {
-    if(res_where.intermediateResult.length < 1){
+    if (res_where.intermediateResult.length < 1) {
       _this.drawInfo.clearLeftInfo();
       _this.done.where = true;
       _this.begin();
@@ -519,7 +531,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         };
         let desRes = {
           x: drawUtil.animField.x,
-          y: drawUtil.animField.y + (drawUtil.info_lines - 1) *
+          y: drawUtil.animField.y + drawUtil.info_lines *
             (drawUtil.tupleHeight + drawUtil.tupleMargin)
         };
         if (compareSets[_this.i - 1].step.condition.union == "and") {
@@ -557,8 +569,8 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
  * @param {query} query the SQL query.
  * @param {output_of_grouping} res_grouping result of where in SQL query.
  */
-DrawProcess.prototype.grouping = function(query, res_grouping) {console.log("grouping");
-  if(!query){console.log("grouping not exists");
+DrawProcess.prototype.grouping = function(query, res_grouping) {
+  if (!query) {
     this.done.grouping = true;
     return true;
   }
@@ -568,7 +580,7 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {console.log("gro
   let table = {};
   table.x = drawUtil.animField.x;
   table.y = drawUtil.animField.y +
-    (drawUtil.info_lines - 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin);
+    drawUtil.info_lines * (drawUtil.tupleHeight + drawUtil.tupleMargin);
   table.width = drawUtil.getWidth(resGrouping);
   table.color = drawUtil.colorSet[0];
   table.chosenColor = drawUtil.isChosenColorSet[0];

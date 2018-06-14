@@ -1,14 +1,14 @@
-/*******************************************************************************
- ********* This is the interface that connects html and JS functions.  *********
- ********* This file contains all global variables initionlization.    *********
- ********* All the functions of calling drawing are included in a      *********
- ********* one case Object draw().                                     *********
- ******************************************************************************/
+/******************************************************************************
+ ********* This is the interface that connects html and JS functions.  ********
+ ********* This file contains all global variables initionlization.    ********
+ ********* All the functions of calling drawing are included in a      ********
+ ********* one case Object draw().                                     ********
+ *****************************************************************************/
 /** Initialize drawUtil, set it be a global variable.*/
 window.drawUtil = new DrawUtil();
 /** Set a set to save current button */
 window.curBtn = {};
-window.setBtnStyle = function(btn){
+window.setBtnStyle = function(btn) {
   window.curBtn.style = "";
   window.curBtn = btn;
   window.curBtn.style = "background: #008CBA;color: white;";
@@ -42,8 +42,8 @@ resetIntervalIDs = function() {
  * @namespace draw
  */
 draw = {
-  canvasWidth: parseInt(drawUtil.canvas.getAttribute("width")),
-  canvasHeight: parseInt(drawUtil.canvas.getAttribute("height")),
+  canvasWidth: canvasInfo.fullWidth,
+  canvasHeight: canvasInfo.fullHeight,
   /** Draw information.*/
   drawInfo: function() {
     return new DrawInfo();
@@ -66,7 +66,8 @@ draw = {
     };
   }
   document.getElementById("queryTip").innerHTML =
-    "Please type a number in Input-Box. (Range: " + "[0," + (queries.SQL_query.length - 1) + "])";
+    "Please type a number in Input-Box. (Range: " + "[0," +
+    (queries.SQL_query.length - 1) + "])";
 
 })();
 /** Set speed of animation.*/
@@ -85,35 +86,37 @@ draw.sqlProcess = function() {
   let sqlQuery = queryBtn.value;
   sqlQuery = sqlQuery.replace(/\s+/g, "");
   let queryLen = queries.SQL_query.length;
-  if ((sqlQuery - 0) < 0 || (sqlQuery - 0) > (queryLen - 1) || sqlQuery.length === 0) {
+  if ((sqlQuery - 0) < 0 || (sqlQuery - 0) > (queryLen - 1) ||
+    sqlQuery.length === 0) {
     _this.drawInfo().write("Please type a Number in Range [0," +
       (queryLen - 1) + "]!  ^_^");
     return false;
   }
-  let clauses = ["select","from","where","grouping","ordering"];
-  for(let i = 0;i<clauses.length;i++){
-    let cap_clause = clauses[i].charAt(0).toUpperCase() + clauses[i].substring(1);
-      document.getElementById(clauses[i]).style.display = "none";
+  for (let i = 0; i < clauses.length; i++) {
+    let cap_clause = clauses[i].charAt(0).toUpperCase() +
+      clauses[i].substring(1);
+    document.getElementById(clauses[i]).style.display = "none";
   }
   document.getElementById("a_subWhere").style.display = "none";
-  let where_sub = ["compareSets","core","intermediateResult"];
-  for(let i = 0;i<where_sub.length;i++){
-      document.getElementById("div" + where_sub[i]).style.display = "none";
+  let where_sub = ["compareSets", "core", "intermediateResult"];
+  for (let i = 0; i < where_sub.length; i++) {
+    document.getElementById("div" + where_sub[i]).style.display = "none";
   }
   let res_SQL = SQL_process(sqlQuery);
 
   document.getElementById("wholeProcess").style.display = "";
-  for(let i = 0;i<clauses.length;i++){
-    let cap_clause = clauses[i].charAt(0).toUpperCase() + clauses[i].substring(1);
-    if(res_SQL["res" + cap_clause]){
+  for (let i = 0; i < clauses.length; i++) {
+    let cap_clause = clauses[i].charAt(0).toUpperCase() +
+      clauses[i].substring(1);
+    if (res_SQL["res" + cap_clause]) {
       document.getElementById(clauses[i]).style.display = "";
     }
   }
-  if(res_SQL.resWhere.compareSets.length > 0){
+  if (res_SQL.resWhere.compareSets.length > 0) {
     document.getElementById("a_subWhere").style.display = "";
   }
-  for(let i = 0;i<where_sub.length;i++){
-    if(res_SQL.resWhere[where_sub[i]].length > 0){
+  for (let i = 0; i < where_sub.length; i++) {
+    if (res_SQL.resWhere[where_sub[i]].length > 0) {
       document.getElementById("div" + where_sub[i]).style.display = "";
     }
   }
@@ -138,7 +141,8 @@ draw.sqlProcess = function() {
       } else {
         bgcolor_factor--;
       }
-      tipBox.style.backgroundColor = "rgba(243,255,0," + (bgcolor_factor / bgcolor_denominator) + ")";
+      tipBox.style.backgroundColor = "rgba(243,255,0," +
+        (bgcolor_factor / bgcolor_denominator) + ")";
       bgcolor_counter--;
     }, 1000 / 45);
 
@@ -148,7 +152,8 @@ draw.sqlProcess = function() {
   }
   for (let i = 0; i < res_SQL.resFrom.length; i++) {
     res_SQL.resFrom[i].color = drawUtil.colorSet[i % drawUtil.colorSet.length];
-    res_SQL.resFrom[i].chosencolor = drawUtil.isChosenColorSet[i % drawUtil.isChosenColorSet.length];
+    res_SQL.resFrom[i].chosencolor =
+      drawUtil.isChosenColorSet[i % drawUtil.isChosenColorSet.length];
   }
   console.log(res_SQL);
   draw.sqlProcess.bindBtn(_this, res_SQL);
@@ -165,8 +170,13 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
         //If the button means all steps, set all steps be false.
         resetCtb();
         dp.done.setDefault();
+        for(let i = 0;i<clauses.length;i++){
+          if(!res_SQL["res" + clauses[i].charAt(0).toUpperCase() +
+            clauses[i].substring(1)]){
+            dp.done[clauses[i]] = null;
+          }
+        }
         dp.begin();
-        console.log("click wholeProcess!");
       } else if (this.getAttribute('id') == "compare" ||
         this.getAttribute('id') == "crossJoin" ||
         this.getAttribute('id') == "intersection_union") {
@@ -196,7 +206,6 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
         dp.done.setFinish();
         dp.done.setStatus(this.getAttribute('id'), false);
         dp.begin();
-        console.log("click ", this.getAttribute('id'));
       }
     };
   }
@@ -221,8 +230,10 @@ draw.algebra.single_algebra = function(single = true) {
   let query_algebra = queries.algebra.single;
   draw.algebra(query_algebra);
   if (single) {
-    ts1 = JSON.parse(JSON.stringify(projection(query_algebra.rel1.tuple_set)[0]));
-    ts2 = JSON.parse(JSON.stringify(projection(query_algebra.rel2.tuple_set)[0]));
+    ts1 = JSON.parse(JSON.stringify(
+      projection(query_algebra.rel1.tuple_set)[0]));
+    ts2 = JSON.parse(JSON.stringify(
+      projection(query_algebra.rel2.tuple_set)[0]));
     attr1 = query_algebra.attr1;
     attr2 = query_algebra.attr2;
     op = query_algebra.op;
@@ -237,7 +248,8 @@ draw.algebra.single_algebra = function(single = true) {
   let color2;
   let chosenColor1;
   let chosenColor2;
-  this.bindBtn(ts1, ts2, color1, color2, chosenColor1, chosenColor2, attr1, attr2, op);
+  this.bindBtn(ts1, ts2, color1, color2,
+    chosenColor1, chosenColor2, attr1, attr2, op);
 };
 draw.algebra.results = [];
 /** Draw animation of algebra that just has more than one level in query.*/
@@ -275,8 +287,10 @@ draw.algebra.multi_algebra = function() {
       }, 1000);
       return true;
     }
-    _this.ts1 = JSON.parse(JSON.stringify(projection(query.rel1.tuple_set)[0]));
-    _this.ts2 = JSON.parse(JSON.stringify(projection(query.rel2.tuple_set)[0]));
+    _this.ts1 = JSON.parse(JSON.stringify(
+      projection(query.rel1.tuple_set)[0]));
+    _this.ts2 = JSON.parse(JSON.stringify(
+      projection(query.rel2.tuple_set)[0]));
     _this.attr1 = query_algebra.attr1;
     _this.attr2 = query_algebra.attr2;
     _this.op = query_algebra.op;
@@ -351,7 +365,8 @@ draw.algebra.getRes = {
   },
 };
 /** Bind functions to button.*/
-draw.algebra.bindBtn = function(ts1, ts2, color1, color2, chosenColor1, chosenColor2, attr1, attr2, op) {
+draw.algebra.bindBtn = function(ts1, ts2, color1, color2,
+  chosenColor1, chosenColor2, attr1, attr2, op) {
   let _this = this;
   let aBtn = document.getElementsByName('algebra');
   for (let i = 0; i < aBtn.length; i++) {
