@@ -455,7 +455,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         return true;
       }
     }
-    window.setBtnStyle(document.getElementById("crossJoin"));
+    window.setBtnStyle(document.getElementById("core"));
     if (res_where.core[_this.i].name.length ==
       res_where.compareSets[_this.i].name.length) {
       _this.i++;
