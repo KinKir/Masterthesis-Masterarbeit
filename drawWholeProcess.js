@@ -636,44 +636,6 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
 DrawProcess.prototype.move_to_box = function() {
 
 };
-
-/**
- * @typedef {object} attr_pos
- * @property {Number} width
- * @property {Number} x
- * @property {Number} y
- */
-/**
- * Get the position of attribute in column.
- * @param {columns} columns
- * @param {Number} x axis x of column
- * @param {Number} y axis y of column
- * @param {String} attr
- * @param {Number} width
- * @return {attr_pos} Position and width of attribute
- */
-get_Attr_Pos_in_column = function(columns, x, y, attr, width) {
-  let pos = 0;
-  let counter = 0;
-  let find = false;
-  let tmpcolumns = [];
-  for (let i in columns) {
-    tmpcolumns = tmpcolumns.concat(columns[i].columns);
-  }
-  for (let i in tmpcolumns) {
-    if (tmpcolumns[i] === attr) {
-      pos = counter;
-      find = true;
-      break;
-    }
-    counter++;
-  }
-  let res = {};
-  res.width = width / tmpcolumns.length;
-  res.x = x + (pos) * res.width;
-  res.y = y;
-  return res;
-};
 /**
  * Get the positions of relations with their names in tuplesets_array.
  * @param {String} names which relations' positions we need to get.

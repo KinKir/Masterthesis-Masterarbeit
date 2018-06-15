@@ -67,7 +67,9 @@ DrawUtil.prototype.tuple = function(x, y, width, color, colorText, text) {
   let ctx = _this.ctx;
   if (width >= _this.maxTableWidth) {
     width = _this.maxTableWidth;
-    text = [text[0], text[1], text[2], "...", text[text.length - 2], text[text.length - 1]];
+    text = [text[0], text[1], text[2], "...", text[text.length - 2],
+      text[text.length - 1]
+    ];
   }
   ctx.save();
   ctx.fillStyle = color;
@@ -109,7 +111,8 @@ DrawUtil.prototype.colors = function() {
  * @param {String} color The color of table.
  * @param {String} colorText The color of text.
  * @param {Boolean} contain_columns_name Draw the columns' names or not.
- * @param {Boolean} contain_name_info Draw the names and tupleset's information or not.
+ * @param {Boolean} contain_name_info Draw the names and tupleset's information
+ * or not.
  */
 DrawUtil.prototype.table = function(table, x, y, width, color, colorText,
   contain_columns_name = true, contain_name_info = true) {
@@ -142,7 +145,8 @@ DrawUtil.prototype.table = function(table, x, y, width, color, colorText,
   } else {
     y = y - _this.tupleHeight - _this.tupleMargin;
   }
-  ctx.clearRect(x, y + (_this.info_lines + 1) * (_this.tupleHeight + _this.tupleMargin),
+  ctx.clearRect(x, y + (_this.info_lines + 1) * (_this.tupleHeight +
+      _this.tupleMargin),
     width, _this.tupleHeight);
   //Draw tuples values.
   let imgPos = 0;
@@ -196,7 +200,8 @@ DrawUtil.prototype.drawTupleset = function(imgPos, realPos, table, x, y, width,
       "x": x,
       "y": y + (imgPos + 1) * (_this.tupleHeight + _this.tupleMargin)
     };
-    this.tuple(table.value[realPos].position.x, table.value[realPos].position.y,
+    this.tuple(table.value[realPos].position.x,
+      table.value[realPos].position.y,
       width, color, colorText, text);
     if (realPos != pausePoint) {
       imgPos++;
@@ -253,9 +258,11 @@ DrawUtil.prototype.getWidth = function(tupleset) {
  * @param {Number} width The width of rect.
  * @param {Number} height The height of rect.
  * @param {function} nextAnimation After disappear, what should do.
- * @param {array} imgData The picture of early status of where should be disappear.
+ * @param {array} imgData The picture of early status of where should be
+ * disappear.
  */
-DrawUtil.prototype.disappear = function(x, y, width, height, nextAnimation, imgData) {
+DrawUtil.prototype.disappear = function(x, y, width, height, nextAnimation,
+  imgData) {
   let _this = this;
   let ctx = _this.ctx;
   let n = 0;
@@ -307,15 +314,18 @@ DrawUtil.prototype.setWhite = function() {
 };
 /**
  * This is for generate new tables, when the condition's attribute is number.
- * @param {String|Number} tupleValue The condition's attribute, which is Number or String.
+ * @param {String|Number} tupleValue The condition's attribute, which is Number
+ * or String.
  * @param {String} color Color of this new table.
  * @param {String} chosencolor Chosen color of this new table.
  * @param {Number} x The axis x of this new table.
  * @param {Number} y The axis y of this new table.
  * @returns {tupleset_basic} new table.
  */
-DrawUtil.prototype.generateNewTable = function(tupleValue, color = this.colorSet[1],
-  chosencolor = this.isChosenColorSet[1], x = this.fullWidth - 100, y = this.animField.y + 30) {
+DrawUtil.prototype.generateNewTable = function(
+  tupleValue, color = this.colorSet[1],
+  chosencolor = this.isChosenColorSet[1],
+  x = this.fullWidth - 100, y = this.animField.y + 30) {
   let table = algebraUtil.initRelation();
   table.chosencolor = chosencolor;
   table.color = color;
@@ -363,7 +373,8 @@ DrawUtil.prototype.getText = function(tuple) {
  * @param {Number} endAngle The endAngle of ellipse.
  * @param {Boolean} antiClockWise AntiClockWise or not.
  */
-DrawUtil.prototype.ellipse = function(x, y, r, startAngle, endAngle, antiClockWise) {
+DrawUtil.prototype.ellipse = function(x, y, r, startAngle, endAngle,
+  antiClockWise) {
   let _this = this;
   let ctx = _this.ctx;
   ctx.save();
@@ -405,10 +416,12 @@ DrawUtil.prototype.drawDB = function(x, y, width, height) {
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
   ctx.lineWidth = 2;
-  _this.ellipse(x, y + height / 2, width / 2, 0.5 * Math.PI, 1.5 * Math.PI, false);
+  _this.ellipse(x, y + height / 2,
+    width / 2, 0.5 * Math.PI, 1.5 * Math.PI, false);
   _this.line(x, y, x + width, y);
   _this.line(x, y + height, x + width, y + height);
-  _this.ellipse(x + width, y + height / 2, width / 2, 1.5 * Math.PI, 0.5 * Math.PI, false);
+  _this.ellipse(x + width, y + height / 2,
+    width / 2, 1.5 * Math.PI, 0.5 * Math.PI, false);
   ctx.fillText("Database", x, y + height / 2);
   ctx.restore();
 };
@@ -473,7 +486,8 @@ DrawUtil.prototype._opImg = {
  */
 /**
  * Get the next position of a tuple or table.
- * @param {tuple_basic|tupleset_basic} input The tuple or tupleset that need to move.
+ * @param {tuple_basic|tupleset_basic} input The tuple or tupleset that need
+ * to move.
  * @param {size} size The size of this input.
  * @param {coordinate} src The source coordinate of this input.
  * @param {coordinate} des The destination coordinate of this input.
@@ -562,7 +576,8 @@ DrawUtil.prototype.nextPosition = function(input, size, src, des, transform) {
 /**
  * Separate the relation from a joined tupleset.
  * @param {tupleset_basic} tupleset The tupleset that need to be separated.
- * @returns {tupleset_basic_array} The array of tupleset that are separated from tupleset.
+ * @returns {tupleset_basic_array} The array of tupleset that are separated
+ * from tupleset.
  */
 DrawUtil.prototype.sep_ts_col = function(tupleset) {
   let output = [];
@@ -597,7 +612,8 @@ DrawUtil.prototype.sep_ts_col = function(tupleset) {
  * @param {String} color The color of the text.
  * @param {Number} font_size The size of the text.
  */
-DrawUtil.prototype.write_text = function(text, x, y, color = "black", font_size = 15) {
+DrawUtil.prototype.write_text = function(text, x, y, color = "black",
+  font_size = 15) {
   this.ctx.save();
   this.ctx.fillStyle = "black";
   this.ctx.font = font_size + "px Arial";
@@ -612,10 +628,97 @@ DrawUtil.prototype.write_text = function(text, x, y, color = "black", font_size 
  * @param {String} color The color of the text.
  * @param {Number} font_size The size of the text.
  */
-DrawUtil.prototype.zoom = function(text, x, y, color = "black", font_size = 15) {
-  this.ctx.save();
-  this.ctx.fillStyle = "black";
-  this.ctx.font = font_size + "px Arial";
-  this.ctx.fillText(text, x, y);
-  this.ctx.restore();
+DrawUtil.prototype.zoom = function(
+  text, x, y, width, height, color = "black", font_size = 20) {
+  y = y + height;
+  let ctx = this.ctx;
+  ctx.save();
+  ctx.beginPath();
+  let zoomSize = {};
+  zoomSize.width = width + 40;
+  zoomSize.height = width + 40;
+  //Left line.
+  ctx.shadowBlur = 1;
+  ctx.shadowColor = "black";
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 1;
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "gray";
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + width / 2 - zoomSize.width / 2,
+    y + zoomSize.height / 2);
+  //Circle.
+  ctx.lineWidth = 5;
+  let bigCircle = {};
+  bigCircle.radius = width / 2 + 20;
+  let gapCircle = 3;
+  let smCircle = {};
+  smCircle.radius = bigCircle.radius - gapCircle;
+  ctx.arc(x + width / 2, y + zoomSize.height / 2 + height / 2,
+    bigCircle.radius, Math.PI, 3 * Math.PI);
+  ctx.stroke();
+  //Right line.
+  ctx.moveTo(x + width / 2 + bigCircle.radius,
+    y + zoomSize.height / 2 + height / 2);
+  ctx.lineTo(x + width / 2 + zoomSize.width / 2,
+    y + zoomSize.height / 2);
+  ctx.lineTo(x + width, y);
+  ctx.stroke();
+  ctx.closePath();
+  ctx.restore();
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.fillStyle = "white";
+  ctx.arc(x + width / 2, y + zoomSize.height / 2 + height / 2,
+    bigCircle.radius, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.closePath();
+  ctx.restore();
+  //Text part.
+  ctx.save();
+  ctx.fillStyle = "black";
+  ctx.textAlign = "center";
+  ctx.font = font_size + "px Arial";
+  ctx.fillText(text, x + width / 2,
+    y + height + zoomSize.height / 2);
+  ctx.restore();
 };
+
+/**
+ * @typedef {object} attr_pos
+ * @property {Number} width
+ * @property {Number} x
+ * @property {Number} y
+ */
+/**
+ * Get the position of attribute in column.
+ * @param {columns} columns
+ * @param {Number} x axis x of column
+ * @param {Number} y axis y of column
+ * @param {String} attr
+ * @param {Number} width
+ * @return {attr_pos} Position and width of attribute
+ */
+DrawUtil.prototype.get_Attr_Pos_in_column =
+  function(columns, x, y, attr, width) {
+    let pos = 0;
+    let counter = 0;
+    let tmpcolumns = [];
+    for (let i in columns) {
+      tmpcolumns = tmpcolumns.concat(columns[i].columns);
+    }
+    for (let i in tmpcolumns) {
+      if (tmpcolumns[i] === attr) {
+        pos = counter;
+        break;
+      }
+      counter++;
+    }
+    let res = {};
+    res.width = width / tmpcolumns.length;
+    res.x = x + (pos) * res.width;
+    res.y = y;
+    res.pos = pos;
+    return res;
+  };

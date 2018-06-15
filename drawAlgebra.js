@@ -121,7 +121,7 @@ DrawAlgebra.prototype.animCrossJoin = function(res, input1, input2,
           return true;
         }
         let imgDataChosen = drawUtil.ctx.getImageData(
-          drawUtil.animField.x, drawUtil.animField.y,
+          0, drawUtil.animField.y,
           drawUtil.fullWidth, drawUtil.fullHeight);
         _this.move_to_result(_this, imgDataChosen, color1, color2, loop,
           tuple1.position, tuple2.position);
@@ -350,7 +350,7 @@ DrawAlgebra.prototype.animInnerJoin = function(res, input1, input2,
  * @returns {Boolean}
  */
 DrawAlgebra.prototype.draw_tables = function(_this, color1, color2) {
-  drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
+  drawUtil.ctx.clearRect(0, drawUtil.animField.y,
     drawUtil.fullWidth, drawUtil.fullHeight);
   drawUtil.table(_this.tuplesInput1, _this.x1, _this.tabY,
     drawUtil.getWidth(_this.tuplesInput1), color1, "black");
@@ -360,7 +360,7 @@ DrawAlgebra.prototype.draw_tables = function(_this, color1, color2) {
     drawUtil.ctx.putImageData(_this.imgDataResult, drawUtil.result.x,
       drawUtil.result.y);
   }
-  _this.imgData = drawUtil.ctx.getImageData(drawUtil.animField.x,
+  _this.imgData = drawUtil.ctx.getImageData(0,
     drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
   return true;
 };
@@ -425,7 +425,7 @@ DrawAlgebra.prototype.draw_choose_tuple = function(_this, color1, color2,
   _this.draw_choose_rect(tuple2, tuple2x, tuple2y, _this.attr2,
     _this.tuplesInput2.columns, chosenColor2, draw_rect);
   _this.imgDataChosen = drawUtil.ctx.getImageData(
-    drawUtil.animField.x, drawUtil.animField.y,
+    0, drawUtil.animField.y,
     drawUtil.animField.width, drawUtil.animField.height);
   return true;
 };
@@ -484,13 +484,19 @@ DrawAlgebra.prototype.draw_choose_rect = function(tuple, tuplex, tupley, attr,
   drawUtil.ctx.save();
   drawUtil.ctx.beginPath();
   drawUtil.ctx.strokeStyle = "#FF0000";
-  let attrPos = get_Attr_Pos_in_column(columns, tuplex, tupley,
+  let attrPos = drawUtil.get_Attr_Pos_in_column(columns, tuplex, tupley,
     attr, tupleWidth);
   drawUtil.ctx.rect(attrPos.x + 1, attrPos.y - 2,
     attrPos.width, drawUtil.tupleHeight + 4);
   drawUtil.ctx.stroke();
   drawUtil.ctx.closePath();
   drawUtil.ctx.restore();
+  let text = [];
+  for(let i in tuple.tupleValue){
+    text = text.concat(tuple.tupleValue[i]);
+  }
+  drawUtil.zoom(text[attrPos.pos],attrPos.x + 1, attrPos.y - 2,
+    attrPos.width, drawUtil.tupleHeight + 4);
 };
 /**
  * Judges if the join of tuple1_value and tuple2_value is included in
@@ -567,7 +573,7 @@ DrawAlgebra.prototype.move_to_compare = function(_this, color1, color2,
     _this.des1.y - drawUtil.tupleMargin, drawUtil.getWidth(tuple1) +
     drawUtil.getWidth(tuple2),
     drawUtil.tupleHeight + drawUtil.tupleMargin);
-  let imgData = drawUtil.ctx.getImageData(drawUtil.animField.x,
+  let imgData = drawUtil.ctx.getImageData(0,
     drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
   _this.animJoinTuple(imgData, tuple1, tuple2, true, true, tuple1.position,
     tuple2.position, _this.des1, color1, color2, () => {
@@ -996,7 +1002,7 @@ DrawAlgebra.prototype.animJoinTuple = function(imgData, tuple1, tuple2,
       if (src1.x != des.x || src1.y != des.y ||
         src2.x != (des.x + drawUtil.getWidth(tuple1)) || src2.y != des.y) {
         drawUtil.ctx.putImageData(imgData,
-          drawUtil.animField.x, drawUtil.animField.y);
+          0, drawUtil.animField.y);
         _this.tupleMoving(imgData, tuple1, src1, des, color1, "black", false);
         _this.tupleMoving(imgData, tuple2, src2, {
           x: des.x + size1,
@@ -1008,7 +1014,7 @@ DrawAlgebra.prototype.animJoinTuple = function(imgData, tuple1, tuple2,
     } else if (!draw2) {
       if (src1.x != des.x || src1.y != des.y) {
         drawUtil.ctx.putImageData(imgData,
-          drawUtil.animField.x, drawUtil.animField.y);
+          0, drawUtil.animField.y);
         _this.tupleMoving(imgData, tuple1, src1, des, color1, "black", false);
       } else {
         return true;
@@ -1034,7 +1040,7 @@ DrawAlgebra.prototype.tupleMoving = function(imgData, tuple, src, des,
   size.tupleWidth = drawUtil.getWidth(tuple);
   size.tupleHeight = drawUtil.tupleHeight;
   if (drawImg) drawUtil.ctx.putImageData(imgData,
-    drawUtil.animField.x, drawUtil.animField.y);
+    0, drawUtil.animField.y);
   drawUtil.ctx.clearRect(src.x, src.y - drawUtil.tupleMargin / 2,
     size.tupleWidth, size.tupleHeight + drawUtil.tupleMargin);
   src = drawUtil.nextPosition(tuple, size, src, des, false);
@@ -1073,10 +1079,10 @@ DrawAlgebra.prototype.moveTable = function(table, color, src, des,
   }
   let height = 0;
   if (table.value.length > drawUtil.maxTableLength) {
-    height = (drawUtil.maxTableLength + drawUtil.info_lines+1) *
+    height = (drawUtil.maxTableLength + drawUtil.info_lines + 1) *
       (drawUtil.tupleHeight + drawUtil.tupleMargin);
   } else {
-    height = (table.value.length + drawUtil.info_lines+1) *
+    height = (table.value.length + drawUtil.info_lines + 1) *
       (drawUtil.tupleHeight + drawUtil.tupleMargin);
   }
   _this.imgData = drawUtil.ctx.getImageData(0, 0,
