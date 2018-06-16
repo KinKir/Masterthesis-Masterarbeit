@@ -10,45 +10,22 @@
 function DrawUtil() {};
 DrawUtil.prototype = {
   ctx: Canvas.ctx,
-  maxTableLength: 12,
-  tupleHeight: 20,
-  tupleMargin: 2,
+  maxTableLength: table_info.maxTableLength,
+  tupleHeight: table_info.tupleHeight,
+  tupleMargin: table_info.tupleMargin,
   colorSet: colorSet,
   isChosenColorSet: chosenColorSet,
   fullWidth: canvasInfo.fullWidth,
   fullHeight: canvasInfo.fullHeight,
-  tableMargin: 20,
-  result: {
-    x: 100,
-    y: canvasInfo.fullHeight / 2 + 10,
-    width: canvasInfo.fullWidth - 100,
-    height: canvasInfo.fullHeight - canvasInfo.fullHeight / 2 - 10,
-  },
-  compare: {
-    x: 100,
-    y: 200,
-  },
-  infoField: {
-    x: 100,
-    y: canvasInfo.fullHeight / 2 - 50,
-    width: canvasInfo.fullWidth,
-    height: 50,
-  },
-  leftInfoField: {
-    x: 0,
-    y: canvasInfo.fullHeight / 2 - 50,
-    width: 100,
-    height: 50,
-  },
-  animField: {
-    x: 100,
-    y: 0,
-    width: canvasInfo.fullWidth,
-    height: canvasInfo.fullHeight,
-  },
-  maxDraw: 20,
-  info_lines: 2,
-  maxTableWidth: anim_size.maxTableWidth,
+  tableMargin: table_info.tableMargin,
+  result: resultField,
+  compare: compareField,
+  infoField: infoField,
+  leftInfoField: leftInfoField,
+  animField: animField,
+  maxDraw: table_info.maxDraw,
+  info_lines: table_info.info_lines,
+  maxTableWidth: table_info.maxTableWidth,
   columnWidth: anim_size.columnWidth,
   filter_Symbol_pos: anim_position.filter_Symbol,
 };
@@ -250,6 +227,31 @@ DrawUtil.prototype.getWidth = function(tupleset) {
     width = _this.maxTableWidth;
   }
   return width;
+};
+/**
+ * Get the height of table.
+ * @param {tupleset_basic|tuple_basic} tupleset
+ */
+DrawUtil.prototype.getHeight = function(tupleset, info = true) {
+  let _this = this;
+  let info_height = 0;
+  if (info) {
+    info_height =
+      table_info.info_lines * (table_info.tupleHeight +
+        table_info.tupleMargin);
+  }
+  let height = 0;
+  if (tupleset.value.length < table_info.maxTableLength) {
+    height =
+      tupleset.value.length *
+      (table_info.tupleHeight + table_info.tupleMargin) +
+      info_height;
+  } else {
+    height = table_info.maxTableLength *
+    (table_info.tupleHeight + table_info.tupleMargin) +
+      info_height;
+  }
+  return height;
 };
 /**
  * disappear a rectangular area.
@@ -621,22 +623,86 @@ DrawUtil.prototype.write_text = function(text, x, y, color = "black",
   this.ctx.restore();
 };
 /**
- * Draw zoom.
+ * Draw zoom with shape of rectangle.
  * @param {String} text The text that need to be written.
  * @param {Number} x The axis x where the text will be written.
  * @param {Number} y The axis y where the text will be written.
  * @param {String} color The color of the text.
  * @param {Number} font_size The size of the text.
  */
-DrawUtil.prototype.zoom = function(
+DrawUtil.prototype.zoom_rect = function(
   text, x, y, width, height, color = "black", font_size = 20) {
   y = y + height;
   let ctx = this.ctx;
+  let rect = {};
+  rect.width = width * 1.5;
+  rect.height = height * 1.5;
   ctx.save();
   ctx.beginPath();
   let zoomSize = {};
-  zoomSize.width = width + 40;
-  zoomSize.height = width + 40;
+  zoomSize.width = rect.width;
+  zoomSize.height = rect.height;
+  //Left line.
+  ctx.shadowBlur = 1;
+  ctx.shadowColor = "black";
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 1;
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "gray";
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + width / 2 - zoomSize.width / 2,
+    y + zoomSize.height / 2);
+  //rect.
+  ctx.lineWidth = 5;
+  ctx.rect(x + width / 2 - zoomSize.width / 2,
+    y + zoomSize.height / 2, rect.width, rect.height);
+  ctx.stroke();
+  //Right line.
+  ctx.moveTo(x + width / 2 + rect.width / 2,
+    y + zoomSize.height / 2 + height / 2);
+  ctx.lineTo(x + width / 2 + zoomSize.width / 2,
+    y + zoomSize.height / 2);
+  ctx.lineTo(x + width, y);
+  ctx.stroke();
+  ctx.closePath();
+  ctx.restore();
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.fillStyle = "white";
+  ctx.rect(x + width / 2 - zoomSize.width / 2,
+    y + zoomSize.height / 2, rect.width, rect.height);
+  ctx.fill();
+  ctx.closePath();
+  ctx.restore();
+  //Text part.
+  ctx.save();
+  ctx.fillStyle = "black";
+  ctx.textAlign = "center";
+  ctx.font = font_size + "px Arial";
+  ctx.fillText(text, x + width / 2,
+    y + height + zoomSize.height / 2);
+  ctx.restore();
+};
+/**
+ * Draw zoom with shape of circle.
+ * @param {String} text The text that need to be written.
+ * @param {Number} x The axis x where the text will be written.
+ * @param {Number} y The axis y where the text will be written.
+ * @param {String} color The color of the text.
+ * @param {Number} font_size The size of the text.
+ */
+DrawUtil.prototype.zoom_circle = function(
+  text, x, y, width, height, color = "black", font_size = 20) {
+  y = y + height;
+  let ctx = this.ctx;
+  let circle = {};
+  circle.radius = width;
+  ctx.save();
+  ctx.beginPath();
+  let zoomSize = {};
+  zoomSize.width = circle.radius * 2;
+  zoomSize.height = circle.radius * 2;
   //Left line.
   ctx.shadowBlur = 1;
   ctx.shadowColor = "black";
@@ -649,16 +715,11 @@ DrawUtil.prototype.zoom = function(
     y + zoomSize.height / 2);
   //Circle.
   ctx.lineWidth = 5;
-  let bigCircle = {};
-  bigCircle.radius = width / 2 + 20;
-  let gapCircle = 3;
-  let smCircle = {};
-  smCircle.radius = bigCircle.radius - gapCircle;
   ctx.arc(x + width / 2, y + zoomSize.height / 2 + height / 2,
-    bigCircle.radius, Math.PI, 3 * Math.PI);
+    circle.radius, Math.PI, 3 * Math.PI);
   ctx.stroke();
   //Right line.
-  ctx.moveTo(x + width / 2 + bigCircle.radius,
+  ctx.moveTo(x + width / 2 + circle.radius,
     y + zoomSize.height / 2 + height / 2);
   ctx.lineTo(x + width / 2 + zoomSize.width / 2,
     y + zoomSize.height / 2);
@@ -671,7 +732,7 @@ DrawUtil.prototype.zoom = function(
   ctx.beginPath();
   ctx.fillStyle = "white";
   ctx.arc(x + width / 2, y + zoomSize.height / 2 + height / 2,
-    bigCircle.radius, 0, 2 * Math.PI);
+    circle.radius, 0, 2 * Math.PI);
   ctx.fill();
   ctx.closePath();
   ctx.restore();

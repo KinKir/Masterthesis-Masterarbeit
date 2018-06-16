@@ -31,6 +31,7 @@ resetCtb = function() {
   window.control.laststep = "";
   window.control.nextstep = "";
 };
+window.zoom = false;
 /** Clear all the intervals.*/
 resetIntervalIDs = function() {
   for (let i in window.control.intervalIDs) {
@@ -72,7 +73,12 @@ draw = {
 })();
 /** Set speed of animation.*/
 draw.setSpeed = function() {
-  window.control.speed = parseInt(document.getElementById("speed").value);
+  let new_speed = parseInt(document.getElementById("speed").value);
+  if(new_speed > 0 && new_speed < 1000){
+    window.control.speed = new_speed;
+  }else {
+    return false;
+  }
   window.control.pause = true;
   setTimeout(() => {
     window.control.pause = false;
