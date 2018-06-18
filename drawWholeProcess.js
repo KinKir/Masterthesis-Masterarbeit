@@ -641,37 +641,63 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
         }
         if (groupKey.value[_this.nth_key].toString() ===
           _this.tuple.group.toString()) {
-          src = {};
-          des = {};
           return true;
         } else {
           _this.nth_key++;
         }
       }
       if (_this.nth_key === groupKey.value.length) {
-        groupKey.value.push(_this.tuple.group);
         return true;
       }
       waitTime = _this.waitTime;
       return false;
     };
     anim(compare, () => {
-      if (groupKey.value[_this.nth_key].toString() ===
-        _this.tuple.group.toString()) {
+      if (groupKey.value[_this.nth_key]) {
+        let src = {
+          x: groupKey.x -
+            resGrouping.group_key_name.length * table_info.maxAttrWidth,
+          y: groupKey.y +
+            (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin)
+        };
+        let des = {
+          x: groupKey.x,
+          y: groupKey.y +
+            (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+        };
         anim(() => {
-          return _this.move_to_box(src, des, _this.tuple);
-        }, anim_begin);
+          return move_attr(src, des);
+        }, () => {
+          src = {};
+          des = {};
+          anim_begin();
+          return true;
+        });
         return true;
-      }
-      if (_this.nth_key === groupKey.value.length) {
+      } else {
         groupKey.value.push(_this.tuple.group);
+        let src = {
+          x: groupKey.x -
+            resGrouping.group_key_name.length * table_info.maxAttrWidth,
+          y: groupKey.y +
+            (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin)
+        };
+        let des = {
+          x: groupKey.x,
+          y: groupKey.y +
+            (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+        };
         anim(() => {
-          return _this.new_box(groupKey);
-        }, anim_begin);
+          return move_attr(src, des);
+        }, () => {
+          src = {};
+          des = {};
+          anim_begin();
+          return true;
+        });
         return true;
       }
     });
-
   };
   let init = function() {
     _this.nth_key = 0;
@@ -703,7 +729,7 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
 
     return true;
   };
-  let move_attr = function(src, des) {
+  move_attr = function(src, des) {
     let key_len = resGrouping.group_key_name.length;
     if (src.x === des.x && src.y === des.y) {
       return true;
@@ -717,6 +743,7 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
     drawUtil.ctx.putImageData(_this.lastImg, 0, 0);
     drawUtil.tuple(src.x, src.y, width_attr * key_len,
       table.chosenColor, "white", text);
+    return false;
   };
   let anim_begin = function() {
     if (init()) {
@@ -752,12 +779,6 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
     }
   };
   anim_begin();
-};
-DrawProcess.prototype.move_to_box = function(src, des, tuple, nextAnimation) {
-  return true;
-};
-DrawProcess.prototype.new_box = function(box, nextAnimation) {
-  return true;
 };
 /**
  * Get the positions of relations with their names in tuplesets_array.
