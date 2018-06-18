@@ -9,7 +9,7 @@ queries = {
       ],
       "from": ["sA","sB","sC"],
       "where": [
-        {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
+        {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"nation","attr2":"nation"},
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
         {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
       ],
@@ -103,8 +103,8 @@ queries = {
     "single":{
       "rel1":{"tuple_set":"B"},
       "rel2":{"tuple_set":"C"},
-      "attr1":"name",
-      "attr2":"name",
+      "attr1":"age",
+      "attr2":"age",
       "op":"equal",
     },
     "multi":{

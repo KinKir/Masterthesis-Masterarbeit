@@ -662,14 +662,14 @@ DrawUtil.prototype.zoom_rect = function(
   zoomSize.width = rect.width;
   zoomSize.height = rect.height;
   text = [text.toString()];
-  let rowWidth = rect.width / (font_size/1.5);
+  let rowWidth = rect.width / (font_size / 1.5);
   if (text[0].length > rowWidth) {
     let rowNum = Math.ceil(text[0].length / rowWidth);
     rect.height = rowNum * rect.height;
     let temp = text[0];
     text = [];
     for (let i = 0; i < temp.length; i++) {
-        text.push(temp.substring(i*rowWidth, (i+1)*rowWidth));
+      text.push(temp.substring(i * rowWidth, (i + 1) * rowWidth));
     }
   }
   //Left line.
@@ -798,7 +798,6 @@ DrawUtil.prototype.get_Attr_Pos_in_column = function(columns, x, y, attr,
   width, rel = null) {
   let posRel = 0;
   let posAttr = 0;
-  let counter = 0;
   let tmpcolumns = [];
   for (let i = 0; i < columns.length; i++) {
     if (rel) {
@@ -809,16 +808,26 @@ DrawUtil.prototype.get_Attr_Pos_in_column = function(columns, x, y, attr,
     }
     tmpcolumns = tmpcolumns.concat(columns[i].columns);
   }
-  for (let i in tmpcolumns) {
+  for (let i = 0; i < tmpcolumns.length; i++) {
     if (tmpcolumns[i] === attr) {
-      posAttr = counter;
+      posAttr = i;
       break;
     }
-    counter++;
   }
   let res = {};
-  res.width = width / tmpcolumns.length;
-  res.x = x + (posAttr) * res.width;
+  if (tmpcolumns.length > table_info.maxAttribute) {
+    if(posAttr >= tmpcolumns.length - Math.floor(table_info.maxAttribute/2)){
+      res.width = width / table_info.maxAttribute;
+      res.x = x + width - (tmpcolumns.length - posAttr) * res.width;
+    }else{
+      res.width = width / tmpcolumns.length;
+      res.x = x + (posAttr) * res.width;
+    }
+  } else {
+    res.width = width / tmpcolumns.length;
+    res.x = x + (posAttr) * res.width;
+  }
+
   res.y = y;
   res.posRel = posRel;
   res.posAttr = posAttr;
