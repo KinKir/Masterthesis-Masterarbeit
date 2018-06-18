@@ -64,6 +64,9 @@ draw = {
       if (this.getAttribute('id') == "terminate") {
         window.control.finish = true;
       }
+      if (this.getAttribute('id') == "clear") {
+        Canvas.ctx.clearRect(0, 0, canvasInfo.fullWidth, canvasInfo.fullHeight);
+      }
     };
   }
   document.getElementById("queryTip").innerHTML =
@@ -74,9 +77,9 @@ draw = {
 /** Set speed of animation.*/
 draw.setSpeed = function() {
   let new_speed = parseInt(document.getElementById("speed").value);
-  if(new_speed > 0 && new_speed < 1000){
+  if (new_speed > 0 && new_speed < 1000) {
     window.control.speed = new_speed;
-  }else {
+  } else {
     return false;
   }
   window.control.pause = true;
@@ -103,7 +106,6 @@ draw.sqlProcess = function() {
       clauses[i].substring(1);
     document.getElementById(clauses[i]).style.display = "none";
   }
-  document.getElementById("a_subWhere").style.display = "none";
   let where_sub = ["compareSets", "core", "intermediateResult"];
   for (let i = 0; i < where_sub.length; i++) {
     document.getElementById("div" + where_sub[i]).style.display = "none";
@@ -119,7 +121,7 @@ draw.sqlProcess = function() {
     }
   }
   if (res_SQL.resWhere.compareSets.length > 0) {
-    document.getElementById("a_subWhere").style.display = "";
+    document.getElementById("subWhere").style.display = "";
   }
   for (let i = 0; i < where_sub.length; i++) {
     if (res_SQL.resWhere[where_sub[i]].length > 0) {
@@ -176,9 +178,9 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
         //If the button means all steps, set all steps be false.
         resetCtb();
         dp.done.setDefault();
-        for(let i = 0;i<clauses.length;i++){
-          if(!res_SQL["res" + clauses[i].charAt(0).toUpperCase() +
-            clauses[i].substring(1)]){
+        for (let i = 0; i < clauses.length; i++) {
+          if (!res_SQL["res" + clauses[i].charAt(0).toUpperCase() +
+              clauses[i].substring(1)]) {
             dp.done[clauses[i]] = null;
           }
         }

@@ -44,9 +44,25 @@ DrawUtil.prototype.tuple = function(x, y, width, color, colorText, text) {
   let ctx = _this.ctx;
   if (width >= _this.maxTableWidth) {
     width = _this.maxTableWidth;
-    text = [text[0], text[1], text[2], "...", text[text.length - 2],
-      text[text.length - 1]
-    ];
+    if (text.length > table_info.maxAttribute) {
+      let tmpText = [];
+      while (text.length > 0) {
+        if (tmpText.length > Math.floor(table_info.maxAttribute / 2)) {
+          if (text.length > Math.floor(table_info.maxAttribute / 2)) {
+            text.shift();
+          } else {
+            tmpText.push(text.shift());
+          }
+        }
+        if (tmpText.length < Math.floor(table_info.maxAttribute / 2)) {
+          tmpText.push(text.shift());
+        }
+        if (tmpText.length == Math.floor(table_info.maxAttribute / 2)) {
+          tmpText.push("...");
+        }
+      }
+      text = tmpText;
+    }
   }
   ctx.save();
   ctx.fillStyle = color;
@@ -54,6 +70,9 @@ DrawUtil.prototype.tuple = function(x, y, width, color, colorText, text) {
   ctx.fillStyle = colorText;
   ctx.font = "10px Arial";
   let columnWidth = width / text.length;
+  if (columnWidth > table_info.maxAttrWidth) {
+    columnWidth = table_info.maxAttrWidth;
+  }
   for (let i = 0; i < text.length; i++) {
     ctx.fillText(text[i], x + 2 + i * columnWidth, y + 15);
   }
@@ -248,7 +267,7 @@ DrawUtil.prototype.getHeight = function(tupleset, info = true) {
       info_height;
   } else {
     height = table_info.maxTableLength *
-    (table_info.tupleHeight + table_info.tupleMargin) +
+      (table_info.tupleHeight + table_info.tupleMargin) +
       info_height;
   }
   return height;
@@ -761,25 +780,33 @@ DrawUtil.prototype.zoom_circle = function(
  * @param {Number} width
  * @return {attr_pos} Position and width of attribute
  */
-DrawUtil.prototype.get_Attr_Pos_in_column =
-  function(columns, x, y, attr, width) {
-    let pos = 0;
-    let counter = 0;
-    let tmpcolumns = [];
-    for (let i in columns) {
-      tmpcolumns = tmpcolumns.concat(columns[i].columns);
-    }
-    for (let i in tmpcolumns) {
-      if (tmpcolumns[i] === attr) {
-        pos = counter;
-        break;
+DrawUtil.prototype.get_Attr_Pos_in_column = function(columns, x, y, attr,
+  width, rel = null) {
+  let posRel = 0;
+  let posAttr = 0;
+  let counter = 0;
+  let tmpcolumns = [];
+  for (let i = 0; i < columns.length; i++) {
+    if (rel) {
+      if (columns[i].src === rel) {
+        tmpcolumns = columns[i].columns;
+        posRel = i;
       }
-      counter++;
     }
-    let res = {};
-    res.width = width / tmpcolumns.length;
-    res.x = x + (pos) * res.width;
-    res.y = y;
-    res.pos = pos;
-    return res;
-  };
+    tmpcolumns = tmpcolumns.concat(columns[i].columns);
+  }
+  for (let i in tmpcolumns) {
+    if (tmpcolumns[i] === attr) {
+      posAttr = counter;
+      break;
+    }
+    counter++;
+  }
+  let res = {};
+  res.width = width / tmpcolumns.length;
+  res.x = x + (posAttr) * res.width;
+  res.y = y;
+  res.posRel = posRel;
+  res.posAttr = posAttr;
+  return res;
+};

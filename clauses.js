@@ -340,10 +340,15 @@ grouping = function(tuplesInput, groupby) {
   tuplesOutput.result.name = tuplesInput.name.concat();
   tuplesOutput.allTuples.name = tuplesInput.name.concat();
   tuplesOutput.result.groupBy = groupby.slice();
+  let group_key_name = [];
+  for(let i in groupby){
+    group_key_name.push(groupby[i].rel + "." + groupby[i].attr);
+  }
+  tuplesOutput.result.group_key_name = group_key_name;
   var rel = [];
   var attr = [];
   while (groupby.length > 0) {
-    var groupBy = groupby.pop();
+    var groupBy = groupby.shift();
     rel = rel.concat(groupBy.rel);
     attr = attr.concat(groupBy.attr);
   }
@@ -360,7 +365,8 @@ grouping = function(tuplesInput, groupby) {
     var counter = 0;
     while (len > 0) {
       for (var i = 0; i < relPos.length; i++) {
-        if (tuples.value[len - 1].group[i] == tuple.tupleValue[relPos[i]][attrPos[i]]) {
+        if (tuples.value[len - 1].group[i] ==
+          tuple.tupleValue[relPos[i]][attrPos[i]]) {
           counter++;
         }
       }

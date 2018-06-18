@@ -15,7 +15,7 @@ queries = {
       ],
       "grouping": [
         {"rel":"sA","attr":"name"},
-        {"rel":"sB","attr":"salary"},
+        {"rel":"sB","attr":"height"},
         {"rel":"sC","attr":"nation"},
       ],
       "ordering": [
@@ -60,7 +60,7 @@ queries = {
       "grouping": [
         {"rel":"sA","attr":"name"},
         {"rel":"sA","attr":"age"},
-        {"rel":"sB","attr":"salary"},
+        {"rel":"sB","attr":"height"},
         {"rel":"sC","attr":"nation"},
       ],
       "ordering": [
@@ -81,11 +81,11 @@ queries = {
       "grouping": [
         {"rel":"sA","attr":"name"},
         {"rel":"sA","attr":"age"},
-        {"rel":"sB","attr":"salary"},
+        {"rel":"sB","attr":"height"},
       ],
       "ordering": [
         {"rel":"sA","attr":"name", "UpDown":"DESC"},
-        {"rel":"sB","attr":"salary", "UpDown":"ASC"},
+        {"rel":"sB","attr":"height", "UpDown":"ASC"},
       ],
     },
     {

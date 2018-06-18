@@ -42,6 +42,8 @@ table_info = {
   maxDraw: 20,
   info_lines: 2,
   maxTableWidth: 300,
+  maxAttribute:5,
+  maxAttrWidth:60,
 };
 anim_size = {
   columnWidth: 60,
@@ -63,6 +65,7 @@ anim_position = {
   },
 };
 
-clauses = ["select", "from", "where", "grouping", "ordering"];
+clauses = ["select", "from", "where", "grouping"];
 colorSet = ["#FF8888", "#FDFF88", "#88FF88", "#88C1FF", "#A388FF", "#FB88FF"];
 chosenColorSet = ["#38A08C", "#9538A0", "#3856A0", "#A04E38", "#A03838"];
+group_key_color = ["#88C1FF", "#A388FF", "#FB88FF"];

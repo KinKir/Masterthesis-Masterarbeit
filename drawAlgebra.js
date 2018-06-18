@@ -11,9 +11,9 @@ function DrawAlgebra() {
   this.counter = this.waitTime;
   this.nth_result = 0;
   this.imgDataResult = drawUtil.ctx.getImageData(
-    drawUtil.result.x, drawUtil.result.y,
-    drawUtil.fullWidth - drawUtil.result.x,
-    drawUtil.fullHeight - drawUtil.result.y);
+    resultField.x, resultField.y,
+    drawUtil.fullWidth - resultField.x,
+    drawUtil.fullHeight - resultField.y);
 
   this.x1 = anim_position.left_table.x;
   this.y1 = anim_position.left_table.y;
@@ -101,9 +101,9 @@ DrawAlgebra.prototype.animCrossJoin = function(res, input1, input2,
       return true;
     }
     _this.imgDataResult = drawUtil.ctx.getImageData(
-      drawUtil.result.x, drawUtil.result.y,
-      drawUtil.fullWidth - drawUtil.result.x,
-      drawUtil.fullHeight - drawUtil.result.y);
+      resultField.x, resultField.y,
+      drawUtil.fullWidth - resultField.x,
+      drawUtil.fullHeight - resultField.y);
     if (_this.res.value.length <= 0 || _this.result_num >= maxDraw) {
       _this.draw_tables(_this, color1, color2);
       return true;
@@ -285,9 +285,9 @@ DrawAlgebra.prototype.animInnerJoin = function(res, input1, input2,
   function loop() {
     //If this process finished.
     _this.imgDataResult = drawUtil.ctx.getImageData(
-      drawUtil.result.x, drawUtil.result.y,
-      drawUtil.fullWidth - drawUtil.result.x,
-      drawUtil.fullHeight - drawUtil.result.y);
+      resultField.x, resultField.y,
+      drawUtil.fullWidth - resultField.x,
+      drawUtil.fullHeight - resultField.y);
     if ((_this.nth_tuple1 >= input1.value.length &&
         which_side_first == "right") ||
       (_this.nth_tuple2 >= input2.value.length &&
@@ -357,8 +357,8 @@ DrawAlgebra.prototype.draw_tables = function(_this, color1, color2) {
   drawUtil.table(_this.tuplesInput2, _this.x2, _this.tabY,
     drawUtil.getWidth(_this.tuplesInput2), color2, "black");
   if (_this.imgDataResult) {
-    drawUtil.ctx.putImageData(_this.imgDataResult, drawUtil.result.x,
-      drawUtil.result.y);
+    drawUtil.ctx.putImageData(_this.imgDataResult, resultField.x,
+      resultField.y);
   }
   _this.imgData = drawUtil.ctx.getImageData(0,
     drawUtil.animField.y, drawUtil.fullWidth, drawUtil.fullHeight);
@@ -495,7 +495,7 @@ DrawAlgebra.prototype.draw_choose_rect = function(tuple, tuplex, tupley, attr,
   for (let i in tuple.tupleValue) {
     text = text.concat(tuple.tupleValue[i]);
   }
-  drawUtil.zoom_circle(text[attrPos.pos], attrPos.x + 1, attrPos.y - 2,
+  drawUtil.zoom_circle(text[attrPos.posAttr], attrPos.x + 1, attrPos.y - 2,
     attrPos.width, drawUtil.tupleHeight + 4);
 };
 /**
@@ -602,8 +602,8 @@ DrawAlgebra.prototype.move_to_result = function(_this, imgData, color1, color2,
   if (i != -1) {
     _this.res.value.splice(i, 1);
     let des2 = {
-      x: drawUtil.result.x,
-      y: drawUtil.result.y + _this.result_num * (drawUtil.tupleMargin +
+      x: resultField.x,
+      y: resultField.y + _this.result_num * (drawUtil.tupleMargin +
         drawUtil.tupleHeight)
     };
     _this.result_num++;
@@ -794,8 +794,8 @@ DrawAlgebra.prototype.animIntersection = function(res, input1, input2,
         y: _this.tuplesInput1.value[_this.nth_tuple1].position.y,
       };
       let desTuple = {
-        x: drawUtil.result.x,
-        y: drawUtil.result.y +
+        x: resultField.x,
+        y: resultField.y +
           _this.nth_result * (drawUtil.tupleHeight + drawUtil.tupleMargin),
       };
       let imgData = drawUtil.ctx.getImageData(0,
@@ -820,9 +820,9 @@ DrawAlgebra.prototype.animIntersection = function(res, input1, input2,
 
       function nextTuple() {
         _this.imgDataResult = drawUtil.ctx.getImageData(
-          drawUtil.result.x, drawUtil.result.y,
-          drawUtil.fullWidth - drawUtil.result.x,
-          drawUtil.fullHeight - drawUtil.result.y);
+          resultField.x, resultField.y,
+          drawUtil.fullWidth - resultField.x,
+          drawUtil.fullHeight - resultField.y);
         _this.nth_result++;
         _this.tuplesInput1.value.splice(_this.nth_tuple1, 1);
         _this.tuplesInput2.value.splice(_this.nth_tuple2, 1);
@@ -833,13 +833,13 @@ DrawAlgebra.prototype.animIntersection = function(res, input1, input2,
             chosenColor1, chosenColor2);
         } else {
           drawUtil.ctx.clearRect(0, drawUtil.animField.y,
-            drawUtil.fullWidth, drawUtil.fullHeight - drawUtil.result.y);
+            drawUtil.fullWidth, drawUtil.fullHeight - resultField.y);
           nextAnimation();
         }
       };
     } else {
       drawUtil.ctx.clearRect(0, drawUtil.animField.y,
-        drawUtil.fullWidth, drawUtil.result.y);
+        drawUtil.fullWidth, resultField.y);
       nextAnimation();
     }
   };
@@ -894,9 +894,9 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
 
       function nextTuple() {
         _this.imgDataResult = drawUtil.ctx.getImageData(
-          0, drawUtil.result.y,
-          drawUtil.fullWidth - drawUtil.result.x,
-          drawUtil.fullHeight - drawUtil.result.y);
+          0, resultField.y,
+          drawUtil.fullWidth - resultField.x,
+          drawUtil.fullHeight - resultField.y);
         _this.nth_result++;
         _this.tuplesInput1.value.splice(_this.nth_tuple1, 1);
         _this.nth_tuple2 = 0;
@@ -906,7 +906,7 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
         } else {
           drawUtil.ctx.clearRect(
             drawUtil.animField.x + drawUtil.getWidth(input1),
-            drawUtil.animField.y, drawUtil.fullWidth, drawUtil.result.y);
+            drawUtil.animField.y, drawUtil.fullWidth, resultField.y);
           drawUtil.ctx.clearRect(
             0, drawUtil.getHeight(input1),
             drawUtil.fullWidth, drawUtil.fullHeight);
@@ -918,7 +918,7 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
     } else {
       drawUtil.ctx.clearRect(
         drawUtil.animField.x + drawUtil.getWidth(input1),
-        drawUtil.animField.y, drawUtil.fullWidth, drawUtil.result.y);
+        drawUtil.animField.y, drawUtil.fullWidth, resultField.y);
       drawUtil.ctx.clearRect(
         0, drawUtil.getHeight(input1),
         drawUtil.fullWidth, drawUtil.fullHeight);
@@ -952,7 +952,7 @@ DrawAlgebra.prototype.draw_compare_table = function(_this, nextAnimation,
   drawUtil.table(_this.tuplesInput2, _this.x2, _this.tabY,
     drawUtil.getWidth(_this.tuplesInput2), color2, "black");
   drawUtil.ctx.putImageData(_this.imgDataResult,
-    drawUtil.result.x, drawUtil.result.y);
+    resultField.x, resultField.y);
   anim(() => {
     return _this.get_Same_Tuples(_this.src_or_val, _this, _this.waitTime,
       _this.tuplesInput1, _this.tuplesInput2, color1, color2,
@@ -1164,7 +1164,7 @@ DrawAlgebra.prototype.get_Same_Tuples = function(src_or_val = "src", _this,
   let tuple2y = tuple2.position.y;
 
   drawUtil.ctx.clearRect(0, drawUtil.animField.y,
-    drawUtil.fullWidth, drawUtil.fullHeight - drawUtil.result.y);
+    drawUtil.fullWidth, drawUtil.fullHeight - resultField.y);
   drawUtil.table(tuplesInput1, drawUtil.animField.x, _this.tabY,
     drawUtil.getWidth(tuplesInput1), color1, "black");
   drawUtil.table(tuplesInput2, _this.x2, _this.tabY,

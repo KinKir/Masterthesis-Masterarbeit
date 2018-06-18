@@ -77,7 +77,8 @@ function DrawProcess(res_SQL) {
     };
     /**
      * Below is animation of "select".
-     * If (result of select is not null, select has not been drawn, where has been done).
+     * If (result of select is not null, select has not been drawn,
+     * where has been done).
      * After animation, set _this.done.select = true.
      */
     if ((!_this.done.select) && (_this.done.grouping)) {
@@ -272,12 +273,14 @@ DrawProcess.prototype.from = function(tables) {
     });
     width.push(drawUtil.getWidth(tables[i]));
     if (tables[i].value.length > drawUtil.maxTableLength) {
-      height.push((drawUtil.maxTableLength + 2) * (drawUtil.tupleHeight +
-        drawUtil.tupleMargin) + (drawUtil.info_lines + 1) * (drawUtil.tupleHeight +
-        drawUtil.tupleMargin));
+      height.push(
+        (drawUtil.maxTableLength + 2) *
+        (drawUtil.tupleHeight + drawUtil.tupleMargin) +
+        (drawUtil.info_lines + 1) *
+        (drawUtil.tupleHeight + drawUtil.tupleMargin));
     } else {
-      height.push(tables[i].value.length * (drawUtil.tupleHeight +
-        drawUtil.tupleMargin));
+      height.push(
+        tables[i].value.length * (drawUtil.tupleHeight + drawUtil.tupleMargin));
     }
     vorwidth += width[i];
   }
@@ -437,10 +440,13 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
     }
     color1 = drawUtil.colorSet[pos[0] % drawUtil.colorSet.length];
     color2 = drawUtil.colorSet[pos[1] % drawUtil.colorSet.length];
-    chosenColor1 = drawUtil.isChosenColorSet[pos[0] % drawUtil.isChosenColorSet.length];
-    chosenColor2 = drawUtil.isChosenColorSet[pos[1] % drawUtil.isChosenColorSet.length];
+    chosenColor1 =
+      drawUtil.isChosenColorSet[pos[0] % drawUtil.isChosenColorSet.length];
+    chosenColor2 =
+      drawUtil.isChosenColorSet[pos[1] % drawUtil.isChosenColorSet.length];
   };
-  //cross join with other relations' tuples. just show the join result in where.core.
+  //cross join with other relations' tuples.
+  //just show the join result in where.core.
   function callAnimCrossJoin() {
     if (res_where.core.length < 1 || _this.i >= res_where.compareSets.length) {
       if (step == "whole") {
@@ -570,8 +576,10 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
  * @param {output_of_grouping} res_grouping result of where in SQL query.
  */
 DrawProcess.prototype.grouping = function(query, res_grouping) {
+  this.waitTime = 1000 / window.control.speed;
+  let _this = this;
   if (!query) {
-    this.done.grouping = true;
+    _this.done.grouping = true;
     return true;
   }
   window.setBtnStyle(document.getElementById("grouping"));
@@ -584,57 +592,172 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
   table.width = drawUtil.getWidth(resGrouping);
   table.color = drawUtil.colorSet[0];
   table.chosenColor = drawUtil.isChosenColorSet[0];
-  drawUtil.table(allTuples, table.x, table.y, table.width, table.color, "black");
+  drawUtil.table(allTuples, table.x, table.y,
+    table.width, table.color, "black");
   let groupKey = {};
   groupKey.value = [];
-  groupKey.width = drawUtil.columnWidth * resGrouping.value[0].group.length;
+  groupKey.width =
+    drawUtil.columnWidth * resGrouping.value[0].group.length;
   groupKey.x = drawUtil.animField.width - groupKey.width;
-  groupKey.y = drawUtil.animField.y + (drawUtil.tupleHeight + drawUtil.tupleMargin);
-  groupKey.color = drawUtil.colorSet[3];
+  groupKey.y = drawUtil.animField.y +
+    drawUtil.info_lines * (drawUtil.tupleHeight + drawUtil.tupleMargin);
+  groupKey.color = group_key_color[0];
   groupKey.chosenColor = drawUtil.isChosenColorSet[3];
-  drawUtil.write_text("Group Keys", groupKey.x, groupKey.y);
-  let nth_tuple = 0;
-  while (allTuples.value.length > 0) {
+  let compare_key = function() {
+    let waitTime = _this.waitTime;
+    let src = {};
+    let des = {};
+    let compare = function() {
+      if (_this.nth_key < groupKey.value.length) {
+        if (_this.nth_key > 0) {
+          drawUtil.tuple(groupKey.x, groupKey.y +
+            _this.nth_key * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+            groupKey.width, groupKey.color, "black",
+            groupKey.value[_this.nth_key - 1]);
+        }
+        drawUtil.tuple(groupKey.x, groupKey.y +
+          (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+          groupKey.width, groupKey.chosenColor, "white",
+          groupKey.value[_this.nth_key]);
+        let text = _this.tuple.group;
+        let width_attr = table_info.maxTableWidth / table_info.maxAttribute;
+        if (width_attr > table_info.maxAttrWidth) {
+          width_attr = table_info.maxAttrWidth;
+        }
+        let key_len = resGrouping.group_key_name.length;
+        drawUtil.ctx.clearRect(groupKey.x -
+          resGrouping.group_key_name.length * table_info.maxAttrWidth,
+          groupKey.y +
+          _this.nth_key * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+          width_attr * key_len, drawUtil.tupleHeight + drawUtil.tupleMargin);
+        drawUtil.tuple(groupKey.x -
+          resGrouping.group_key_name.length * table_info.maxAttrWidth,
+          groupKey.y +
+          (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+          width_attr * key_len, table.chosenColor, "white", text);
+        if (waitTime > 0) {
+          waitTime--;
+          return false;
+        }
+        if (groupKey.value[_this.nth_key].toString() ===
+          _this.tuple.group.toString()) {
+          src = {};
+          des = {};
+          return true;
+        } else {
+          _this.nth_key++;
+        }
+      }
+      if (_this.nth_key === groupKey.value.length) {
+        groupKey.value.push(_this.tuple.group);
+        return true;
+      }
+      waitTime = _this.waitTime;
+      return false;
+    };
+    anim(compare, () => {
+      if (groupKey.value[_this.nth_key].toString() ===
+        _this.tuple.group.toString()) {
+        anim(() => {
+          return _this.move_to_box(src, des, _this.tuple);
+        }, anim_begin);
+        return true;
+      }
+      if (_this.nth_key === groupKey.value.length) {
+        groupKey.value.push(_this.tuple.group);
+        anim(() => {
+          return _this.new_box(groupKey);
+        }, anim_begin);
+        return true;
+      }
+    });
+
+  };
+  let init = function() {
+    _this.nth_key = 0;
+    if (allTuples.value.length <= 0) {
+      return false;
+    }
+    drawUtil.ctx.clearRect(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
     drawUtil.table(allTuples, table.x, table.y,
       drawUtil.getWidth(resGrouping), drawUtil.colorSet[0], "black");
+    drawUtil.write_text("Group Keys",
+      groupKey.x, groupKey.y - (drawUtil.tupleHeight + drawUtil.tupleMargin));
+    drawUtil.tuple(groupKey.x, groupKey.y, groupKey.width, '#CCCCDD',
+      "black", resGrouping.group_key_name);
     for (let i = 0; i < groupKey.value.length; i++) {
-      drawUtil.tuple(groupKey.x, groupKey.y + (i + 1) * (drawUtil.tupleMargin +
-          drawUtil.tupleHeight), groupKey.width, groupKey.color,
-        "black", groupKey.value[i]);
-    }
-    let tuple = allTuples.value.pop();
-    nth_tuple++;
-    let text = [];
-    for (let i = 0; i < tuple.tupleValue.length; i++) {
-      text = text.concat(tuple.tupleValue[i]);
-    }
-    drawUtil.tuple(tuple.position.x, tuple.position.y, table.width,
-      table.chosenColor, "white", text);
-    let counter = 0;
-    for (let i = 0; i < groupKey.value.length; i++) {
-      counter++;
-      if (i > 0) {
-        drawUtil.tuple(groupKey.x, groupKey.y +
-          i * (drawUtil.tupleHeight + drawUtil.tupleMargin),
-          groupKey.width, groupKey.color, "black", groupKey.value[i - 1]);
-      }
       drawUtil.tuple(groupKey.x, groupKey.y +
-        (i + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
-        groupKey.width, groupKey.chosenColor, "white", groupKey.value[i]);
-      if (groupKey.value[i].toString() === tuple.group.toString()) {
-        this.move_to_box();
-        break;
+        (i + 1) * (drawUtil.tupleMargin + drawUtil.tupleHeight),
+        groupKey.width, groupKey.color, "black", groupKey.value[i]);
+    }
+    return true;
+  };
+  let chose_tuple = function() {
+    _this.tuple = allTuples.value.shift();
+    let text = [];
+    for (let i = 0; i < _this.tuple.tupleValue.length; i++) {
+      text = text.concat(_this.tuple.tupleValue[i]);
+    }
+    drawUtil.tuple(_this.tuple.position.x, _this.tuple.position.y, table.width,
+      table.chosenColor, "white", text);
+
+    return true;
+  };
+  let move_attr = function(src, des) {
+    let key_len = resGrouping.group_key_name.length;
+    if (src.x === des.x && src.y === des.y) {
+      return true;
+    }
+    let text = _this.tuple.group;
+    let width_attr = table_info.maxTableWidth / table_info.maxAttribute;
+    if (width_attr > table_info.maxAttrWidth) {
+      width_attr = table_info.maxAttrWidth;
+    }
+    src = drawUtil.nextPosition(_this.tuple, width_attr, src, des, false);
+    drawUtil.ctx.putImageData(_this.lastImg, 0, 0);
+    drawUtil.tuple(src.x, src.y, width_attr * key_len,
+      table.chosenColor, "white", text);
+  };
+  let anim_begin = function() {
+    if (init()) {
+      chose_tuple();
+      let src = {
+        x: _this.tuple.position.x,
+        y: _this.tuple.position.y,
+      };
+      let des = {
+        x: groupKey.x -
+          resGrouping.group_key_name.length * table_info.maxAttrWidth,
+        y: groupKey.y + drawUtil.tupleHeight + drawUtil.tupleMargin,
+      };
+      _this.lastImg = drawUtil.ctx.getImageData(0, 0, drawUtil.fullWidth,
+        drawUtil.fullHeight);
+      anim(() => {
+        return move_attr(src, des);
+      }, compare_key);
+    } else {
+      drawUtil.ctx.clearRect(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
+      drawUtil.write_text("Group Keys",
+        groupKey.x, groupKey.y - (drawUtil.tupleHeight + drawUtil.tupleMargin));
+      drawUtil.tuple(groupKey.x, groupKey.y, groupKey.width, '#CCCCDD',
+        "black", resGrouping.group_key_name);
+      for (let i = 0; i < groupKey.value.length; i++) {
+        drawUtil.tuple(groupKey.x,
+          groupKey.y + (i + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
+          groupKey.width, group_key_color[0], "black", groupKey.value[i]);
       }
+      _this.done.grouping = true;
+      _this.begin();
+      return true;
     }
-    if (counter === groupKey.value.length) {
-      groupKey.value.push(tuple.group);
-    }
-  }
-  this.done.grouping = true;
+  };
+  anim_begin();
+};
+DrawProcess.prototype.move_to_box = function(src, des, tuple, nextAnimation) {
   return true;
 };
-DrawProcess.prototype.move_to_box = function() {
-
+DrawProcess.prototype.new_box = function(box, nextAnimation) {
+  return true;
 };
 /**
  * Get the positions of relations with their names in tuplesets_array.
