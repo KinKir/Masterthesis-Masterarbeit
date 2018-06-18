@@ -661,6 +661,17 @@ DrawUtil.prototype.zoom_rect = function(
   let zoomSize = {};
   zoomSize.width = rect.width;
   zoomSize.height = rect.height;
+  text = [text.toString()];
+  let rowWidth = rect.width / (font_size/1.5);
+  if (text[0].length > rowWidth) {
+    let rowNum = Math.ceil(text[0].length / rowWidth);
+    rect.height = rowNum * rect.height;
+    let temp = text[0];
+    text = [];
+    for (let i = 0; i < temp.length; i++) {
+        text.push(temp.substring(i*rowWidth, (i+1)*rowWidth));
+    }
+  }
   //Left line.
   ctx.shadowBlur = 1;
   ctx.shadowColor = "black";
@@ -699,8 +710,11 @@ DrawUtil.prototype.zoom_rect = function(
   ctx.fillStyle = "black";
   ctx.textAlign = "center";
   ctx.font = font_size + "px Arial";
-  ctx.fillText(text, x + width / 2,
-    y + height + zoomSize.height / 2);
+  for (let i = 0; i < text.length; i++) {
+    ctx.fillText(text[i], x + width / 2,
+      y + height + zoomSize.height / 2 + i * height);
+  }
+
   ctx.restore();
 };
 /**

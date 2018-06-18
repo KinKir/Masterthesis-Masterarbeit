@@ -446,7 +446,6 @@ DrawAlgebra.prototype.compare_tuples = function(_this) {
     if (_this.which_side_first == "left") {
       if (_this.nth_tuple1 < _this.tuplesInput1.value.length - 1) {
         _this.nth_tuple1++;
-        _this.counter = _this.waitTime;
       } else {
         _this.nth_tuple2++;
         _this.nth_tuple1 = 0;
@@ -454,13 +453,13 @@ DrawAlgebra.prototype.compare_tuples = function(_this) {
     } else {
       if (_this.nth_tuple2 < _this.tuplesInput2.value.length - 1) {
         _this.nth_tuple2++;
-        _this.counter = _this.waitTime;
       } else {
         _this.nth_tuple1++;
         _this.nth_tuple2 = 0;
       }
     }
   }
+  _this.counter = _this.waitTime;
   return false;
 };
 /**
@@ -945,8 +944,7 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
 DrawAlgebra.prototype.draw_compare_table = function(_this, nextAnimation,
   color1, color2, chosenColor1, chosenColor2) {
   _this.counter = _this.waitTime;
-  drawUtil.ctx.clearRect(0, drawUtil.animField.y,
-    drawUtil.fullWidth, drawUtil.fullHeight);
+  drawUtil.ctx.clearRect(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
   drawUtil.table(_this.tuplesInput1, _this.x1, _this.tabY,
     drawUtil.getWidth(_this.tuplesInput1), color1, "black");
   drawUtil.table(_this.tuplesInput2, _this.x2, _this.tabY,
@@ -1164,7 +1162,7 @@ DrawAlgebra.prototype.get_Same_Tuples = function(src_or_val = "src", _this,
   let tuple2y = tuple2.position.y;
 
   drawUtil.ctx.clearRect(0, drawUtil.animField.y,
-    drawUtil.fullWidth, drawUtil.fullHeight - resultField.y);
+    drawUtil.fullWidth, drawUtil.fullHeight);
   drawUtil.table(tuplesInput1, drawUtil.animField.x, _this.tabY,
     drawUtil.getWidth(tuplesInput1), color1, "black");
   drawUtil.table(tuplesInput2, _this.x2, _this.tabY,
@@ -1172,6 +1170,7 @@ DrawAlgebra.prototype.get_Same_Tuples = function(src_or_val = "src", _this,
   let text = "Find the same tuples between two relations.";
   drawUtil.write_text(text, drawUtil.infoField.x, drawUtil.infoField.y + 20,
     "black", 20);
+  drawUtil.ctx.putImageData(_this.imgDataResult,drawUtil.result.x,drawUtil.result.y);
   drawUtil.tuple(tuple1x, tuple1y, drawUtil.getWidth(tuple1), chosenColor1,
     "white", drawUtil.getText(tuple1));
   drawUtil.tuple(tuple2x, tuple2y, drawUtil.getWidth(tuple2), chosenColor2,
@@ -1182,17 +1181,16 @@ DrawAlgebra.prototype.get_Same_Tuples = function(src_or_val = "src", _this,
   drawUtil.zoom_rect(drawUtil.getText(tuple2), tuple2x, tuple2y,
     drawUtil.getWidth(tuple2), drawUtil.tupleHeight + 4);
   // }
-
   if (_this.counter > 0) {
     _this.counter--;
     return false;
   }
+  _this.counter = waitTime;
   if (_this.is_Same(_this.src_or_val, tuple1, tuple2)) {
     return true;
   } else {
     if (_this.nth_tuple2 < tuplesInput2.value.length - 1) {
       _this.nth_tuple2++;
-      _this.counter = waitTime;
     } else {
       _this.nth_tuple1++;
       _this.nth_tuple2 = 0;

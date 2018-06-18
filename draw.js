@@ -186,7 +186,7 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
         }
         dp.begin();
       } else if (this.getAttribute('id') == "compare" ||
-        this.getAttribute('id') == "crossJoin" ||
+        this.getAttribute('id') == "core" ||
         this.getAttribute('id') == "intersection_union") {
         //If the button means one step of where.
         if (this.getAttribute('id') == "compare") {
