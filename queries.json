@@ -5,53 +5,46 @@ queries = {
       "select": [
           {"rel":"sA","attr":["name","age"]},
           {"rel":"sB","attr":["height"]},
-          {"rel":"sC","attr":["nation"]},
+          {"rel":"sC","attr":["weight"]},
       ],
       "from": ["sA","sB","sC"],
       "where": [
-        {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"nation","attr2":"nation"},
+        {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
-        {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
+        {"union":"or", "op":"equal","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
       ],
       "grouping": [
         {"rel":"sA","attr":"name"},
+        {"rel":"sA","attr":"age"},
         {"rel":"sB","attr":"height"},
-        {"rel":"sC","attr":"nation"},
+        {"rel":"sC","attr":"weight"},
       ],
       "ordering": [
         {"rel":"sA","attr":"name", "UpDown":"DESC"},
-        {"rel":"sB","attr":"salary", "UpDown":"ASC"},
-        {"rel":"sC","attr":"nation", "UpDown":"ASC"},
+        {"rel":"sC","attr":"height", "UpDown":"ASC"},
       ],
     },{
       "select": [
           {"rel":"sA","attr":["name"]},
-          {"rel":"sB","attr":["weight"]},
-          {"rel":"sC","attr":["age","height","eyesColor"]},
+          {"rel":"sC","attr":["eyesColor"]},
       ],
-      "from": ["sA","sB","sC"],
+      "from": ["sA","sC"],
       "where": [
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
-        {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"name","attr2":"name"},
-        {"union":"or", "op":"less","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
-        {"union":"or", "op":"less","rel1":"sB","rel2":"sC","attr1":"age","attr2":"age"},
       ],
       "grouping": [
-        {"rel":"sB","attr":"name"},
-        {"rel":"sB","attr":"weight"},
-        {"rel":"sC","attr":"height"},
+        {"rel":"sA","attr":"name"},
+        {"rel":"sC","attr":"eyesColor"},
       ],
       "ordering": [
-        {"rel":"sB","attr":"name", "UpDown":"DESC"},
-        {"rel":"sB","attr":"weight", "UpDown":"ASC"},
-        {"rel":"sC","attr":"height", "UpDown":"ASC"},
+        {"rel":"sA","attr":"name", "UpDown":"DESC"},
       ],
     },
     {
       "select": [
           {"rel":"sA","attr":["name","age"]},
           {"rel":"sB","attr":["height"]},
-          {"rel":"sC","attr":["nation"]},
+          {"rel":"sC","attr":["weight"]},
         ],
       "from": ["sA","sB","sC"],
       "where": [
@@ -61,12 +54,11 @@ queries = {
         {"rel":"sA","attr":"name"},
         {"rel":"sA","attr":"age"},
         {"rel":"sB","attr":"height"},
-        {"rel":"sC","attr":"nation"},
+        {"rel":"sC","attr":"weight"},
       ],
       "ordering": [
         {"rel":"sA","attr":"name", "UpDown":"DESC"},
-        {"rel":"sB","attr":"salary", "UpDown":"ASC"},
-        {"rel":"sC","attr":"nation", "UpDown":"ASC"},
+        {"rel":"sB","attr":"age", "UpDown":"ASC"},
       ],
     },
     {
@@ -96,6 +88,7 @@ queries = {
       "from": ["sA","sB"],
       "where": [
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
+        {"union":"or", "op":"greater","rel1":"sB","rel2":"null","attr1":"height","attr2":"170"},
         ],
     },
   ],

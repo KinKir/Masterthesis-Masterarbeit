@@ -38,39 +38,38 @@ data = {
     },
     {
       "name": "D",
-      "columns": ["name", "age", "nation", "height", "weight"],
+      "columns": ["name", "age", "weight"],
       "value": [
-        {"tupleValue":["Chili", 25, "AUSTRALIA", 178, 80]},
-        {"tupleValue":["Max", 24, "GERMANY", 156, 50]},
-        {"tupleValue":["Qian", 21, "CHINA", 177, 60]},
-        {"tupleValue":["Andreas", 22, "GERMANY", 192, 100]},
-        {"tupleValue":["Zhang", 28, "CHINA", 167, 120]},
-        {"tupleValue":["Yang", 24, "CHINA", 183, 80]},
-        {"tupleValue":["Edmund", 32, "GERMANY", 183, 75]},
-        {"tupleValue":["Jordan", 30, "USA", 179, 68]},
-        {"tupleValue":["Mike", 30, "USA", 169, 70]},
-        {"tupleValue":["Angel", 35, "USA", 212, 130]},
-        {"tupleValue":["Jiang", 50, "CHINA", 236, 150]},
-        {"tupleValue":["Jeffry", 32, "GERMANY", 207, 115]}
+        {"tupleValue":["Chili", 25, 80]},
+        {"tupleValue":["Max", 24, 50]},
+        {"tupleValue":["Qian", 21, 60]},
+        {"tupleValue":["Andreas", 22, 90]},
+        {"tupleValue":["Zhang", 28, 80]},
+        {"tupleValue":["Yang", 24, 80]},
+        {"tupleValue":["Edmund", 32, 75]},
+        {"tupleValue":["Jordan", 30, 68]},
+        {"tupleValue":["Mike", 30, 70]},
+        {"tupleValue":["Angel", 35, 130]},
+        {"tupleValue":["Jiang", 50, 100]},
+        {"tupleValue":["Jeffry", 32, 115]}
       ]
     },
     {
       "name": "E",
-      "columns": ["name", "age", "nation", "eyesColor", "height"],
+      "columns": ["name", "eyesColor", "height"],
       "value": [
-        {"tupleValue":["Lili", 25, "UK", "black", 165]},
-        {"tupleValue":["Andrew", 29, "USA", "yellow", 165]},
-        {"tupleValue":["Liu", 25, "CHINA", "blue", 176]},
-        {"tupleValue":["Andreas", 22, "GERMANY", "gray", 188]},
-        {"tupleValue":["Jack", 19, "USA", "braun", 198]},
-        {"tupleValue":["Zhang", 30, "CHINA", "black", 183]},
-        {"tupleValue":["Yang", 24, "CHINA", "green", 189]},
-        {"tupleValue":["Jordan", 30, "USA", "braun", 194]},
-        {"tupleValue":["Mike", 30, "USA", "yellow", 178]},
-        {"tupleValue":["Angel", 35, "USA", "red", 186]},
-        {"tupleValue":["Jiang", 50, "CHINA", "green", 167]},
-        {"tupleValue":["Jeffry", 32, "GERMANY", "blue", 165]}
-
+        {"tupleValue":["Lili", "black", 165]},
+        {"tupleValue":["Andrew", "yellow", 165]},
+        {"tupleValue":["Liu", "blue", 176]},
+        {"tupleValue":["Andreas", "gray", 188]},
+        {"tupleValue":["Jack", "braun", 198]},
+        {"tupleValue":["Zhang", "black", 183]},
+        {"tupleValue":["Yang", "green", 189]},
+        {"tupleValue":["Jordan", "braun", 194]},
+        {"tupleValue":["Mike", "yellow", 178]},
+        {"tupleValue":["Angel", "red", 186]},
+        {"tupleValue":["Jiang", "green", 167]},
+        {"tupleValue":["Jeffry", "blue", 165]},
       ]
     },
     {
@@ -82,30 +81,29 @@ data = {
           {"tupleValue":["Qian", 21, "CHINA"]},
           {"tupleValue":["Edmund", 30, "GERMANY"]}
         ]
-
     },
     {
       "name": "sB",
-      "columns": ["name", "age", "nation", "eyesColor", "height", "weight"],
+      "columns": ["name", "eyesColor", "height", "weight"],
       "value": [
-        {"tupleValue":["Chili", 25, "AUSTRALIA", "blond", 176, 80]},
-        {"tupleValue":["Max", 24, "GERMANY", "grey", 166, 50]},
-        {"tupleValue":["Qian", 21, "CHINA", "brown", 177, 75]},
-        {"tupleValue":["Andrew", 23, "USA", "green", 188, 80]},
-        {"tupleValue":["Wang", 25, "CHINA", "black", 167, 65]},
-        {"tupleValue":["Edmund", 30, "GERMANY", "blue", 190, 90]}
-      ]
+        {"tupleValue":["Chili", "braun", 176, 80]},
+        {"tupleValue":["Max", "braun", 166, 50]},
+        {"tupleValue":["Qian", "black", 177, 75]},
+        {"tupleValue":["Andrew", "braun", 188, 80]},
+        {"tupleValue":["Wang", "black", 167, 65]},
+        {"tupleValue":["Edmund", "blue", 190, 90]}
+      ],
     },
     {
       "name": "sC",
-      "columns": ["name", "age", "nation", "eyesColor", "height", "weight"],
+      "columns": ["name", "eyesColor", "height", "weight"],
       "value": [
-        {"tupleValue":["Lili", 25, "UK", "black", 176, 100]},
-        {"tupleValue":["Andrew", 29, "USA", "yellow", 165, 80]},
-        {"tupleValue":["Wang", 25, "CHINA", "black", 167, 60]},
-        {"tupleValue":["Qian", 21, "CHINA", "brown", 177, 75]},
-        {"tupleValue":["Liu", 22, "CHINA", "blue", 171, 65]},
-      ]
+        {"tupleValue":["Lili", "blue", 176, 100]},
+        {"tupleValue":["Andrew", "braun", 165, 80]},
+        {"tupleValue":["Wang", "grey", 167, 60]},
+        {"tupleValue":["Qian", "black", 177, 75]},
+        {"tupleValue":["Liu", "green", 171, 65]},
+      ],
     },
-  ]
+  ],
 }

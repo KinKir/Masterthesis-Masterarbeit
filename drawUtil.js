@@ -44,25 +44,25 @@ DrawUtil.prototype.tuple = function(x, y, width, color, colorText, text) {
   let ctx = _this.ctx;
   if (width >= _this.maxTableWidth) {
     width = _this.maxTableWidth;
-    if (text.length > table_info.maxAttribute) {
-      let tmpText = [];
-      while (text.length > 0) {
-        if (tmpText.length > Math.floor(table_info.maxAttribute / 2)) {
-          if (text.length > Math.floor(table_info.maxAttribute / 2)) {
-            text.shift();
-          } else {
-            tmpText.push(text.shift());
-          }
-        }
-        if (tmpText.length < Math.floor(table_info.maxAttribute / 2)) {
+  }
+  if (text.length > table_info.maxAttribute) {
+    let tmpText = [];
+    while (text.length > 0) {
+      if (tmpText.length > Math.floor(table_info.maxAttribute / 2)) {
+        if (text.length > Math.floor(table_info.maxAttribute / 2)) {
+          text.shift();
+        } else {
           tmpText.push(text.shift());
         }
-        if (tmpText.length == Math.floor(table_info.maxAttribute / 2)) {
-          tmpText.push("...");
-        }
       }
-      text = tmpText;
+      if (tmpText.length < Math.floor(table_info.maxAttribute / 2)) {
+        tmpText.push(text.shift());
+      }
+      if (tmpText.length == Math.floor(table_info.maxAttribute / 2)) {
+        tmpText.push("...");
+      }
     }
+    text = tmpText;
   }
   ctx.save();
   ctx.fillStyle = color;
@@ -816,10 +816,10 @@ DrawUtil.prototype.get_Attr_Pos_in_column = function(columns, x, y, attr,
   }
   let res = {};
   if (tmpcolumns.length > table_info.maxAttribute) {
-    if(posAttr >= tmpcolumns.length - Math.floor(table_info.maxAttribute/2)){
+    if (posAttr >= tmpcolumns.length - Math.floor(table_info.maxAttribute / 2)) {
       res.width = width / table_info.maxAttribute;
       res.x = x + width - (tmpcolumns.length - posAttr) * res.width;
-    }else{
+    } else {
       res.width = width / tmpcolumns.length;
       res.x = x + (posAttr) * res.width;
     }

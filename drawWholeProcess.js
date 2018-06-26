@@ -351,6 +351,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
     whole: function() {
       _this.i = 0;
       _this.j = 0;
+      _this.k = 0;
       initTable();
       _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.animField.width,
         drawUtil.animField.height);
@@ -366,12 +367,14 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
     crossJoin: function() {
       _this.i = 0;
       _this.j = 0;
+      _this.k = 0;
       callAnimCrossJoin();
       return;
     },
     intersection_union: function() {
       _this.i = 0;
       _this.j = 0;
+      _this.k = 0;
       anim_intersection_union();
       return;
     }
@@ -448,39 +451,43 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
   //cross join with other relations' tuples.
   //just show the join result in where.core.
   function callAnimCrossJoin() {
-    if (res_where.core.length < 1 || _this.i >= res_where.compareSets.length) {
+    if (res_where.core.length < 1 || _this.k >= res_where.core.length) {
       if (step == "whole") {
         _this.i = 0;
         _this.j = 0;
+        _this.k = 0;
         anim_intersection_union();
         return true;
       } else {
-        drawUtil.write_text("It doesn't need cross join any more.",
-          drawUtil.animField.fullWidth / 2 - 100,
-          drawUtil.animField.fullHeight / 2, "black", 20);
+        _this.drawInfo.write("It doesn't need cross join any more.");
         return true;
       }
     }
     window.setBtnStyle(document.getElementById("core"));
-    if (res_where.core[_this.i].name.length ==
-      res_where.compareSets[_this.i].name.length) {
-      _this.i++;
-      callAnimCrossJoin();
-      return true;
-    }
+    // if (res_where.core[_this.i].name.length ==
+    //   res_where.compareSets[_this.i].name.length) {
+    //   _this.i++;
+    //   callAnimCrossJoin();
+    //   return true;
+    // }
     drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
       drawUtil.fullWidth, drawUtil.fullHeight);
     _this.drawInfo.write("cross join");
     let compareSets = res_where.compareSets;
     let leftTable = compareSets[_this.i];
     let rightTables = algebraUtil.get_unusedInputs(_this.res.from, leftTable);
+    if (!rightTables.length) {
+      _this.i++;
+      callAnimCrossJoin();
+      return true;
+    }
     let rightTable = rightTables[_this.j];
     if (_this.i < compareSets.length && _this.j < rightTables.length) {
       if (_this.j > 0) {
         for (let k = 0; k < _this.j; k++)
           leftTable = join.crossJoin(leftTable, rightTables[k]);
       };
-      _this.drawAlgebra.animCrossJoin(res_where.core[_this.i], leftTable,
+      _this.drawAlgebra.animCrossJoin(res_where.core[_this.k], leftTable,
         rightTable, () => {
           callback(_this);
         });
@@ -491,11 +498,13 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         _this.j++;
       } else {
         _this.i++;
+        _this.k++;
         _this.j = 0;
       }
       if (_this.i >= compareSets.length) {
         _this.i = 0;
         _this.j = 0;
+        _this.k = 0;
         anim_intersection_union();
         return true;
       }
@@ -526,8 +535,8 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       }
       let compareSet = compareSets[_this.i];
       let condition = compareSet.step.condition;
-      let oldSet = res_where.intermediateResult[_this.i - 1];
-      let newSet = res_where.core[_this.i];
+      let oldSet = res_where.intermediateResult[_this.i-1];
+      let newSet = res_where.core[_this.k];
       if (_this.i > 1) {
         drawUtil.ctx.clearRect(drawUtil.result.x, drawUtil.result.y,
           drawUtil.result.width, drawUtil.result.height);
@@ -540,7 +549,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
           y: drawUtil.animField.y + drawUtil.info_lines *
             (drawUtil.tupleHeight + drawUtil.tupleMargin)
         };
-        if (compareSets[_this.i - 1].step.condition.union == "and") {
+        if (compareSets[_this.i].step.condition.union == "and") {
           _this.drawAlgebra.moveTable(oldSet, drawUtil.colorSet[0],
             srcRes, desRes, drawAnim, true, true);
         } else {
@@ -561,6 +570,7 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
           _this.drawAlgebra.animUnion(res_where.intermediateResult[_this.i],
             oldSet, newSet, loop);
         }
+        _this.k++;
       };
     };
   };
@@ -613,12 +623,12 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
           drawUtil.tuple(groupKey.x, groupKey.y +
             _this.nth_key * (drawUtil.tupleHeight + drawUtil.tupleMargin),
             groupKey.width, groupKey.color, "black",
-            groupKey.value[_this.nth_key - 1]);
+            groupKey.value[_this.nth_key - 1], false);
         }
         drawUtil.tuple(groupKey.x, groupKey.y +
           (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
           groupKey.width, groupKey.chosenColor, "white",
-          groupKey.value[_this.nth_key]);
+          groupKey.value[_this.nth_key], false);
         let text = _this.tuple.group;
         let width_attr = table_info.maxTableWidth / table_info.maxAttribute;
         if (width_attr > table_info.maxAttrWidth) {
@@ -634,7 +644,7 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
           resGrouping.group_key_name.length * table_info.maxAttrWidth,
           groupKey.y +
           (_this.nth_key + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
-          width_attr * key_len, table.chosenColor, "white", text);
+          width_attr * key_len, table.chosenColor, "white", text, false);
         if (waitTime > 0) {
           waitTime--;
           return false;
@@ -710,11 +720,11 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
     drawUtil.write_text("Group Keys",
       groupKey.x, groupKey.y - (drawUtil.tupleHeight + drawUtil.tupleMargin));
     drawUtil.tuple(groupKey.x, groupKey.y, groupKey.width, '#CCCCDD',
-      "black", resGrouping.group_key_name);
+      "black", resGrouping.group_key_name, false);
     for (let i = 0; i < groupKey.value.length; i++) {
       drawUtil.tuple(groupKey.x, groupKey.y +
         (i + 1) * (drawUtil.tupleMargin + drawUtil.tupleHeight),
-        groupKey.width, groupKey.color, "black", groupKey.value[i]);
+        groupKey.width, groupKey.color, "black", groupKey.value[i], false);
     }
     return true;
   };
@@ -725,7 +735,7 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
       text = text.concat(_this.tuple.tupleValue[i]);
     }
     drawUtil.tuple(_this.tuple.position.x, _this.tuple.position.y, table.width,
-      table.chosenColor, "white", text);
+      table.chosenColor, "white", text, false);
 
     return true;
   };
@@ -742,7 +752,7 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
     src = drawUtil.nextPosition(_this.tuple, width_attr, src, des, false);
     drawUtil.ctx.putImageData(_this.lastImg, 0, 0);
     drawUtil.tuple(src.x, src.y, width_attr * key_len,
-      table.chosenColor, "white", text);
+      table.chosenColor, "white", text, false);
     return false;
   };
   let anim_begin = function() {
@@ -767,11 +777,11 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
       drawUtil.write_text("Group Keys",
         groupKey.x, groupKey.y - (drawUtil.tupleHeight + drawUtil.tupleMargin));
       drawUtil.tuple(groupKey.x, groupKey.y, groupKey.width, '#CCCCDD',
-        "black", resGrouping.group_key_name);
+        "black", resGrouping.group_key_name, false);
       for (let i = 0; i < groupKey.value.length; i++) {
         drawUtil.tuple(groupKey.x,
           groupKey.y + (i + 1) * (drawUtil.tupleHeight + drawUtil.tupleMargin),
-          groupKey.width, group_key_color[0], "black", groupKey.value[i]);
+          groupKey.width, group_key_color[0], "black", groupKey.value[i], false);
       }
       _this.done.grouping = true;
       _this.begin();
