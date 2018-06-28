@@ -522,6 +522,9 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
     window.setBtnStyle(document.getElementById("intersection_union"));
     drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
       drawUtil.fullWidth, drawUtil.fullHeight);
+    if(res_where.intermediateResult.length === res_where.core.length){
+      _this.k++;
+    }
     loop();
 
     function loop() {
