@@ -176,8 +176,8 @@ SQL_process_fun = {
    * @param sqlReader_select the query statement of select of SQL query.
    * @returns {tupleset_with_group} the selected columns' set.
    **/
-  resSelection: function(tuplesInput, sqlReader_select) {
-    return selection(tuplesInput, sqlReader_select);
+  resSelect: function(tuplesInput, sqlReader_select) {
+    return select(tuplesInput, sqlReader_select);
   }
 };
 /**
@@ -188,7 +188,7 @@ SQL_process_fun = {
  * @property {output_of_where} resWhere
  * @property {output_of_grouping} resGrouping
  * @property {output_of_ordering} resOrdering
- * @property {tupleset_with_group} resSelection
+ * @property {tupleset_with_group} resSelect
  */
 /**
  * @param {query} sqlQuery The SQL query.
@@ -214,7 +214,7 @@ SQL_process = function(sqlQuery) {
       intermediateResult = res_SQL.resGrouping.result;
   }
   if(sqlReader.select){
-      res_SQL.resSelect = SQL_process_fun.resSelection(intermediateResult, sqlReader.select);
+      res_SQL.resSelect = SQL_process_fun.resSelect(intermediateResult, sqlReader.select);
       intermediateResult = res_SQL.resSelect;
   }
   if(sqlReader.ordering){

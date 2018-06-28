@@ -3,7 +3,7 @@
  *
  */
 /**
- * The value of table. In selection and ordering and grouping,
+ * The value of table. In select and ordering and grouping,
  * it has more attribute named "group".
  * @typedef {array} value_with_group
  * @property {object} source
@@ -23,54 +23,8 @@
  * @param select the query statement of select of SQL query.
  * @returns {tupleset_with_group} the selected columns' set.
  **/
-selection = function(tuplesInput, select) {
-  var tuplesOutput = algebraUtil.initRelation();
-  var input = JSON.parse(JSON.stringify(tuplesInput));
-  for (var i = 0; i < select.length; i++) {
-    tuplesOutput.columns.push({
-      src: [],
-      columns: []
-    });
-  }
-  var i = 0;
-  while (i < select.length) {
-    tuplesOutput.columns[i].src.push(select[i].rel);
-    var j = 0;
-    while (j < select[i].attr.length) {
-      /** get every colums position. */
-      var position = algebraUtil.getThePosition(input, select[i].rel, select[i].attr[j]);
-      /** If the relation has not been added to output, add the relation's name. */
-      if (tuplesOutput.name.indexOf(select[i].rel) === -1) {
-        tuplesOutput.name.push(select[i].rel);
-      }
-      /** Add the column's name into output. */
-      if (tuplesOutput.columns[position.relPos].columns.indexOf(select[i].attr[j]) === -1) {
-        tuplesOutput.columns[position.relPos].columns.push(select[i].attr[j]);
-      }
-      /** Add this column into output. */
-      var valueLen;
-      if (position.arrayPos) {
-        valueLen = input[position.arrayPos].value.length;
-      } else {
-        valueLen = input.value.length;
-      }
-      var k = 0;
-      while (k < valueLen) {
-        if (tuplesOutput.value[k] == undefined) {
-          tuplesOutput.value[k] = Object.assign({}, input.value[k]);
-          for (var tvLen in tuplesOutput.value[k].tupleValue) {
-            tuplesOutput.value[k].tupleValue[tvLen] = [];
-          }
-        }
-        tuplesOutput.value[k].tupleValue[position.relPos].push(
-          tuplesInput.value[k].tupleValue[position.relPos][position.columnPos]);
-        k++;
-      }
-      j++;
-    }
-    i++;
-  }
-  return tuplesOutput;
+select = function(tuplesInput, select) {
+  return projection(tuplesInput, select);
 };
 /**
  * Does the from clause in SQL query.
@@ -78,8 +32,35 @@ selection = function(tuplesInput, select) {
  * @returns {tupleset_basic_array} the selected tables.
  **/
 from = function(tables) {
-  var tuplesOutput;
-  tuplesOutput = projection(tables);
+  var tuplesOutput = [];
+  var tablesNames = tables;
+  for (var i = 0; i < tablesNames.length; i++) {
+    /** find the tuples in data, that the name is same as the queried table name. */
+    for (var j = 0; j < data.tables.length; j++) {
+      if (tablesNames[i] == data.tables[j].name) {
+        tuplesOutput.push(JSON.parse(JSON.stringify(data.tables[j])));
+      }
+    }
+  }
+  for (var i = 0; i < tuplesOutput.length; i++) {
+    var name = tuplesOutput[i].name.slice();
+    tuplesOutput[i].name = [];
+    tuplesOutput[i].name = tuplesOutput[i].name.concat(name);
+    tuplesOutput[i].columns = [{
+      "src": tuplesOutput[i].name.slice(),
+      "columns": tuplesOutput[i].columns
+    }];
+  }
+  for (var i = 0; i < tuplesOutput.length; i++) {
+    var k = 0;
+    for (var j = 0; j < tuplesOutput[i].value.length; j++) {
+      tuplesOutput[i].value[j].source = {};
+      tuplesOutput[i].value[j].source.rels = tuplesOutput[i].name;
+      tuplesOutput[i].value[j].source.ids = [k];
+      tuplesOutput[i].value[j].tupleValue = [tuplesOutput[i].value[j].tupleValue];
+      k++;
+    }
+  }
   return tuplesOutput;
 };
 /**

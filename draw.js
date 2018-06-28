@@ -239,9 +239,9 @@ draw.algebra.single_algebra = function(single = true) {
   draw.algebra(query_algebra);
   if (single) {
     ts1 = JSON.parse(JSON.stringify(
-      projection(query_algebra.rel1.tuple_set)[0]));
+      from(query_algebra.rel1.tuple_set)[0]));
     ts2 = JSON.parse(JSON.stringify(
-      projection(query_algebra.rel2.tuple_set)[0]));
+      from(query_algebra.rel2.tuple_set)[0]));
     attr1 = query_algebra.attr1;
     attr2 = query_algebra.attr2;
     op = query_algebra.op;
@@ -296,9 +296,9 @@ draw.algebra.multi_algebra = function() {
       return true;
     }
     _this.ts1 = JSON.parse(JSON.stringify(
-      projection(query.rel1.tuple_set)[0]));
+      from(query.rel1.tuple_set)[0]));
     _this.ts2 = JSON.parse(JSON.stringify(
-      projection(query.rel2.tuple_set)[0]));
+      from(query.rel2.tuple_set)[0]));
     _this.attr1 = query_algebra.attr1;
     _this.attr2 = query_algebra.attr2;
     _this.op = query_algebra.op;
