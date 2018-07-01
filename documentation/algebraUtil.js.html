@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: algebraUtil.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: algebraUtil.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Utilisation for algebra.
+ *
+ */
+/**
+ * The columns of table. The structure of all columns everywhere is same.
+ * @typedef {array} columns
+ * @property {array} columns - Indicates whether the Courage component is present.
+ * @property {array} src - Indicates whether the Power component is present.
+ */
+/**
+ * The value of table.
+ * @typedef {array} value_basic
+ * @property {object} source The source of this tuple.
+ * @property {array} tupleValue The value of this tuple.
+ */
+/**
+ * The source of tupleValue.
+ * @typedef {object} source
+ * @property {array} ids The ids of this tuple in the source relation.
+ * @property {array} rels The source relations of this tuple.
+ */
+/**
+ * The basical tupleset.
+ * @typedef {object} tupleset_basic
+ * @property {columns} columns The columns of this relation.
+ * @property {array} name The name of this relation.
+ * @property {value_basic} value The values of this relation.
+ */
+/**
+ * The array of tuplesets.
+ * @typedef {array} tupleset_basic_array
+ * @property {tupleset_basic} tupleset A relation.
+ */
+/**
+ * Utilisation for algebra.
+ * @namespace algebraUtil
+ */
+function algebraUtil() {};
+/**
+ * Generate a new tuple with the value of value1 and value2.
+ * @param value1 one tuple.
+ * @param len1 the length of value1.
+ * @param value2 the other tuple.
+ * @param len2 the length of value2.
+ * @returns {value_basic} The joined value of value1 and value2.
+ **/
+algebraUtil.generateNewValue = function(tuple1, len1, tuple2, len2) {
+  var newTuple = this.initValue();
+  var tuple = [tuple1, tuple2];
+  var len = [len1, len2];
+  /** If at least one tuple is empty, generate a new tuple with len[1|2].*/
+  for (var i in tuple) {
+    if (tuple[i] == null) {
+      tuple[i] = this.initValue();
+      tuple[i].source.rels = [null];
+      tuple[i].source.ids = [null];
+      var tmpTupleValue = [];
+      tmpTupleValue[0] = [];
+      for (var j = 0; j &lt; len[i]; j++) {
+        tmpTupleValue[0].push(null);
+      }
+      tuple[i].tupleValue = tmpTupleValue;
+    }
+  }
+  newTuple.source.rels = tuple[0].source.rels.concat(tuple[1].source.rels);
+  newTuple.source.ids = tuple[0].source.ids.concat(tuple[1].source.ids);
+  newTuple.tupleValue = tuple[0].tupleValue.concat(tuple[1].tupleValue);
+  return newTuple;
+};
+/**
+ * Generate a new relation with empty value.
+ * @returns {tupleset_basic}
+ **/
+algebraUtil.initRelation = function() {
+  var tuplesOutput = {};
+  tuplesOutput.name = [];
+  tuplesOutput.columns = [];
+  tuplesOutput.value = [];
+
+  return tuplesOutput;
+};
+/**
+ * Generate a new relation with empty value.
+ * @constructor Table
+ * @returns {tupleset_basic}
+ **/
+Table = function() {
+  var tuplesOutput = {};
+  tuplesOutput.name = [];
+  tuplesOutput.columns = [];
+  tuplesOutput.value = [];
+
+  return tuplesOutput;
+};
+/**
+ * Generate a new tuple with empty value.
+ * @constructor Value
+ * @returns {tuple_basic}
+ **/
+algebraUtil.TupleValue = function() {
+  var value = {};
+  value.tupleValue = [];
+  value.source = {};
+  value.source.rels = [];
+  value.source.ids = [];
+  return value;
+};
+/**
+ * Generate a new tuple with empty value.
+ * @returns {value_basic}
+ **/
+algebraUtil.initValue = function() {
+  var value = {};
+  value.tupleValue = [];
+  value.source = {};
+  value.source.rels = [];
+  value.source.ids = [];
+  return value;
+};
+/**
+ * The tupleset with step information.
+ * @typedef {array} tupleset_with_step
+ * @property {columns} columns The columns of this relation.
+ * @property {array} name The name of this relation.
+ * @property {value_basic} value The values of this relation.
+ * @property {step} step The information of the step of this relation.
+ */
+/**
+ * Compare two relations by the attributes of condition.
+ * @param tuplesInput tuplesets array.
+ * @param condition current condition.
+ * @param stepNum now is the n-th condition in "where" clause.
+ * @returns {tupleset_with_step}
+ **/
+algebraUtil.unitCompare = function(tuplesInput, condition, stepNum) {
+  var tuplesOutput = {};
+  var position1 = this.getThePosition(tuplesInput, condition.rel1, condition.attr1);
+  var position2 = this.getThePosition(tuplesInput, condition.rel2, condition.attr2);
+
+  if (condition.rel1 != "null" &amp;&amp; condition.rel2 != "null") {
+    /** both sides are relations. */
+    tuplesOutput = join.innerJoin(tuplesInput[position1.arrayPos],
+      tuplesInput[position2.arrayPos], condition.attr1, condition.attr2, condition.op);
+  } else if ((condition.rel1 == "null" &amp;&amp; condition.rel2 != "null") ||
+    (condition.rel1 != "null" &amp;&amp; condition.rel2 == "null")) {
+    /** one is relation, the other is number or word. */
+    var relation = null;
+    var attr = null;
+    /**
+     * @param other the other side except the relation.
+     * @param rel the flag for relation.
+     */
+    var other = null;
+    var rel = null;
+
+    if (condition.rel1 != "null") {
+      relation = condition.rel1;
+      attr = condition.attr1;
+      other = condition.attr2;
+      rel = "rel1";
+    }
+    if (condition.rel2 != "null") {
+      relation = condition.rel2;
+      attr = condition.attr2;
+      other = condition.attr1;
+      rel = "rel2";
+    }
+    var compare = {
+      "rel1": function(rel, other) {
+        return where.ops[condition.op](rel, other);
+      },
+      "rel2": function(rel, other) {
+        return where.ops[condition.op](other, rel);
+      }
+    }
+    var position = this.getThePosition(tuplesInput, relation, attr);
+    tuplesOutput = this.initRelation();
+    tuplesOutput.name = tuplesInput[position.arrayPos].name.slice();
+    tuplesOutput.columns = tuplesInput[position.arrayPos].columns.slice();
+    for (var i = 0; i &lt; tuplesInput[position.arrayPos].value.length; i++) {
+      let valuei = tuplesInput[position.arrayPos].value[i];
+      if (
+        compare[rel](
+          valuei.tupleValue[position.relPos][position.columnPos], other)) {
+        tuplesOutput.value.push(tuplesInput[position.arrayPos].value[i]);
+      }
+    }
+
+  }
+  /** add step info into result of every condition. */
+  var stepToString = function(condition, i) {
+    return {
+      "resultFrom": "" + condition.union,
+      "stepNumber": i,
+      "condition": condition
+    }
+  };
+  tuplesOutput.step = stepToString(condition, stepNum);
+  return tuplesOutput;
+};
+
+/**
+ * The positions.
+ * @typedef {object} positions
+ * @property {String} arrayPos the position of a tupleset in in a tuplesets array.
+ * @property {String} relPos the position of a tupleset in a joined tupleset.
+ * @property {String} columnPos position of attribute in a tupleset.
+ */
+/**
+ * Get the position of a tupleset in in a tuplesets array.
+ * Get the position of a tupleset in a joined tupleset.
+ * Get the position of attribute in a tupleset.
+ * @param tuplesInput tuplesets array.
+ * @param tableName the name of a relation.
+ * @param columnName the name of its attribute.
+ * @returns {positions} An object of the positions.
+ **/
+algebraUtil.getThePosition = function(tuplesInput, tableName, columnName) {
+  var output = {};
+  if (tuplesInput instanceof(Array)) {
+    for (var i = 0; i &lt; tuplesInput.length; i++) {
+      for (var j = 0; j &lt; tuplesInput[i].name.length; j++) {
+        /**
+         * @param i the position in tuplesInput.
+         * @param k the order of table.
+         * According to i,k, we can find the position of relation.
+         * If the tuplesInput has only one table,i.e. one relation.
+         * Then the position i of table is 0.the order k of this table is 0.
+         */
+        if (tuplesInput[i].name[j] == tableName) {
+          output.arrayPos = i;
+          output.relPos = j;
+          for (var k = 0; k &lt; tuplesInput[i].columns[j].columns.length; k++) {
+            if (tuplesInput[i].columns[j].columns[k] == columnName) {
+              output.columnPos = k;
+            }
+          }
+        }
+      }
+    }
+  } else {
+    for (var j = 0; j &lt; tuplesInput.name.length; j++) {
+      /**
+       * @param i the position in tuplesInput.
+       * @param k the order of table.
+       * According to i,k, we can find the position of relation.
+       * If the tuplesInput has only one table,i.e. one relation.
+       * Then the position i of table is 0.the order k of this table is 0.
+       */
+      if (tuplesInput.name[j] == tableName) {
+        output.relPos = j;
+        for (var k = 0; k &lt; tuplesInput.columns[j].columns.length; k++) {
+          if (tuplesInput.columns[j].columns[k] == columnName) {
+            output.columnPos = k;
+          }
+        }
+      }
+    }
+  }
+  return output;
+};
+/**
+ * Get the tuplesets that are contained in tuplesInput, but not contained in usedTuples.
+ * @param {tupleset_basic_array} tuplesInput tuplesets array.
+ * @param {tupleset_basic_array} usedTuples tuplesets array.
+ * @returns {tupleset_basic_array}
+ **/
+algebraUtil.get_unusedInputs = function(tuplesInput, usedTuples) {
+  var notUsedInputs = [];
+  var account = 0;
+  for (var i = 0; i &lt; tuplesInput.length; i++) {
+    for (var j = 0; j &lt; usedTuples.name.length; j++) {
+      if (tuplesInput[i].name[0] == usedTuples.name[j]) {
+        break;
+      } else {
+        account++;
+      }
+    }
+    if (account == usedTuples.name.length) {
+      notUsedInputs = notUsedInputs.concat(tuplesInput[i]);
+    }
+    account = 0;
+  }
+  if (notUsedInputs.length &lt; 1) {
+    return false;
+  }
+  return notUsedInputs;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-anim.html">anim</a></li></ul><h3>Classes</h3><ul><li><a href="DrawAlgebra.html">DrawAlgebra</a></li><li><a href="DrawInfo.html">DrawInfo</a></li><li><a href="DrawSQLQuery.html">DrawSQLQuery</a></li><li><a href="DrawUtil.html">DrawUtil</a></li><li><a href="Table.html">Table</a></li><li><a href="Value.html">Value</a></li></ul><h3>Namespaces</h3><ul><li><a href="algebraUtil.html">algebraUtil</a></li><li><a href="draw.html">draw</a></li><li><a href="join.html">join</a></li><li><a href="SQL_process_fun.html">SQL_process_fun</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Canvas">Canvas</a></li><li><a href="global.html#from">from</a></li><li><a href="global.html#get_pos_in_fromlist">get_pos_in_fromlist</a></li><li><a href="global.html#intersection">intersection</a></li><li><a href="global.html#projection">projection</a></li><li><a href="global.html#resetCtb">resetCtb</a></li><li><a href="global.html#resetIntervalIDs">resetIntervalIDs</a></li><li><a href="global.html#select">select</a></li><li><a href="global.html#SQL_process">SQL_process</a></li><li><a href="global.html#union">union</a></li><li><a href="global.html#without">without</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Jul 01 2018 22:31:46 GMT+0200 (W. Europe Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
