@@ -1,14 +1,24 @@
 /*******************************************************************************
  ********* This file contains all functions for animation of whole SQL *********
  ********* process.                                                    *********
- ********* All the functions are included in one Object DrawProcess(). *********
+ ********* All the functions are included in one Object DrawSQLQuery(). *********
  ******************************************************************************/
 /**
- * Draw process of SQL query.
- * @constructor DrawProcess
- * @param res_SQL the result of SQL query.
+ * The result of calculation of the SQL query.
+ * @typedef {object} res_SQL
+ * @property {query} query
+ * @property {tupleset_basic_array} resFrom
+ * @property {output_of_where} resWhere
+ * @property {output_of_grouping} resGrouping
+ * @property {output_of_ordering} resOrdering
+ * @property {tupleset_with_group} resSelect
  */
-function DrawProcess(res_SQL) {
+/**
+ * Draw process of SQL query.
+ * @constructor DrawSQLQuery
+ * @param {res_SQL} res_SQL the result of SQL query.
+ */
+function DrawSQLQuery(res_SQL) {
   // result of SQL query.
   this.res = {
     select: res_SQL.resSelect,
@@ -31,7 +41,7 @@ function DrawProcess(res_SQL) {
   /***************************************************************
    ********************** wholeProcess begin *********************
    ***************************************************************/
-  /** DrawProcess#begin Draw the whole process of SQL query.*/
+  /** DrawSQLQuery#begin Draw the whole process of SQL query.*/
   _this.begin = function() {
     /**
      * Below is animation of "from".
@@ -67,7 +77,12 @@ function DrawProcess(res_SQL) {
         }
       }
     }
-
+    /**
+     * Below is animation of "grouping".
+     * If (result of grouping is not null, grouping has not been drawn,
+     * where has been done).
+     * After animation, set _this.done.where = true.
+     */
     if ((!_this.done.grouping) && (_this.done.where)) {
       if (_this.done.grouping === null) {
         _this.done.grouping = true;
@@ -111,7 +126,7 @@ function DrawProcess(res_SQL) {
       _this.begin);
   };
 }
-DrawProcess.prototype = {
+DrawSQLQuery.prototype = {
   /**
    * The flags for which step of SQL query have been done.
    */
@@ -151,9 +166,10 @@ DrawProcess.prototype = {
  ***************************************************************/
 /**
  * Does the animation of select.
- * @param res_select result of select in SQL query.
+ * @param {tupleset_with_group} res_select The result of the select clause in SQL query.
  */
-DrawProcess.prototype.selection = function(res_select) {
+DrawSQLQuery.prototype.selection = function(res_select) {
+  //Highleight the button of SELECT.
   window.setBtnStyle(document.getElementById("select"));
   let _this = this;
   drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
@@ -237,9 +253,10 @@ DrawProcess.prototype.selection = function(res_select) {
  **************************************************************/
 /**
  * Does the animation of from.
- * @param tables result of from in SQL query.
+ * @param {tupleset_basic_array} tables result of from in SQL query.
  */
-DrawProcess.prototype.from = function(tables) {
+DrawSQLQuery.prototype.from = function(tables) {
+  //Highleight the button of FROM.
   window.setBtnStyle(document.getElementById("from"));
   let _this = this;
   let des = [];
@@ -257,8 +274,8 @@ DrawProcess.prototype.from = function(tables) {
   _this.imgData = drawUtil.ctx.getImageData(0, 0, drawUtil.fullWidth,
     drawUtil.fullHeight);
   /**
-   * Save image of initionlization and Database symbol.
-   *Then set the source position, destination position,
+   * Save the image of initionlization and Database symbol.
+   * Then set the source position, destination position,
    * widths and heights of tables.
    */
   let vorwidth = 0;
@@ -313,7 +330,8 @@ DrawProcess.prototype.from = function(tables) {
  * @param {String} step Show the whole sub-steps of where,
  * or exactly one sub-step in where.
  */
-DrawProcess.prototype.where = function(query, res_where, step = "whole") {
+DrawSQLQuery.prototype.where = function(query, res_where, step = "whole") {
+  //Highleight the button of WHERE.
   window.setBtnStyle(document.getElementById("where"));
   let _this = this;
   let compareSets = res_where.compareSets;
@@ -327,9 +345,9 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
     x: drawUtil.result.x,
     y: drawUtil.result.y
   };
-  //get the compare result of i-th condition.
+  //Save the compared result of the i-th condition.
   var compareSet;
-  //get condition information of i-th condition.
+  //Save the information of the i-th condition.
   var condition;
   var table1 = {};
   var table2 = {};
@@ -377,11 +395,14 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       _this.k = 0;
       anim_intersection_union();
       return;
-    }
+    },
   };
   steps[step]();
-
+  /**
+   * begin the animation of comparison.
+   */
   function callAnimCompare() {
+    //Highleight the button of compare.
     window.setBtnStyle(document.getElementById("compare"));
     if (_this.i >= res_where.compareSets.length) {
       if (step == "whole") {
@@ -409,7 +430,9 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       condition.attr1, condition.attr2, condition.op);
     return true;
   };
-
+  /**
+   * Initialize the tables.
+   */
   function initTable() {
     //get the position of relations in resfrom.
     let pos = [];
@@ -448,8 +471,9 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
     chosenColor2 =
       drawUtil.isChosenColorSet[pos[1] % drawUtil.isChosenColorSet.length];
   };
-  //cross join with other relations' tuples.
-  //just show the join result in where.core.
+  /**
+   * Begin the animation of cross join with other relations' tuples.
+   */
   function callAnimCrossJoin() {
     if (res_where.core.length < 1 || _this.k >= res_where.core.length) {
       if (step == "whole") {
@@ -463,13 +487,8 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         return true;
       }
     }
+    //Highleight the button of cross join of WHERE clause.
     window.setBtnStyle(document.getElementById("core"));
-    // if (res_where.core[_this.i].name.length ==
-    //   res_where.compareSets[_this.i].name.length) {
-    //   _this.i++;
-    //   callAnimCrossJoin();
-    //   return true;
-    // }
     drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
       drawUtil.fullWidth, drawUtil.fullHeight);
     _this.drawInfo.write("cross join");
@@ -492,7 +511,11 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
           callback(_this);
         });
     }
-
+    /**
+     * After one condition has been crossJoined, judge if there is next condition.
+     * If there is next condition needed to crossJoin, call the animation of
+     * crossJoin again. If not, call the animation of intersection and union.
+     */
     function callback(_this) {
       if (_this.j < rightTables.length - 1) {
         _this.j++;
@@ -511,7 +534,9 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       callAnimCrossJoin();
     };
   };
-
+  /**
+   * Animation of intersection and union.
+   */
   function anim_intersection_union() {
     if (res_where.intermediateResult.length < 1) {
       _this.drawInfo.clearLeftInfo();
@@ -519,16 +544,24 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       _this.begin();
       return true;
     }
+    //Highleight the button of intersection and union.
     window.setBtnStyle(document.getElementById("intersection_union"));
     drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
       drawUtil.fullWidth, drawUtil.fullHeight);
-    if(res_where.intermediateResult.length === res_where.core.length){
+    if (res_where.intermediateResult.length === res_where.core.length) {
       _this.k++;
     }
     loop();
-
+    /**
+     * Call the function for drawing one by one.
+     * If it needs not to draw any more, return to the main process of the
+     * animation of SQL query, i.e. the begin() function.
+     */
     function loop() {
       _this.i++;
+      /**
+       * judge if it needs to draw or not.
+       */
       if (res_where.intermediateResult.length < 2 ||
         _this.i >= res_where.intermediateResult.length) {
         _this.drawInfo.clearLeftInfo();
@@ -536,10 +569,18 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
         _this.begin();
         return true;
       }
+      /**
+       * Initialize the two sets that need to be intersection or union.
+       */
       let compareSet = compareSets[_this.i];
       let condition = compareSet.step.condition;
-      let oldSet = res_where.intermediateResult[_this.i-1];
+      let oldSet = res_where.intermediateResult[_this.i - 1];
       let newSet = res_where.core[_this.k];
+      /**
+       * If now is not the first time to intersection or union, clear the last
+       * animation. Draw the animation of the result table from last condition
+       * from result area to left table area.
+       */
       if (_this.i > 1) {
         drawUtil.ctx.clearRect(drawUtil.result.x, drawUtil.result.y,
           drawUtil.result.width, drawUtil.result.height);
@@ -561,7 +602,11 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
       } else {
         drawAnim();
       }
-
+      /**
+       * The function to draw animation. If the condition is and, call the
+       * animation of intersection. If the condition is or, call the animation
+       * of union.
+       */
       function drawAnim() {
         if (condition.union == "and") {
           _this.drawInfo.writeLeft("intersection");
@@ -586,15 +631,16 @@ DrawProcess.prototype.where = function(query, res_where, step = "whole") {
 /**
  * Does the animation of grouping.
  * @param {query} query the SQL query.
- * @param {output_of_grouping} res_grouping result of where in SQL query.
+ * @param {output_of_grouping} res_grouping result of grouping in SQL query.
  */
-DrawProcess.prototype.grouping = function(query, res_grouping) {
+DrawSQLQuery.prototype.grouping = function(query, res_grouping) {
   this.waitTime = 1000 / window.control.speed;
   let _this = this;
   if (!query) {
     _this.done.grouping = true;
     return true;
   }
+  //Highleight the button of grouping.
   window.setBtnStyle(document.getElementById("grouping"));
   let allTuples = JSON.parse(JSON.stringify(res_grouping.allTuples));
   let resGrouping = JSON.parse(JSON.stringify(res_grouping.result));
@@ -616,10 +662,15 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
     drawUtil.info_lines * (drawUtil.tupleHeight + drawUtil.tupleMargin);
   groupKey.color = group_key_color[0];
   groupKey.chosenColor = drawUtil.isChosenColorSet[3];
+  //Animation of compare the key of a tuple with the group keys.
   let compare_key = function() {
     let waitTime = _this.waitTime;
     let src = {};
     let des = {};
+    /**
+     * Draw the animation of comparison between the group key of a tuple and the
+     * set of group keys.
+     */
     let compare = function() {
       if (_this.nth_key < groupKey.value.length) {
         if (_this.nth_key > 0) {
@@ -665,7 +716,15 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
       waitTime = _this.waitTime;
       return false;
     };
+    /**
+     * Use the anim module to run the animation of compare.
+     */
     anim(compare, () => {
+      /**
+       * If the group key of this tuple has already been saved in the set of
+       * group keys, just move this tuple into the box of corresponding group
+       * key of the set.
+       */
       if (groupKey.value[_this.nth_key]) {
         let src = {
           x: groupKey.x -
@@ -688,6 +747,10 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
         });
         return true;
       } else {
+        /**
+         * If the group key of this tuple is not contained in the set of group
+         * keys, add a new box in the set to save this new group key.
+         */
         groupKey.value.push(_this.tuple.group);
         let src = {
           x: groupKey.x -
@@ -712,6 +775,9 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
       }
     });
   };
+  /**
+   * Draw the table and the set of group keys.
+   */
   let init = function() {
     _this.nth_key = 0;
     if (allTuples.value.length <= 0) {
@@ -731,6 +797,9 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
     }
     return true;
   };
+  /**
+   * Draw the chosen tuple.
+   */
   let chose_tuple = function() {
     _this.tuple = allTuples.value.shift();
     let text = [];
@@ -742,7 +811,11 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
 
     return true;
   };
-  move_attr = function(src, des) {
+  /**
+   * Move the attributes of the table to be compared with the group keys of the
+   * set. These attributes are the group key of this tuple.
+   */
+  let move_attr = function(src, des) {
     let key_len = resGrouping.group_key_name.length;
     if (src.x === des.x && src.y === des.y) {
       return true;
@@ -758,8 +831,15 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
       table.chosenColor, "white", text, false);
     return false;
   };
+  /**
+   * The main process of grouping.
+   */
   let anim_begin = function() {
     if (init()) {
+      /**
+       * If the table and the set of group keys have been successfully
+       * initionlized, begin the animation of grouping.
+       */
       chose_tuple();
       let src = {
         x: _this.tuple.position.x,
@@ -770,12 +850,21 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
           resGrouping.group_key_name.length * table_info.maxAttrWidth,
         y: groupKey.y + drawUtil.tupleHeight + drawUtil.tupleMargin,
       };
+      /**
+       * @param {picture} _this.lastImg Save the current screen.
+       */
       _this.lastImg = drawUtil.ctx.getImageData(0, 0, drawUtil.fullWidth,
         drawUtil.fullHeight);
+      /**
+       * Move the chosen tuple to right, and call the animation of comparison.
+       */
       anim(() => {
         return move_attr(src, des);
       }, compare_key);
     } else {
+      /**
+       * If initionlization failed, back to the main process of SQL query.
+       */
       drawUtil.ctx.clearRect(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
       drawUtil.write_text("Group Keys",
         groupKey.x, groupKey.y - (drawUtil.tupleHeight + drawUtil.tupleMargin));
@@ -792,83 +881,4 @@ DrawProcess.prototype.grouping = function(query, res_grouping) {
     }
   };
   anim_begin();
-};
-/**
- * Get the positions of relations with their names in tuplesets_array.
- * @param {String} names which relations' positions we need to get.
- * @param {tupleset_basic_array} tuplesets_array an array of relations.
- * @return {array} Positions of the relations in array.
- */
-get_pos_in_fromlist = function(names, tuplesets_array) {
-  let pos = [];
-  for (let j in names) {
-    for (let k in tuplesets_array) {
-      if (names[j] === tuplesets_array[k].name[0]) {
-        pos.push(k);
-      }
-    }
-  }
-  return pos;
-};
-/**
- * Module for animation.
- * @module anim
- * @param {function} animation The animation that should do.
- * @param {function} nextAnimation What should do after animation has been done.
- * @param {function} reset Clear the things that has been drew.
- * @return {Boolean}
- */
-anim = function(animation, nextAnimation = () => {}, reset = () => {
-  drawUtil.ctx.clearRect(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
-  drawUtil.colors();
-  return true;
-}) {
-  resetIntervalIDs();
-  //Loop of animation.
-  function loop() {
-    //Running animation, until animation is done,
-    //and return a Boolean value true.
-    if (animation()) {
-      //Clear this animation interval,
-      //Executes next animation or next function.
-      clearInterval(window.control.intervalIDs.pop());
-      setTimeout(() => {
-        return nextAnimation()
-      }, 200);
-      return true;
-    }
-    //If pause button is clicked,
-    //clear this interval, wait for next statement.
-    if (window.control.pause) {
-      clearInterval(window.control.intervalIDs.pop());
-      window.control.intervalIDs.push(
-        setInterval(wait, 1000 / window.control.speed));
-    }
-    //If terminate button is clicked,
-    //clear interval, return true.
-    if (window.control.finish) {
-      clearInterval(window.control.intervalIDs.pop());
-      reset();
-      return true;
-    }
-    //Function of waiting.
-    function wait() {
-      //While waiting, if continue button is clicked,
-      //calling anim again to continue this animation.
-      if (!window.control.pause) {
-        clearInterval(window.control.intervalIDs.pop());
-        anim(animation, nextAnimation);
-      }
-      //While waiting, if terminate button is clicked,
-      //clear intervals, return true.
-      if (window.control.finish) {
-        clearInterval(window.control.intervalIDs.pop());
-        reset();
-        return true;
-      }
-    };
-  };
-  //Generates a animation loop.
-  window.control.intervalIDs.push(
-    setInterval(loop, 1000 / window.control.speed));
 };

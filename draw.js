@@ -6,8 +6,12 @@
  *****************************************************************************/
 /** Initialize drawUtil, set it be a global variable.*/
 window.drawUtil = new DrawUtil();
-/** Set a set to save current button */
+/** Create a object to save current button */
 window.curBtn = {};
+/**
+ * Set the style of given button.
+ * @param {String} btn The Id of button.
+ */
 window.setBtnStyle = function(btn) {
   window.curBtn.style = "";
   window.curBtn = btn;
@@ -24,7 +28,7 @@ window.control.nextstep = "";
 window.control.intervalIDs = [];
 window.control.speed = 60;
 /** Reset the status of control flags.*/
-resetCtb = function() {
+var resetCtb = function() {
   resetIntervalIDs();
   window.control.pause = false;
   window.control.finish = false;
@@ -33,7 +37,7 @@ resetCtb = function() {
 };
 window.zoom = false;
 /** Clear all the intervals.*/
-resetIntervalIDs = function() {
+var resetIntervalIDs = function() {
   for (let i in window.control.intervalIDs) {
     clearInterval(window.control.intervalIDs[i]);
   }
@@ -50,7 +54,9 @@ draw = {
     return new DrawInfo();
   },
 };
-/** Initialize the buttons of control, and Initialize informations.*/
+/** Initialize the buttons of the animation control panel,
+ *and Initialize informations.
+ */
 (draw.init = function() {
   let cBtn = document.getElementsByName('controlDraw');
   for (let i = 0; i < cBtn.length; i++) {
@@ -93,6 +99,9 @@ draw.sqlProcess = function() {
   let _this = this;
   let queryBtn = document.getElementById('sqlQuery');
   let sqlQuery = queryBtn.value;
+  /**
+   * Judge if the input satisfies the rule.
+   */
   sqlQuery = sqlQuery.replace(/\s+/g, "");
   let queryLen = queries.SQL_query.length;
   if ((sqlQuery - 0) < 0 || (sqlQuery - 0) > (queryLen - 1) ||
@@ -101,6 +110,9 @@ draw.sqlProcess = function() {
       (queryLen - 1) + "]!  ^_^");
     return false;
   }
+  /**
+   * Hidden the buttons of the SQL query panel.
+   */
   for (let i = 0; i < clauses.length; i++) {
     let cap_clause = clauses[i].charAt(0).toUpperCase() +
       clauses[i].substring(1);
@@ -110,8 +122,13 @@ draw.sqlProcess = function() {
   for (let i = 0; i < where_sub.length; i++) {
     document.getElementById("div" + where_sub[i]).style.display = "none";
   }
+  /**
+   * Get the calculated result of SQL query.
+   */
   let res_SQL = SQL_process(sqlQuery);
-
+  /**
+   * Display the buttons contained in the SQL query.
+   */
   document.getElementById("wholeProcess").style.display = "";
   for (let i = 0; i < clauses.length; i++) {
     let cap_clause = clauses[i].charAt(0).toUpperCase() +
@@ -128,7 +145,9 @@ draw.sqlProcess = function() {
       document.getElementById("div" + where_sub[i]).style.display = "";
     }
   }
-
+  /**
+   * Show the hint for the next step.
+   */
   if (sqlQuery != "") {
     _this.drawInfo().write("Get the query!");
     let tipBox = document.getElementById("queryBtnTip");
@@ -158,24 +177,45 @@ draw.sqlProcess = function() {
     _this.drawInfo().write("Failed to get the query!");
     return false;
   }
+  /**
+   * Set the color of each table.
+   */
   for (let i = 0; i < res_SQL.resFrom.length; i++) {
     res_SQL.resFrom[i].color = drawUtil.colorSet[i % drawUtil.colorSet.length];
     res_SQL.resFrom[i].chosencolor =
       drawUtil.isChosenColorSet[i % drawUtil.isChosenColorSet.length];
   }
   console.log(res_SQL);
-  draw.sqlProcess.bindBtn(_this, res_SQL);
+  /**
+   * Bind the functions of SQL query to each button.
+   */
+  draw.sqlProcess.bindBtn(res_SQL);
 };
-/** Bind functions to buttons of sql query. */
-draw.sqlProcess.bindBtn = function(_this, res_SQL) {
-  let dp = new DrawProcess(res_SQL);
-  let dBtn = document.getElementsByName('drawProcess');
+/**
+ * The result of calculation of the SQL query.
+ * @typedef {object} res_SQL
+ * @property {query} query
+ * @property {tupleset_basic_array} resFrom
+ * @property {output_of_where} resWhere
+ * @property {output_of_grouping} resGrouping
+ * @property {output_of_ordering} resOrdering
+ * @property {tupleset_with_group} resSelect
+ */
+/** Bind functions to the buttons of sql query.
+ * @param {res_SQL} res_SQL The result of the calculation of the SQL query.
+ */
+draw.sqlProcess.bindBtn = function(res_SQL) {
+  let dp = new DrawSQLQuery(res_SQL);
+  let dBtn = document.getElementsByName('drawSQLQuery');
   for (let i = 0; i < dBtn.length; i++) {
     dBtn[i].onclick = function() {
       window.setBtnStyle(this);
-      drawUtil.ctx.clearRect(100, 0, _this.canvasWidth, _this.canvasHeight);
+      drawUtil.ctx.clearRect(animField.x, animField.y,
+        canvasInfo.fullWidth, canvasInfo.fullHeight);
       if (this.getAttribute('id') == "wholeProcess") {
-        //If the button means all steps, set all steps be false.
+        /*
+        * If the button means all steps, set all steps be false.
+        */
         resetCtb();
         dp.done.setDefault();
         for (let i = 0; i < clauses.length; i++) {
@@ -208,8 +248,10 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
           dp.where.intersection_union();
         }
       } else {
-        //If the button means only one step. Set all steps' status be true,
-        //and only this step is false.
+        /*
+        * If the button means only one step. Set all steps' status be true,
+        * and only this step is false.
+        */
         resetCtb();
         dp.done.setFinish();
         dp.done.setStatus(this.getAttribute('id'), false);
@@ -218,7 +260,11 @@ draw.sqlProcess.bindBtn = function(_this, res_SQL) {
     };
   }
 };
-/** Draw animation of algebra.*/
+/**
+* Draw animation of algebra.
+* @param {String} query_algebra The statement of relational algebra.
+* @returns {Boolean} After this function is processed, it will return true.
+*/
 draw.algebra = function(query_algebra) {
   resetIntervalIDs();
   if (query_algebra != "") {
@@ -228,7 +274,12 @@ draw.algebra = function(query_algebra) {
   }
   return true;
 };
-/** Draw animation of algebra that just has one level in query.*/
+/**
+* Initialize the information for drawing the animation of relational algebra
+* that just has one statement. Bind the functions with corresponding buttons.
+* @param {Boolean} single If single is true,
+* means now to draw the animation of one statement.
+*/
 draw.algebra.single_algebra = function(single = true) {
   let ts1;
   let ts2;
@@ -259,16 +310,29 @@ draw.algebra.single_algebra = function(single = true) {
   this.bindBtn(ts1, ts2, color1, color2,
     chosenColor1, chosenColor2, attr1, attr2, op);
 };
+/**
+ * results is used to save the intermediate results of relational algebra.
+ */
 draw.algebra.results = [];
-/** Draw animation of algebra that just has more than one level in query.*/
+/** Draw animations of relational algebra that has more than one statements.*/
 draw.algebra.multi_algebra = function() {
   let _this = this;
   let query_algebra = queries.algebra.multi;
   draw.algebra(query_algebra);
-  /** Iterate does the query. When the query has deeper level.*/
+  /**
+  * Iterative operate the statement, if the statement has deeper level.
+  * @param {Object} query The statement of relational algebra. The structure of
+  * the query is builded as an AST.
+  * @param {Object} done If done.val is false, means the statement has deeper
+  * statements. If done.val is true, means the statement has not deeper statements.
+  */
   let loop = function(query, done = {
     val: false
   }) {
+    /**
+     * If the left relation includes deeper statement, operate the deeper
+     * statement of the left relation.
+     */
     if (!query.rel1.tuple_set) {
       let done = {
         val: false
@@ -282,6 +346,10 @@ draw.algebra.multi_algebra = function() {
       }, 1000);
       return true;
     }
+    /**
+     * If the right relation includes deeper statement, operate the deeper
+     * statement of the left relation.
+     */
     if (!query.rel2.tuple_set) {
       let done = {
         val: false
@@ -295,13 +363,24 @@ draw.algebra.multi_algebra = function() {
       }, 1000);
       return true;
     }
+    /**
+     * If the statement has not deeper statement, do the followings.
+     * Get the relations by using FROM clause.
+     */
     _this.ts1 = JSON.parse(JSON.stringify(
       from(query.rel1.tuple_set)[0]));
     _this.ts2 = JSON.parse(JSON.stringify(
       from(query.rel2.tuple_set)[0]));
+    /**
+     * Get the statement information.
+     */
     _this.attr1 = query_algebra.attr1;
     _this.attr2 = query_algebra.attr2;
     _this.op = query_algebra.op;
+    /**
+     * Get the button of relational algebra panel, which is corresponding to
+     * current step.
+     */
     let aBtn = document.getElementsByName('algebra');
     let btn;
     for (let i in aBtn) {
@@ -309,6 +388,10 @@ draw.algebra.multi_algebra = function() {
         btn = aBtn[i];
       }
     }
+    /**
+     * Bind the function of this statement to the button btn. And simulate the
+     * click on btn.
+     */
     _this.single_algebra(false);
     btn.click();
     let id = setInterval(() => {
@@ -318,6 +401,10 @@ draw.algebra.multi_algebra = function() {
         done.val = true;
       }
     }, 1000);
+    /**
+     * Save the result table of current operation into Database. And return the
+     * name of new table.
+     */
     let res = draw.algebra.results.pop();
     res.name = [_this.ts1.name.concat(_this.ts2.name).toString()];
     let newRes = {};
@@ -342,7 +429,7 @@ draw.algebra.multi_algebra = function() {
   };
   loop(query_algebra);
 };
-/** Get the result of algebra.*/
+/** Get the result of relational algebra.*/
 draw.algebra.getRes = {
   leftJoin: (t1, t2, attr1, attr2, op) => {
     return join.semiJoin(t1, t2, attr1, attr2, op, "left");
@@ -372,7 +459,25 @@ draw.algebra.getRes = {
     return without(t1, t2);
   },
 };
-/** Bind functions to button.*/
+/**
+ * The basical tupleset.
+ * @typedef {object} tupleset_basic
+ * @property {columns} columns
+ * @property {array} name
+ * @property {value_basic} value
+ */
+/**
+* Bind functions of relational algebra to buttons of relational algebra panel.
+* @param {tupleset_basic} ts1 The left relation.
+* @param {tupleset_basic} ts2 The right relation.
+* @param {String} color1 The color of the left relation.
+* @param {String} color2 The color of the right relation.
+* @param {String} chosenColor1 The color of the chosen tuples in the left relation.
+* @param {String} chosenColor2 The color of the chosen tuples in the right relation.
+* @param {String} attr1 The compared attribute of the left relation.
+* @param {String} attr2 The compared attribute of the right relation.
+* @param {String} op The name of the operation.
+*/
 draw.algebra.bindBtn = function(ts1, ts2, color1, color2,
   chosenColor1, chosenColor2, attr1, attr2, op) {
   let _this = this;
@@ -384,16 +489,13 @@ draw.algebra.bindBtn = function(ts1, ts2, color1, color2,
       drawUtil.ctx.clearRect(100, 0, draw.canvasWidth, draw.canvasHeight);
       resetCtb();
       let btnID = this.getAttribute('id');
-      console.log("click ", btnID);
       let cap_btnID = btnID.charAt(0).toUpperCase() + btnID.substring(1);
       let resAlgebra = _this.getRes[btnID](JSON.parse(JSON.stringify(ts1)),
         JSON.parse(JSON.stringify(ts2)), attr1, attr2, op);
       draw.algebra.results.push(JSON.parse(JSON.stringify(resAlgebra)));
-      console.log("res of ", btnID, ":", resAlgebra);
       da["anim" + cap_btnID](resAlgebra, JSON.parse(JSON.stringify(ts1)),
         JSON.parse(JSON.stringify(ts2)), () => {
           draw.algebra.finish = true;
-          console.log("over!!!");
           return true;
         }, 0, 0, color1,
         color2, chosenColor1, chosenColor2, 20, attr1, attr2, op);

@@ -11,26 +11,26 @@
 /**
  * The value of table.
  * @typedef {array} value_basic
- * @property {object} source
- * @property {array} tupleValue
+ * @property {object} source The source of this tuple.
+ * @property {array} tupleValue The value of this tuple.
  */
 /**
  * The source of tupleValue.
  * @typedef {object} source
- * @property {array} ids
- * @property {array} rels
+ * @property {array} ids The ids of this tuple in the source relation.
+ * @property {array} rels The source relations of this tuple.
  */
 /**
  * The basical tupleset.
  * @typedef {object} tupleset_basic
- * @property {columns} columns
- * @property {array} name
- * @property {value_basic} value
+ * @property {columns} columns The columns of this relation.
+ * @property {array} name The name of this relation.
+ * @property {value_basic} value The values of this relation.
  */
 /**
  * The array of tuplesets.
  * @typedef {array} tupleset_basic_array
- * @property {tupleset_basic} tupleset
+ * @property {tupleset_basic} tupleset A relation.
  */
 /**
  * Utilisation for algebra.
@@ -121,10 +121,10 @@ algebraUtil.initValue = function() {
 /**
  * The tupleset with step information.
  * @typedef {array} tupleset_with_step
- * @property {columns} columns
- * @property {array} name
- * @property {value_basic} value
- * @property {step} step
+ * @property {columns} columns The columns of this relation.
+ * @property {array} name The name of this relation.
+ * @property {value_basic} value The values of this relation.
+ * @property {step} step The information of the step of this relation.
  */
 /**
  * Compare two relations by the attributes of condition.
@@ -179,7 +179,10 @@ algebraUtil.unitCompare = function(tuplesInput, condition, stepNum) {
     tuplesOutput.name = tuplesInput[position.arrayPos].name.slice();
     tuplesOutput.columns = tuplesInput[position.arrayPos].columns.slice();
     for (var i = 0; i < tuplesInput[position.arrayPos].value.length; i++) {
-      if (compare[rel](tuplesInput[position.arrayPos].value[i].tupleValue[position.relPos][position.columnPos], other)) {
+      let valuei = tuplesInput[position.arrayPos].value[i];
+      if (
+        compare[rel](
+          valuei.tupleValue[position.relPos][position.columnPos], other)) {
         tuplesOutput.value.push(tuplesInput[position.arrayPos].value[i]);
       }
     }
@@ -279,7 +282,7 @@ algebraUtil.get_unusedInputs = function(tuplesInput, usedTuples) {
     }
     account = 0;
   }
-  if(notUsedInputs.length < 1){
+  if (notUsedInputs.length < 1) {
     return false;
   }
   return notUsedInputs;

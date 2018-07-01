@@ -3,106 +3,8 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Without user type in SQL query</title>
-  <style type="text/css">
-    body {
-      text-align: center;
-    }
-
-    .bodyDiv {
-      margin: auto;
-      padding: 5px;
-    }
-
-    input[type="button"],
-    button,
-    .div1,
-    .controlDraw {
-      margin: 2px;
-      background-color: white;
-      border: none;
-      color: #008CBA;
-      text-align: left;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 12px;
-      border-radius: 5px;
-    }
-
-    input[type="text"] {
-      margin: 2px;
-      background-color: #EEEEEE;
-      border: none;
-      color: #008CBA;
-      padding: 3px 5px;
-      text-align: left;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 12px;
-      border-radius: 5px;
-    }
-
-    input[type="button"]:hover,
-    button:hover {
-      background: #008CBA;
-      color: white;
-    }
-
-    input[type="text"]:hover {
-      background: white;
-      color: black;
-    }
-
-    .queriesButton {
-      width: 100 px;
-      float: left;
-      text-align: left;
-    }
-
-    .div1 {
-      color: black;
-      background-color: #DDDDDD;
-      margin-top: 10px;
-      float: left;
-      width: 180px
-    }
-
-    .div2 {
-      color: black;
-      background-color: #DDDDDD;
-      margin-top: 10px;
-      margin-right: 10px;
-      float: left;
-    }
-
-    .div3 {
-      background-color: #EEEEEE;
-      margin-left: 20px;
-    }
-
-    .canvasDiv {
-      width: auto;
-      float: left;
-      text-align: left;
-    }
-
-    .controlDraw {
-      padding: 5px;
-      color: black;
-      background-color: #DDDDDD;
-      ;
-      margin-top: 10px;
-      text-align: left;
-      width: 90%
-    }
-    a, button {
-      cursor:pointer;
-    }
-    .chosen {
-      background: #008CBA;
-      color: white;
-    }
-  </style>
+  <title>Visualization of Data Flow of Relational Algebra</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
@@ -110,9 +12,10 @@
     <table width="1080">
       <tr>
         <td>
+          <!-- Panels for statements -->
           <div class="queriesButton">
+            <!-- The Panel for SQL query. -->
             <div class="div1">
-
               <form class="" action="" method="post">
                 SQL querie's Process: <br>
                 <p id="queryTip"></p>
@@ -120,18 +23,20 @@
                 <input type="button" name="" value="Submit" onclick="draw.sqlProcess()">
               </form> <br>
               <p id="queryBtnTip" style="background-color:#EEEEEE"></p>
-              <button type="button" id="wholeProcess" name="drawProcess" style="display:none">whole process of SQL Query</button> <br>
-              <button type="button" id="select" name="drawProcess" style="display:none">select</button> <br>
-              <button type="button" id="from" name="drawProcess" style="display:none">from</button> <br>
-              <button type="button" id="where" name="drawProcess" style="display:none">where</button> <br>
+              <button type="button" id="wholeProcess" name="drawSQLQuery" style="display:none">whole process of SQL Query</button> <br>
+              <button type="button" id="select" name="drawSQLQuery" style="display:none">select</button> <br>
+              <button type="button" id="from" name="drawSQLQuery" style="display:none">from</button> <br>
+              <button type="button" id="where" name="drawSQLQuery" style="display:none">where</button> <br>
+              <!-- The buttons of sub-steps of WHERE clause. -->
               <div class="div3" id="subWhere" style="display:none">
-                <div id="divcompareSets" style="display:none"> |-<button type="button" id="compare" name="drawProcess">compare</button> <br> </div>
-                <div id="divcore" style="display:none"> |-<button type="button" id="core" name="drawProcess">crossJoin</button> <br> </div>
-                <div id="divintermediateResult" style="display:none"> |-<button type="button" id="intersection_union" name="drawProcess">intersection and union</button> <br> </div>
+                <div id="divcompareSets" style="display:none"> |-<button type="button" id="compare" name="drawSQLQuery">compare</button> <br> </div>
+                <div id="divcore" style="display:none"> |-<button type="button" id="core" name="drawSQLQuery">crossJoin</button> <br> </div>
+                <div id="divintermediateResult" style="display:none"> |-<button type="button" id="intersection_union" name="drawSQLQuery">intersection and union</button> <br> </div>
               </div>
-              <button type="button" id="grouping" name="drawProcess" style="display:none">group by</button> <br>
-              <button type="button" id="ordering" name="drawProcess" style="display:none">order by</button> <br>
+              <button type="button" id="grouping" name="drawSQLQuery" style="display:none">group by</button> <br>
+              <button type="button" id="ordering" name="drawSQLQuery" style="display:none">order by</button> <br>
             </div>
+            <!-- The panel for relational algebra. -->
             <div class="div1">
               <form class="" action="" method="post">
                 Single Algebra's Process: <br>
@@ -175,6 +80,7 @@
         <td>
         </td>
         <td>
+          <!-- Panel for animation control. -->
           <div class="controlDraw" style="height:20px">
             <div style="float:left;width:150px">
               Control Panel:
@@ -182,7 +88,7 @@
             <div style="float:left">
               <form class="" action="" method="post" style="width:550px">
                 Speed(FPS)(optional):
-                <input type="text" id="speed" value="" style="margin-top:0px"> Range from 1 to 1000
+                <input type="text" id="speed" value="60" style="margin-top:0px"> Range from 1 to 999
                 <input type="button" name="" value="Submit" onclick="draw.setSpeed()">
               </form>
             </div>
@@ -198,27 +104,30 @@
     </table>
   </div>
 </body>
+
 </html>
+<!-- Function for hidden or display element. -->
 <script type="text/javascript">
-  var showSub = function(hid_id,show_id){
+  var showSub = function(hid_id, show_id) {
     let hid_elem = document.getElementById(hid_id);
     let show_elem = document.getElementById(show_id);
     hid_elem.style.display = "none";
     show_elem.style.display = "block";
   }
 </script>
+<!-- Data files -->
 <script src="data.json"></script>
 <script src="queries.json"></script>
-
-<script src="algebraUtil.js"></script>
-<script src="algebra.js"></script>
-<script src="clauses.js"></script>
-<script src="SQL_query_main.js"></script>
-
-<script src="settings.js"></script>
-<script src="drawUtil.js"></script>
-<script src="drawInfo.js"></script>
-
-<script src="drawWholeProcess.js"></script>
-<script src="drawAlgebra.js"></script>
-<script src="draw.js"></script>
+<!-- Calculation part. -->
+<script type="text/javascript" src="algebraUtil.js"></script>
+<script type="text/javascript" src="relationalAlgebra.js"></script>
+<script type="text/javascript" src="clauses.js"></script>
+<script type="text/javascript" src="SQL_query_main.js"></script>
+<!-- Utilisation for drawing. -->
+<script type="text/javascript" src="settings.js"></script>
+<script type="text/javascript" src="drawUtil.js"></script>
+<script type="text/javascript" src="drawInfo.js"></script>
+<!-- Drawing animations. -->
+<script type="text/javascript" src="drawSQLQuery.js"></script>
+<script type="text/javascript" src="drawAlgebra.js"></script>
+<script type="text/javascript" src="draw.js"></script>

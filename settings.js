@@ -1,3 +1,6 @@
+/**
+ * Set the value of parameters.
+ */
 Canvas = {
   canvas: document.getElementById("canvas"),
   ctx: canvas.getContext("2d"),

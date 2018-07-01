@@ -181,7 +181,7 @@ SQL_process_fun = {
   }
 };
 /**
- * The result of SQL process.
+ * The result of calculation of the SQL query.
  * @typedef {object} res_SQL
  * @property {query} query
  * @property {tupleset_basic_array} resFrom

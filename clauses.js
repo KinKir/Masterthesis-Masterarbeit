@@ -6,16 +6,16 @@
  * The value of table. In select and ordering and grouping,
  * it has more attribute named "group".
  * @typedef {array} value_with_group
- * @property {object} source
- * @property {array} tupleValue
- * @property {array} group
+ * @property {object} source The source of this tuple.
+ * @property {array} tupleValue The value of this tuple.
+ * @property {array} group The group key of this tuple.
  */
 /**
  * The value in tupleset with attribute of group key.
  * @typedef {object} tupleset_with_group
- * @property {columns} columns
- * @property {array} name
- * @property {value_with_group} value
+ * @property {columns} columns The columns of this tuple set.
+ * @property {array} name The name of this tuple set.
+ * @property {value_with_group} value The values of this tuple set.
  */
 /**
  * Does the select clause in SQL query.
@@ -66,40 +66,40 @@ from = function(tables) {
 /**
  * The output of where.
  * @typedef {object} output_of_where
- * @property {tupleset_with_step_array} compareSets
- * @property {tupleset_basic_array} core
- * @property {tupleset_basic_array} intermediateResult
- * @property {tupleset_basic} result
+ * @property {tupleset_with_step_array} compareSets The array of the tuple sets of comparisons.
+ * @property {tupleset_basic_array} core The array of the tuple sets of crossJoins.
+ * @property {tupleset_basic_array} intermediateResult The array of the tuple sets of the intermediate results.
+ * @property {tupleset_basic} result The result of WHERE clause.
  */
 /**
  * The tupleset array with the tupleset that contains step information.
  * @typedef {array} tupleset_with_step_array
- * @property {tupleset_with_step} tupleset_with_step
+ * @property {tupleset_with_step} tupleset_with_step The tuple set that contains the step's information.
  */
 /**
  * The tupleset with step information.
  * @typedef {array} tupleset_with_step
- * @property {columns} columns
- * @property {array} name
- * @property {value_basic} value
- * @property {step} step
+ * @property {columns} columns The columns of this tuple set.
+ * @property {array} name The name of this tuple set.
+ * @property {value_basic} value The values of this tuple set.
+ * @property {step} step The information about the step(condition) of this tuple set.
  */
 /**
  * The step information.
  * @typedef {object} step
- * @property {condition} condition
- * @property {String} resultFrom
- * @property {Number} stepNumber
+ * @property {condition} condition The condition of this step.
+ * @property {String} resultFrom The type of merge these relations.
+ * @property {Number} stepNumber The execution sequence of this condition.
  */
 /**
  * The condition.
  * @typedef {object} condition
- * @property {String} attr1
- * @property {String} attr2
- * @property {String} op
- * @property {String} rel1
- * @property {String} rel2
- * @property {String} union
+ * @property {String} attr1 The attribute of the left relation.
+ * @property {String} attr2 The attribute of the right relation.
+ * @property {String} op The operation.
+ * @property {String} rel1 The left relation.
+ * @property {String} rel2 The right relation.
+ * @property {String} union The merge type of this condition.
  */
 /**
  * Does the where clause in SQL query.
@@ -210,7 +210,7 @@ where = function(tuplesInput, conditions) {
 };
 /**
  * Does the basical compare.
- * @returns {Boolean}.
+ * @returns {Boolean}
  */
 where.ops = {
   "equal": function(val1, val2) {
@@ -284,22 +284,22 @@ where.ordering = function(tuplesInput, tuplesOrdering) {
 /**
  * The output of grouping.
  * @typedef {object} output_of_grouping
- * @property {tupleset_with_group} allTuples
- * @property {grouping_result} result
+ * @property {tupleset_with_group} allTuples The all tuples with group keys before grouping.
+ * @property {grouping_result} result The tuples with group keys after grouping.
  */
 /**
  * The structure of result of grouping.
  * @typedef {object} grouping_result
- * @property {columns} columns
- * @property {array} name
- * @property {value_with_group} value
- * @property {grouping_info} groupBy
+ * @property {columns} columns The columns of this relation.
+ * @property {array} name The name of this relation.
+ * @property {value_with_group} value The values of this relation.
+ * @property {grouping_info} groupBy The group keys of this relation.
  */
 /**
  * The structure of result of grouping.
  * @typedef {array} grouping_info
- * @property {String} rel
- * @property {String} attr
+ * @property {String} rel The relation's name.
+ * @property {String} attr The attribute's name.
  */
 /**
  * Does the "group by" clause in SQL query.
@@ -382,24 +382,24 @@ grouping = function(tuplesInput, groupby) {
 /**
  * The output of ordering.
  * @typedef {object} output_of_ordering
- * @property {columns} columns
- * @property {array} name
- * @property {value_with_group} value
- * @property {ordering_compare} compare
+ * @property {columns} columns The columns of this relation.
+ * @property {array} name The name of this relation.
+ * @property {value_with_group} value The values of this relation.
+ * @property {ordering_compare} compare The comparisons' intermediate results.
  */
 /**
  * The compare result in ordering.
  * @typedef {array} ordering_compare
- * @property {value_with_group} bigger
- * @property {order} order
- * @property {value_with_group} smaller
+ * @property {value_with_group} bigger The value that is bigger.
+ * @property {order} order The condition of ordering.
+ * @property {value_with_group} smaller The value that is smaller.
  */
 /**
  * The order string.
  * @typedef {object} order
- * @property {String} UpDown
- * @property {String} attr
- * @property {String} rel
+ * @property {String} UpDown Ascend or descend.
+ * @property {String} attr The attribute that to be compared.
+ * @property {String} rel The relation that to be compared.
  */
 /**
  * Does the "order by" clause in SQL query.

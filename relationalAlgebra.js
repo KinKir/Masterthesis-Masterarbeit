@@ -1,5 +1,5 @@
 /**
- * algebra functions.
+ * Relational algebra functions.
  *
  */
 /**
@@ -64,7 +64,7 @@ var projection = function(tuplesInput, select) {
 var join = {
   /**
    * Does the basical compare.
-   * @return Boolean.
+   * @return {Boolean}
    */
   "ops": {
     "equal": function(val1, val2) {
@@ -123,8 +123,10 @@ join.outerJoin = function(input1, input2, attr1, attr2, op) {
   let tuplesInput1 = JSON.parse(JSON.stringify(input1));
   let tuplesInput2 = JSON.parse(JSON.stringify(input2));
   var tuplesOutput = {};
-  var attrPos1 = algebraUtil.getThePosition([tuplesInput1, tuplesInput2], tuplesInput1.name, attr1);
-  var attrPos2 = algebraUtil.getThePosition([tuplesInput1, tuplesInput2], tuplesInput2.name, attr2);
+  var attrPos1 = algebraUtil.getThePosition([tuplesInput1, tuplesInput2],
+    tuplesInput1.name, attr1);
+  var attrPos2 = algebraUtil.getThePosition([tuplesInput1, tuplesInput2],
+    tuplesInput2.name, attr2);
   tuplesOutput.name = tuplesInput1.name.concat(tuplesInput2.name);
   tuplesOutput.columns = tuplesInput1.columns.concat(tuplesInput2.columns);
   tuplesOutput.value = [];
@@ -143,22 +145,26 @@ join.outerJoin = function(input1, input2, attr1, attr2, op) {
   for (var i in tuplesInput1.value) {
     tuplesInput1.value[i].compare = false;
     for (var j in tuplesInput2.value) {
-      if (join.ops[op](tuplesInput1.value[i].tupleValue[attrPos1.relPos][attrPos1.columnPos],
+      if (join.ops[op](
+          tuplesInput1.value[i].tupleValue[attrPos1.relPos][attrPos1.columnPos],
           tuplesInput2.value[j].tupleValue[attrPos2.relPos][attrPos2.columnPos])) {
-        tmpValue = algebraUtil.generateNewValue(tuplesInput1.value[i], tv1, tuplesInput2.value[j], tv2);
+        tmpValue = algebraUtil.generateNewValue(
+          tuplesInput1.value[i], tv1, tuplesInput2.value[j], tv2);
         tuplesOutput.value.push(tmpValue);
         tuplesInput1.value[i].compare = true;
         tuplesInput2.value[j].compare = true;
       }
     }
     if (tuplesInput1.value[i].compare == false) {
-      tmpValue = algebraUtil.generateNewValue(tuplesInput1.value[i], tv1, null, tv2);
+      tmpValue = algebraUtil.generateNewValue(
+        tuplesInput1.value[i], tv1, null, tv2);
       tuplesOutput.value.push(tmpValue);
     }
   }
   for (var i in tuplesInput2.value) {
     if (tuplesInput2.value[i].compare == false) {
-      tmpValue = algebraUtil.generateNewValue(null, tv1, tuplesInput2.value[i], tv2);
+      tmpValue = algebraUtil.generateNewValue(
+        null, tv1, tuplesInput2.value[i], tv2);
       tuplesOutput.value.push(tmpValue);
     }
   }
@@ -178,7 +184,8 @@ join.innerJoin = function(input1, input2, attr1, attr2, op) {
   let tuplesInput2 = JSON.parse(JSON.stringify(input2));
   var tuplesOutput = join.outerJoin(tuplesInput1, tuplesInput2, attr1, attr2, op);
   for (var i = 0; i < tuplesOutput.value.length; i++) {
-    if (tuplesOutput.value[i].source.rels[0] == null || tuplesOutput.value[i].source.rels[1] == null) {
+    if (tuplesOutput.value[i].source.rels[0] == null ||
+      tuplesOutput.value[i].source.rels[1] == null) {
       tuplesOutput.value.splice(i, 1);
       i--;
     }
@@ -196,8 +203,10 @@ join.crossJoin = function(input1, input2) {
   var tuplesOutput = algebraUtil.initRelation();
   let tuplesInput1 = JSON.parse(JSON.stringify(input1));
   let tuplesInput2 = JSON.parse(JSON.stringify(input2));
-  tuplesOutput.columns = tuplesOutput.columns.concat(tuplesInput1.columns, tuplesInput2.columns);
-  tuplesOutput.name = tuplesOutput.name.concat(tuplesInput1.name, tuplesInput2.name);
+  tuplesOutput.columns = tuplesOutput.columns.concat(
+    tuplesInput1.columns, tuplesInput2.columns);
+  tuplesOutput.name = tuplesOutput.name.concat(
+    tuplesInput1.name, tuplesInput2.name);
   for (var i = 0; i < tuplesInput1.value.length; i++) {
     for (var j = 0; j < tuplesInput2.value.length; j++) {
       var tmpValue = algebraUtil.generateNewValue(tuplesInput1.value[i],
@@ -231,7 +240,8 @@ var union = function(input1, input2, unionAll) {
   } else {
     for (var i = 0; i < tuplesInput1.columns.length; i++) {
       /** judge if the name of columns are same. */
-      if (tuplesInput1.columns[i].columns.toString() != tuplesInput2.columns[i].columns.toString()) {
+      if (tuplesInput1.columns[i].columns.toString() !=
+        tuplesInput2.columns[i].columns.toString()) {
         return false;
       }
     }
@@ -244,7 +254,8 @@ var union = function(input1, input2, unionAll) {
     tuplesOutput.value = tuplesOutput.value.concat(tuplesInput2.value.slice());
   } else {
     tuplesOutput.value = union.combineValueWithoutRedundance([], tuplesInput1);
-    tuplesOutput.value = union.combineValueWithoutRedundance(tuplesOutput.value, tuplesInput2);
+    tuplesOutput.value = union.combineValueWithoutRedundance(
+      tuplesOutput.value, tuplesInput2);
   }
   return tuplesOutput;
 };
@@ -266,9 +277,12 @@ union.combineValueWithoutRedundance = function(desTuples, srcTuples) {
     }
     var flag = false;
     for (var j = 0; j < output.length; j++) {
-      if ((output[j].tupleValue.toString() == srcTuples.value[i].tupleValue.toString()) &&
-        (output[j].source.ids.toString() == srcTuples.value[i].source.ids.toString()) &&
-        (output[j].source.rels.toString() == srcTuples.value[i].source.rels.toString())) {
+      if ((output[j].tupleValue.toString() ==
+          srcTuples.value[i].tupleValue.toString()) &&
+        (output[j].source.ids.toString() ==
+          srcTuples.value[i].source.ids.toString()) &&
+        (output[j].source.rels.toString() ==
+          srcTuples.value[i].source.rels.toString())) {
         flag = true;
         break;
       }
@@ -290,7 +304,8 @@ var without = function(input1, input2) {
   let tuplesInput2 = JSON.parse(JSON.stringify(input2));
   for (var i = 0; i < tuplesInput1.value.length; i++) {
     for (var j in tuplesInput2.value) {
-      if (tuplesInput1.value[i].tupleValue.toString() == tuplesInput2.value[j].tupleValue.toString()) {
+      if (tuplesInput1.value[i].tupleValue.toString() ==
+        tuplesInput2.value[j].tupleValue.toString()) {
         tuplesInput1.value.splice(i, 1);
         i--;
       }

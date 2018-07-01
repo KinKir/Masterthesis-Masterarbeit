@@ -833,3 +833,84 @@ DrawUtil.prototype.get_Attr_Pos_in_column = function(columns, x, y, attr,
   res.posAttr = posAttr;
   return res;
 };
+
+/**
+ * Get the positions of relations with their names in tuplesets_array.
+ * @param {String} names which relations' positions we need to get.
+ * @param {tupleset_basic_array} tuplesets_array an array of relations.
+ * @return {array} Positions of the relations in array.
+ */
+get_pos_in_fromlist = function(names, tuplesets_array) {
+  let pos = [];
+  for (let j in names) {
+    for (let k in tuplesets_array) {
+      if (names[j] === tuplesets_array[k].name[0]) {
+        pos.push(k);
+      }
+    }
+  }
+  return pos;
+};
+/**
+ * Module for animation.
+ * @module anim
+ * @param {function} animation The animation that should do.
+ * @param {function} nextAnimation What should do after animation has been done.
+ * @param {function} reset Clear the things that has been drawn.
+ * @return {Boolean} If the current animation is finished, it will run the
+ * nextAnimation function and return true.
+ */
+anim = function(animation, nextAnimation = () => {}, reset = () => {
+  drawUtil.ctx.clearRect(0, 0, drawUtil.fullWidth, drawUtil.fullHeight);
+  drawUtil.colors();
+  return true;
+}) {
+  resetIntervalIDs();
+  //Loop of animation.
+  function loop() {
+    //Running animation, until animation is done,
+    //and return a Boolean value true.
+    if (animation()) {
+      //Clear this animation interval,
+      //Executes next animation or next function.
+      clearInterval(window.control.intervalIDs.pop());
+      setTimeout(() => {
+        return nextAnimation()
+      }, 200);
+      return true;
+    }
+    //If pause button is clicked,
+    //clear this interval, wait for next statement.
+    if (window.control.pause) {
+      clearInterval(window.control.intervalIDs.pop());
+      window.control.intervalIDs.push(
+        setInterval(wait, 1000 / window.control.speed));
+    }
+    //If terminate button is clicked,
+    //clear interval, return true.
+    if (window.control.finish) {
+      clearInterval(window.control.intervalIDs.pop());
+      reset();
+      return true;
+    }
+    //Function of waiting.
+    function wait() {
+      //While waiting, if continue button is clicked,
+      //calling anim again to continue this animation.
+      if (!window.control.pause) {
+        clearInterval(window.control.intervalIDs.pop());
+        anim(animation, nextAnimation);
+      }
+      //While waiting, if terminate button is clicked,
+      //clear intervals, return true.
+      if (window.control.finish) {
+        clearInterval(window.control.intervalIDs.pop());
+        reset();
+        return true;
+      }
+    };
+  };
+  //Generates a animation loop.
+  window.control.intervalIDs.push(
+    setInterval(loop, 1000 / window.control.speed));
+};

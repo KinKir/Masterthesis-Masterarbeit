@@ -783,7 +783,10 @@ DrawAlgebra.prototype.animIntersection = function(res, input1, input2,
   } else {
     nextAnimation();
   }
-
+  /**
+   * Move the tuple from the left relation to the result area.
+   * Delete the tuple from the left relation and the right relation.
+   */
   function move_and_delete() {
     if (_this.is_Same(_this.src_or_val,
         _this.tuplesInput1.value[_this.nth_tuple1],
@@ -879,7 +882,9 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
   } else {
     nextAnimation();
   }
-
+  /**
+   * Delete the tuple from left relation.
+   */
   function delete_from_ts1() {
     if (_this.is_Same(_this.src_or_val,
         _this.tuplesInput1.value[_this.nth_tuple1],

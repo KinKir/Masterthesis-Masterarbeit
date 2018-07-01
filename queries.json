@@ -26,7 +26,7 @@ queries = {
     },{
       "select": [
           {"rel":"sA","attr":["name"]},
-          {"rel":"sC","attr":["eyesColor"]},
+          {"rel":"sC","attr":["height"]},
       ],
       "from": ["sA","sC"],
       "where": [
@@ -34,7 +34,7 @@ queries = {
       ],
       "grouping": [
         {"rel":"sA","attr":"name"},
-        {"rel":"sC","attr":"eyesColor"},
+        {"rel":"sC","attr":"height"},
       ],
       "ordering": [
         {"rel":"sA","attr":"name", "UpDown":"DESC"},
@@ -49,6 +49,7 @@ queries = {
       "from": ["sA","sB","sC"],
       "where": [
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
+        {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"name","attr2":"name"},
       ],
       "grouping": [
         {"rel":"sA","attr":"name"},
