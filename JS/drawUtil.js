@@ -9,6 +9,7 @@
  */
 function DrawUtil() {};
 DrawUtil.prototype = {
+  constructor: DrawUtil,
   ctx: Canvas.ctx,
   maxTableLength: table_info.maxTableLength,
   tupleHeight: table_info.tupleHeight,

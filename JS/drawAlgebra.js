@@ -10,10 +10,6 @@ function DrawAlgebra() {
   this.waitTime = 1000 / window.control.speed;
   this.counter = this.waitTime;
   this.nth_result = 0;
-  this.imgDataResult = drawUtil.ctx.getImageData(
-    resultField.x, resultField.y,
-    drawUtil.fullWidth - resultField.x,
-    drawUtil.fullHeight - resultField.y);
 
   this.x1 = anim_position.left_table.x;
   this.y1 = anim_position.left_table.y;
@@ -29,6 +25,8 @@ function DrawAlgebra() {
   // Initialize the attributes of input tuplesets.
   this.init = function(res, input1, input2, nth_tuple1, nth_tuple2,
     attr1, attr2, op) {
+    // drawUtil.ctx.clearRect(animField.x, animField.y, animField.width, animField.height);
+    _this.imgDataResult = null;
     _this.res = JSON.parse(JSON.stringify(res));
     _this.tuplesInput1 = JSON.parse(JSON.stringify(input1));
     _this.tuplesInput2 = JSON.parse(JSON.stringify(input2));
@@ -87,7 +85,6 @@ DrawAlgebra.prototype.animCrossJoin = function(res, input1, input2,
   chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20) {
   let _this = this;
   _this.result_num = 0;
-  DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
   _this.draw_tables(_this, color1, color2);
   loop();
@@ -275,7 +272,6 @@ DrawAlgebra.prototype.animInnerJoin = function(res, input1, input2,
   let _this = this;
   _this.which_side_first = which_side_first;
   _this.result_num = 0;
-  DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2, attr1, attr2, op);
   _this.text = "Find the tuples that satisfy the condition.";
   _this.draw_tables(_this, color1, color2);
@@ -667,7 +663,6 @@ DrawAlgebra.prototype.animUnionAll = function(res, input1, input2,
   nextAnimation, nth_tuple1 = 0, nth_tuple2 = 0,
   color1 = drawUtil.colorSet[0], color2 = drawUtil.colorSet[1]) {
   let _this = this;
-  DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
 
   drawUtil.ctx.clearRect(0, drawUtil.animField.y,
@@ -713,7 +708,6 @@ DrawAlgebra.prototype.animUnion = function(res, input1, input2,
   chosenColor1 = drawUtil.isChosenColorSet[0],
   chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20) {
   let _this = this;
-  DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
 
   if (_this.nth_tuple1 <= _this.tuplesInput1.value.length - 1) {
@@ -773,7 +767,6 @@ DrawAlgebra.prototype.animIntersection = function(res, input1, input2,
   chosenColor1 = drawUtil.isChosenColorSet[0],
   chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20) {
   let _this = this;
-  DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
 
   if (_this.nth_tuple1 < _this.tuplesInput1.value.length &&
@@ -873,7 +866,6 @@ DrawAlgebra.prototype.animWithout = function(res, input1, input2,
   chosenColor1 = drawUtil.isChosenColorSet[0],
   chosenColor2 = drawUtil.isChosenColorSet[1], maxDraw = 20) {
   let _this = this;
-  DrawAlgebra.call(this);
   _this.init(res, input1, input2, nth_tuple1, nth_tuple2);
 
   if (_this.nth_tuple1 <= _this.tuplesInput1.value.length - 1) {
@@ -954,8 +946,11 @@ DrawAlgebra.prototype.draw_compare_table = function(_this, nextAnimation,
     drawUtil.getWidth(_this.tuplesInput1), color1, "black");
   drawUtil.table(_this.tuplesInput2, _this.x2, _this.tabY,
     drawUtil.getWidth(_this.tuplesInput2), color2, "black");
-  drawUtil.ctx.putImageData(_this.imgDataResult,
-    resultField.x, resultField.y);
+  if (_this.imgDataResult) {
+    drawUtil.ctx.putImageData(_this.imgDataResult,
+      resultField.x, resultField.y);
+  }
+
   anim(() => {
     return _this.get_Same_Tuples(_this.src_or_val, _this, _this.waitTime,
       _this.tuplesInput1, _this.tuplesInput2, color1, color2,
@@ -1175,7 +1170,11 @@ DrawAlgebra.prototype.get_Same_Tuples = function(src_or_val = "src", _this,
   let text = "Find the same tuples between two relations.";
   drawUtil.write_text(text, drawUtil.infoField.x, drawUtil.infoField.y + 20,
     "black", 20);
-  drawUtil.ctx.putImageData(_this.imgDataResult,drawUtil.result.x,drawUtil.result.y);
+  if (_this.imgDataResult) {
+    drawUtil.ctx.putImageData(_this.imgDataResult, drawUtil.result.x,
+      drawUtil.result.y);
+  }
+
   drawUtil.tuple(tuple1x, tuple1y, drawUtil.getWidth(tuple1), chosenColor1,
     "white", drawUtil.getText(tuple1));
   drawUtil.tuple(tuple2x, tuple2y, drawUtil.getWidth(tuple2), chosenColor2,

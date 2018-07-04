@@ -137,14 +137,15 @@ draw.sqlProcess = function() {
       document.getElementById(clauses[i]).style.display = "";
     }
   }
-  if (res_SQL.resWhere.compareSets.length > 0) {
+  if (res_SQL.resWhere && res_SQL.resWhere.compareSets.length > 0) {
     document.getElementById("subWhere").style.display = "";
-  }
-  for (let i = 0; i < where_sub.length; i++) {
-    if (res_SQL.resWhere[where_sub[i]].length > 0) {
-      document.getElementById("div" + where_sub[i]).style.display = "";
+    for (let i = 0; i < where_sub.length; i++) {
+      if (res_SQL.resWhere[where_sub[i]].length > 0) {
+        document.getElementById("div" + where_sub[i]).style.display = "";
+      }
     }
   }
+
   /**
    * Show the hint for the next step.
    */
@@ -209,13 +210,14 @@ draw.sqlProcess.bindBtn = function(res_SQL) {
   let dBtn = document.getElementsByName('drawSQLQuery');
   for (let i = 0; i < dBtn.length; i++) {
     dBtn[i].onclick = function() {
+      resetIntervalIDs();
       window.setBtnStyle(this);
       drawUtil.ctx.clearRect(animField.x, animField.y,
         canvasInfo.fullWidth, canvasInfo.fullHeight);
       if (this.getAttribute('id') == "wholeProcess") {
         /*
-        * If the button means all steps, set all steps be false.
-        */
+         * If the button means all steps, set all steps be false.
+         */
         resetCtb();
         dp.done.setDefault();
         for (let i = 0; i < clauses.length; i++) {
@@ -249,9 +251,9 @@ draw.sqlProcess.bindBtn = function(res_SQL) {
         }
       } else {
         /*
-        * If the button means only one step. Set all steps' status be true,
-        * and only this step is false.
-        */
+         * If the button means only one step. Set all steps' status be true,
+         * and only this step is false.
+         */
         resetCtb();
         dp.done.setFinish();
         dp.done.setStatus(this.getAttribute('id'), false);
@@ -261,12 +263,11 @@ draw.sqlProcess.bindBtn = function(res_SQL) {
   }
 };
 /**
-* Draw animation of algebra.
-* @param {String} query_algebra The statement of relational algebra.
-* @returns {Boolean} After this function is processed, it will return true.
-*/
+ * Draw animation of algebra.
+ * @param {String} query_algebra The statement of relational algebra.
+ * @returns {Boolean} After this function is processed, it will return true.
+ */
 draw.algebra = function(query_algebra) {
-  resetIntervalIDs();
   if (query_algebra != "") {
     this.drawInfo().write("Initialization Data succeed!");
   } else {
@@ -275,11 +276,11 @@ draw.algebra = function(query_algebra) {
   return true;
 };
 /**
-* Initialize the information for drawing the animation of relational algebra
-* that just has one statement. Bind the functions with corresponding buttons.
-* @param {Boolean} single If single is true,
-* means now to draw the animation of one statement.
-*/
+ * Initialize the information for drawing the animation of relational algebra
+ * that just has one statement. Bind the functions with corresponding buttons.
+ * @param {Boolean} single If single is true,
+ * means now to draw the animation of one statement.
+ */
 draw.algebra.single_algebra = function(single = true) {
   let ts1;
   let ts2;
@@ -317,15 +318,15 @@ draw.algebra.results = [];
 /** Draw animations of relational algebra that has more than one statements.*/
 draw.algebra.multi_algebra = function() {
   let _this = this;
-  let query_algebra = queries.algebra.multi;
+  let query_algebra = JSON.parse(JSON.stringify(queries.algebra.multi));
   draw.algebra(query_algebra);
   /**
-  * Iterative operate the statement, if the statement has deeper level.
-  * @param {Object} query The statement of relational algebra. The structure of
-  * the query is builded as an AST.
-  * @param {Object} done If done.val is false, means the statement has deeper
-  * statements. If done.val is true, means the statement has not deeper statements.
-  */
+   * Iterative operate the statement, if the statement has deeper level.
+   * @param {Object} query The statement of relational algebra. The structure of
+   * the query is builded as an AST.
+   * @param {Object} done If done.val is false, means the statement has deeper
+   * statements. If done.val is true, means the statement has not deeper statements.
+   */
   let loop = function(query, done = {
     val: false
   }) {
@@ -467,23 +468,24 @@ draw.algebra.getRes = {
  * @property {value_basic} value
  */
 /**
-* Bind functions of relational algebra to buttons of relational algebra panel.
-* @param {tupleset_basic} ts1 The left relation.
-* @param {tupleset_basic} ts2 The right relation.
-* @param {String} color1 The color of the left relation.
-* @param {String} color2 The color of the right relation.
-* @param {String} chosenColor1 The color of the chosen tuples in the left relation.
-* @param {String} chosenColor2 The color of the chosen tuples in the right relation.
-* @param {String} attr1 The compared attribute of the left relation.
-* @param {String} attr2 The compared attribute of the right relation.
-* @param {String} op The name of the operation.
-*/
+ * Bind functions of relational algebra to buttons of relational algebra panel.
+ * @param {tupleset_basic} ts1 The left relation.
+ * @param {tupleset_basic} ts2 The right relation.
+ * @param {String} color1 The color of the left relation.
+ * @param {String} color2 The color of the right relation.
+ * @param {String} chosenColor1 The color of the chosen tuples in the left relation.
+ * @param {String} chosenColor2 The color of the chosen tuples in the right relation.
+ * @param {String} attr1 The compared attribute of the left relation.
+ * @param {String} attr2 The compared attribute of the right relation.
+ * @param {String} op The name of the operation.
+ */
 draw.algebra.bindBtn = function(ts1, ts2, color1, color2,
   chosenColor1, chosenColor2, attr1, attr2, op) {
   let _this = this;
   let aBtn = document.getElementsByName('algebra');
   for (let i = 0; i < aBtn.length; i++) {
     aBtn[i].onclick = function() {
+      resetIntervalIDs();
       window.setBtnStyle(this);
       let da = new DrawAlgebra();
       drawUtil.ctx.clearRect(100, 0, draw.canvasWidth, draw.canvasHeight);

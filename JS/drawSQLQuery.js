@@ -97,7 +97,8 @@ function DrawSQLQuery(res_SQL) {
      * After animation, set _this.done.select = true.
      */
     if ((!_this.done.select) && (_this.done.grouping)) {
-      _this.selection(_this.res.select);
+      let tupleset = _this.res.select.inputTupleset;
+      _this.selection(_this.res.select.result, tupleset);
     }
     // if (res.ordering && (!_this.done.ordering) && (_this.done.select)) {
     //   _this.ordering();
@@ -127,6 +128,7 @@ function DrawSQLQuery(res_SQL) {
   };
 }
 DrawSQLQuery.prototype = {
+  constructor: DrawSQLQuery,
   /**
    * The flags for which step of SQL query have been done.
    */
@@ -168,14 +170,13 @@ DrawSQLQuery.prototype = {
  * Does the animation of select.
  * @param {tupleset_with_group} res_select The result of the select clause in SQL query.
  */
-DrawSQLQuery.prototype.selection = function(res_select) {
+DrawSQLQuery.prototype.selection = function(res_select, tupleset) {
   //Highleight the button of SELECT.
   window.setBtnStyle(document.getElementById("select"));
   let _this = this;
   drawUtil.ctx.clearRect(drawUtil.animField.x, drawUtil.animField.y,
     drawUtil.fullWidth, drawUtil.fullHeight);
   _this.drawInfo.clearLeftInfo();
-  let tupleset = _this.res.where.result;
   let resSelect = res_select;
   let querySelect = _this.res.query.select;
   let queryText = "select ";

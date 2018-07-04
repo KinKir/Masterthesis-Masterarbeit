@@ -199,27 +199,59 @@ SQL_process = function(sqlQuery) {
   let sqlReader = SQL_process_fun.sqlReader(sqlQuery);
   res_SQL.query = sqlReader;
   let intermediateResult = null;
-  if(sqlReader.from){
-      res_SQL.resFrom = SQL_process_fun.resFrom(sqlReader.from);
-      intermediateResult = res_SQL.resFrom;
-  }else{
+  if (sqlReader.from) {
+    res_SQL.resFrom = SQL_process_fun.resFrom(sqlReader.from);
+    intermediateResult = res_SQL.resFrom;
+  } else {
     return "Not recognized Query.";
   }
-  if(sqlReader.where){
-      res_SQL.resWhere = SQL_process_fun.resWhere(intermediateResult, sqlReader.where);
-      intermediateResult = res_SQL.resWhere.result;
+  if (sqlReader.where) {
+    res_SQL.resWhere = SQL_process_fun.resWhere(intermediateResult, sqlReader.where);
+    intermediateResult = res_SQL.resWhere.result;
   }
-  if(sqlReader.grouping){
-      res_SQL.resGrouping = SQL_process_fun.resGrouping(intermediateResult, sqlReader.grouping);
-      intermediateResult = res_SQL.resGrouping.result;
+  if (sqlReader.grouping) {
+    res_SQL.resGrouping = {};
+    res_SQL.resGrouping.inputTupleset = null;
+    res_SQL.resGrouping.result = null;
+    if (intermediateResult instanceof Array) {
+      for (let i = 0; i < intermediateResult.length; i++) {
+        if (i == 0) {
+          res_SQL.resGrouping.inputTupleset =
+            JSON.parse(JSON.stringify(intermediateResult[i]));
+        } else {
+          res_SQL.resGrouping.inputTupleset = join.crossJoin(
+            res_SQL.resGrouping.inputTupleset, intermediateResult[i]);
+        }
+      }
+      intermediateResult = res_SQL.resGrouping.inputTupleset;
+    }
+    res_SQL.resGrouping = SQL_process_fun.resGrouping(intermediateResult, sqlReader.grouping);
+    intermediateResult = res_SQL.resGrouping.result;
   }
-  if(sqlReader.select){
-      res_SQL.resSelect = SQL_process_fun.resSelect(intermediateResult, sqlReader.select);
-      intermediateResult = res_SQL.resSelect;
+  if (sqlReader.select) {
+    res_SQL.resSelect = {};
+    res_SQL.resSelect.inputTupleset = null;
+    res_SQL.resSelect.result = null;
+    if (intermediateResult instanceof Array) {
+      for (let i = 0; i < intermediateResult.length; i++) {
+        if (i == 0) {
+          res_SQL.resSelect.inputTupleset =
+            JSON.parse(JSON.stringify(intermediateResult[i]));
+        } else {
+          res_SQL.resSelect.inputTupleset = join.crossJoin(
+            res_SQL.resSelect.inputTupleset, intermediateResult[i]);
+        }
+      }
+      intermediateResult = res_SQL.resSelect.inputTupleset;
+    }
+    res_SQL.resSelect.inputTupleset = JSON.parse(JSON.stringify(intermediateResult));
+    res_SQL.resSelect.result = SQL_process_fun.resSelect(intermediateResult, sqlReader.select);
+
+    intermediateResult = res_SQL.resSelect.result;
   }
-  if(sqlReader.ordering){
-      res_SQL.resOrdering = SQL_process_fun.resOrdering(intermediateResult, sqlReader.ordering);
-      intermediateResult = res_SQL.resOrdering;
+  if (sqlReader.ordering) {
+    res_SQL.resOrdering = SQL_process_fun.resOrdering(intermediateResult, sqlReader.ordering);
+    intermediateResult = res_SQL.resOrdering;
   }
 
   return res_SQL;

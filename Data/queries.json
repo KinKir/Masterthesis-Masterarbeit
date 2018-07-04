@@ -11,7 +11,7 @@ queries = {
       "where": [
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
-        {"union":"or", "op":"equal","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
+        {"union":"or", "op":"less","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
       ],
       "grouping": [
         {"rel":"sA","attr":"name"},
@@ -91,6 +91,34 @@ queries = {
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
         {"union":"or", "op":"greater","rel1":"sB","rel2":"null","attr1":"height","attr2":"170"},
         ],
+    },
+    {
+      "select":[
+        {"rel":"sA","attr":["name"]},
+      ],
+      "from":["sA"],
+    },
+    {
+      "select":[
+        {"rel":"sA","attr":["name"]},
+      ],
+      "from":["sA","sB"],
+    },
+    {
+      "select":[
+        {"rel":"sA","attr":["name"]},
+        {"rel":"sB","attr":["name"]},
+      ],
+      "from":["sA","sB"],
+    },
+    {
+      "select":[
+        {"rel":"sA","attr":["name"]},
+      ],
+      "from":["sA","sB"],
+      "grouping":[
+        {"rel":"sA","attr":"name"},
+      ]
     },
   ],
   "algebra":{
