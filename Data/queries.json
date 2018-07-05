@@ -25,19 +25,20 @@ queries = {
       ],
     },{
       "select": [
-          {"rel":"sA","attr":["name"]},
-          {"rel":"sC","attr":["height"]},
+          {"rel":"sB","attr":["name","height","weight"]},
       ],
-      "from": ["sA","sC"],
+      "from": ["sB","sC"],
       "where": [
-        {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
+        {"union":"and", "op":"equal","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
+        {"union":"or", "op":"equal","rel1":"sB","rel2":"sC","attr1":"weight","attr2":"weight"},
       ],
       "grouping": [
-        {"rel":"sA","attr":"name"},
-        {"rel":"sC","attr":"height"},
+        {"rel":"sB","attr":"name"},
+        {"rel":"sB","attr":"height"},
+        {"rel":"sB","attr":"weight"},
       ],
       "ordering": [
-        {"rel":"sA","attr":"name", "UpDown":"DESC"},
+        {"rel":"sB","attr":"name", "UpDown":"DESC"},
       ],
     },
     {
