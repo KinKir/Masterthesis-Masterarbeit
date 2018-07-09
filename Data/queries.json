@@ -4,19 +4,18 @@ queries = {
     {
       "select": [
           {"rel":"sA","attr":["name","age"]},
-          {"rel":"sB","attr":["height"]},
-          {"rel":"sC","attr":["weight"]},
+          {"rel":"sC","attr":["height","weight"]},
       ],
       "from": ["sA","sB","sC"],
       "where": [
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sB","attr1":"name","attr2":"name"},
         {"union":"and", "op":"equal","rel1":"sA","rel2":"sC","attr1":"name","attr2":"name"},
-        {"union":"or", "op":"less","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
+        {"union":"or", "op":"lessEqual","rel1":"sB","rel2":"sC","attr1":"height","attr2":"height"},
       ],
       "grouping": [
         {"rel":"sA","attr":"name"},
         {"rel":"sA","attr":"age"},
-        {"rel":"sB","attr":"height"},
+        {"rel":"sC","attr":"height"},
         {"rel":"sC","attr":"weight"},
       ],
       "ordering": [

@@ -11,7 +11,7 @@
 var projection = function(tuplesInput, select) {
   var tuplesOutput = algebraUtil.initRelation();
   var input = JSON.parse(JSON.stringify(tuplesInput));
-  for (var i = 0; i < select.length; i++) {
+  for (var i = 0; i < input.name.length; i++) {
     tuplesOutput.columns.push({
       src: [],
       columns: []
@@ -19,7 +19,8 @@ var projection = function(tuplesInput, select) {
   }
   var i = 0;
   while (i < select.length) {
-    tuplesOutput.columns[i].src.push(select[i].rel);
+    var position = algebraUtil.getThePosition(input, select[i].rel);
+    tuplesOutput.columns[position.relPos].src = select[i].rel;
     var j = 0;
     while (j < select[i].attr.length) {
       /** get every colums position. */
@@ -54,6 +55,16 @@ var projection = function(tuplesInput, select) {
       j++;
     }
     i++;
+  }
+  for(let i = 0;i<tuplesOutput.columns.length;i++){
+    if(tuplesOutput.columns[i].columns.length == 0){console.log("zheli");
+      tuplesOutput.columns.splice(i,1);
+      for(let j = 0;j<tuplesOutput.value.length;j++){
+        tuplesOutput.value[j].source.ids.splice(i,1);
+        tuplesOutput.value[j].source.rels.splice(i,1);
+        tuplesOutput.value[j].tupleValue.splice(i,1);
+      }
+    }
   }
   return tuplesOutput;
 };

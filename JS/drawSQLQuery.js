@@ -576,7 +576,7 @@ DrawSQLQuery.prototype.where = function(query, res_where, step = "whole") {
       let compareSet = compareSets[_this.i];
       let condition = compareSet.step.condition;
       let oldSet = res_where.intermediateResult[_this.i - 1];
-      let newSet = res_where.core[_this.k];
+      let newSet = res_where.core[_this.k] || res_where.compareSets[_this.i];
       /**
        * If now is not the first time to intersection or union, clear the last
        * animation. Draw the animation of the result table from last condition
@@ -594,12 +594,12 @@ DrawSQLQuery.prototype.where = function(query, res_where, step = "whole") {
           y: drawUtil.animField.y + drawUtil.info_lines *
             (drawUtil.tupleHeight + drawUtil.tupleMargin)
         };
-        if (compareSets[_this.i].step.condition.union == "and") {
+        // if (compareSets[_this.i].step.condition.union == "and") {
           _this.drawAlgebra.moveTable(oldSet, drawUtil.colorSet[0],
             srcRes, desRes, drawAnim, true, true);
-        } else {
-          drawAnim();
-        }
+        // } else {
+          // drawAnim();
+        // }
       } else {
         drawAnim();
       }
