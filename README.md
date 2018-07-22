@@ -1,4 +1,4 @@
-# My master thesis\\Meine Masterarbeit\\硕士毕业设计。
+﻿# My master thesis\\Meine Masterarbeit\\硕士毕业设计。
 
 Online address\\在线演示地址:
 https://zhangzhili000.github.io/Masterthesis-Masterarbeit/
@@ -37,3 +37,50 @@ https://zhangzhili000.github.io/Masterthesis-Masterarbeit/
 
 
 
+***************************************************************************************
+***************************        The User Guide          ****************************
+***************************************************************************************
+
+---------------------------------------------------------------------------------------
+-----------------------       I.How to use this software:          --------------------
+
+1.Open the index.html in Chrome browser.
+
+2.i:
+  The SQL Query part:
+    Input a number in the range that has been shown by the hint.
+    Click a button in the panel to watch the animation.
+
+2.ii:
+  The Relational Algebra part:
+    Click the initialization button.
+    Click a button in the panel to watch the animation.
+
+  The nested Algebra:
+    If you want look the animation of a nested statement, please refresh the web page.
+    Then click the "Initialize Data and Begin" button of hybrid algebra.
+    After watching this animation, if you want look animations in other parts, it needs to refresh the web page. Or the functions of single Algebra may occur some bugs.
+
+---------------------------------------------------------------------------------------
+-------------       II.Some explaination about the animations:       ------------------
+
+1.The animation of Union:
+  The right table has not been changed, because it is a copy of original table.
+
+2.The animations of all operations in relational algebra:
+  All the tables operated by the operations of relational algebra are a copy of original table.
+
+---------------------------------------------------------------------------------------
+---  III.If you want look or change the queries, the statements, and the database:  ---
+
+1.The queries and statements are stored in file "Data/queries.json".
+  
+  1.i:The structure of this file:
+    It has three parts:"comment","SQL_query","algebra".
+    The "SQL_query" is a array of queries.
+    The "algebra" contains the statement for single operation, and the statement for nested operations.
+    This software has not a Checker to check if the statement is valid. So, please input a query or a statement that satisfies the specification.
+
+2.The database is stored in file "Data/data.json".
+
+3.If you just want look the query, you can also look it in the developer tool. The query and the result of calculation of every step are print in the console.
